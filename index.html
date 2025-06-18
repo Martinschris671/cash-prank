@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Loading...</title>
+    <style>
+      /* Basic reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        overflow: hidden; /* Prevent scrollbars */
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        position: relative;
+        background-color: #ffffff; /* Page background underneath */
+      }
+
+      /* The Loading Screen Overlay */
+      #loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #50b849;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        opacity: 1;
+      }
+
+      #logo-container {
+        transform: scale(1);
+      }
+
+      #logo-container img {
+        display: block;
+        width: 250px;
+        height: 250px;
+      }
+
+      /* Keyframes for the LOGO SHRINKING animation */
+      @keyframes logoShrinkEffect {
+        0% {
+          transform: scale(1);
+        }
+        70% {
+          transform: scale(1);
+        }
+        100% {
+          transform: scale(0.85);
+        }
+      }
+
+      /* Keyframes for the SCREEN FADE-OUT animation */
+      @keyframes screenFadeOutEffect {
+        0% {
+          opacity: 1;
+        }
+        70% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- The Loading Screen -->
+    <div id="loading-screen">
+      <div id="logo-container">
+        <!-- Just change the 'src' to your image file -->
+        <img src="icons/cashapp-svgrepo-com-1.png" alt="Loading Logo" />
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const loadingScreen = document.getElementById("loading-screen");
+        const logoContainer = document.getElementById("logo-container");
+
+        // Animation duration in milliseconds (e.g., 3000ms = 3s)
+        const animationDuration = 3000;
+
+        // Apply animations via JS to start them on page load
+        if (logoContainer) {
+          logoContainer.style.animation = `logoShrinkEffect ${
+            animationDuration / 1000
+          }s ease-in-out forwards`;
+        }
+        if (loadingScreen) {
+          loadingScreen.style.animation = `screenFadeOutEffect ${
+            animationDuration / 1000
+          }s ease-in-out forwards`;
+        }
+
+        // After the animation duration, redirect to home.html
+        setTimeout(() => {
+          // MODIFIED: This line now redirects the user
+          window.location.replace("home.html");
+        }, animationDuration);
+      });
+    </script>
+  </body>
+</html>
