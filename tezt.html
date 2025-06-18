@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Icon Test</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      :root {
+        --padding-screen: 18px;
+        --app-bg-color: #f0f1f2;
+        --card-bg-color: #ffffff;
+        --text-primary: #000000;
+        --text-secondary: #6c757d;
+        --border-radius-card: 16px;
+        --accent-green: #00d54b;
+        --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+      }
+
+      body {
+        font-family: var(--font-family);
+        background-color: var(--app-bg-color);
+        padding: 20px;
+      }
+
+      .test-container {
+        max-width: 450px;
+        margin: 0 auto;
+      }
+
+      .section-header {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 24px 0 12px 4px;
+      }
+
+      .chevron-icon {
+        width: 9px;
+        height: 15px;
+      }
+
+      /* --- Paychecks Card --- */
+      .feature-card {
+        display: flex;
+        align-items: center;
+        background-color: var(--card-bg-color);
+        border-radius: var(--border-radius-card);
+        padding: 16px;
+        gap: 16px;
+        position: relative;
+      }
+
+      .feature-card .icon-container {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background-color: var(--accent-green);
+        display: grid;
+        place-items: center;
+        color: white;
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+
+      .feature-card .details {
+        flex-grow: 1;
+      }
+
+      .feature-card .title {
+        display: block;
+        font-size: 16px;
+        font-weight: 500;
+      }
+
+      .feature-card .subtitle {
+        display: block;
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-top: 3px;
+      }
+
+      .feature-card .chevron-icon {
+        margin-left: auto;
+      }
+
+      /* --- Savings Page Display --- */
+      .savings-display {
+        background-color: var(--app-bg-color);
+        padding: 20px;
+        text-align: center;
+      }
+
+      .progress-ring-area {
+        position: relative;
+        width: 260px;
+        height: 260px;
+        margin: 0 auto;
+        display: grid;
+        place-items: center;
+      }
+
+      .progress-ring-svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
+      }
+
+      .progress-ring-circle {
+        stroke-linecap: round;
+      }
+
+      .savings-details-center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .savings-details-center .icon {
+        font-size: 44px;
+        color: var(--accent-green);
+        margin-bottom: 12px;
+      }
+
+      .savings-main-amount {
+        font-size: 44px;
+        font-weight: 700;
+        line-height: 1.1;
+      }
+
+      .savings-interest-rate {
+        font-size: 15px;
+        color: var(--text-secondary);
+        margin: 8px 0;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .savings-interest-rate .fa-xs {
+        font-size: 9px;
+      }
+
+      .savings-to-goal {
+        font-size: 22px;
+        font-weight: 500;
+        margin-top: 12px;
+      }
+
+      .savings-to-goal-label {
+        font-size: 13px;
+        color: var(--text-secondary);
+      }
+      .icon-container .pay {
+        color: #f0f1f2;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="test-container">
+      <!-- Test Component 1: Paychecks Card -->
+      <h2 class="section-header">Paychecks Card Icon Test</h2>
+      <div class="feature-card">
+        <div class="icon-container">
+          <i class="fa-solid fa-arrow-down-to-bracket pay"></i>
+        </div>
+        <div class="details">
+          <span class="title">Paychecks</span>
+          <span class="subtitle">Get benefits with direct deposit</span>
+        </div>
+        <svg
+          class="chevron-icon"
+          viewBox="0 0 9 15"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M1 1L7.5 7.5L1 14"
+            stroke="#C7C7CC"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
+
+      <!-- Test Component 2: Savings Page Display -->
+      <h2 class="section-header">Savings Page Icon Test</h2>
+      <div class="savings-display">
+        <div class="progress-ring-area">
+          <svg class="progress-ring-svg" viewBox="0 0 120 120">
+            <circle
+              class="progress-ring-circle"
+              stroke="#e0e0e0"
+              stroke-width="8"
+              fill="transparent"
+              r="56"
+              cx="60"
+              cy="60"
+            />
+            <!-- Example progress (96.96%) -->
+            <circle
+              class="progress-ring-circle"
+              stroke="var(--accent-green)"
+              stroke-width="8"
+              fill="transparent"
+              r="56"
+              cx="60"
+              cy="60"
+              style="
+                stroke-dasharray: 351.858, 351.858;
+                stroke-dashoffset: 10.8;
+              "
+            />
+          </svg>
+          <div class="savings-details-center">
+            <i class="fa-solid fa-sack-dollar icon"></i>
+            <h1 class="savings-main-amount">$9,696.42</h1>
+            <p class="savings-interest-rate">
+              4.5% interest <i class="fa-solid fa-chevron-right fa-xs"></i>
+            </p>
+            <p class="savings-to-goal">$303.58</p>
+            <p class="savings-to-goal-label">to goal</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
