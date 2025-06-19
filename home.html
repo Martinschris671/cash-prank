@@ -426,15 +426,20 @@
       .preset-btn.active {
         background-color: #d1d5d9;
       }
+
+      /* ---- CHANGED: Keypad Modal to cover screen ---- */
       #add-money-keypad-modal {
         display: flex;
         flex-direction: column;
-        height: 90vh;
-        max-height: 700px;
-        border-radius: 0;
+        height: 100%; /* Cover full height of overlay */
+        max-height: 100%;
+        width: 100%;
+        max-width: 100%;
+        border-radius: 0; /* No rounded corners for full screen */
         justify-content: space-between;
         padding-bottom: 40px;
       }
+
       .keypad-display {
         text-align: center;
         flex-shrink: 0;
@@ -478,15 +483,16 @@
         padding: clamp(10px, 2vh, 20px);
         cursor: pointer;
       }
-      .cash-out-display {
+      /* ---- CHANGED: "Cash out" to "Withdraw" ---- */
+      .withdraw-display {
         text-align: center;
       }
-      .cash-out-amount {
+      .withdraw-amount {
         font-size: 72px;
         font-weight: 500;
         color: var(--accent-green);
       }
-      .cash-out-available {
+      .withdraw-available {
         font-size: 14px;
         color: var(--text-secondary);
         margin-top: -8px;
@@ -524,6 +530,8 @@
         margin-top: -11px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
       }
+
+      /* ---- CHANGED: Success Overlay styles ---- */
       #success-overlay {
         position: fixed;
         top: 0;
@@ -532,7 +540,7 @@
         height: 100%;
         background-color: white;
         z-index: 3000;
-        display: flex;
+        display: none; /* Changed from flex to none */
         flex-direction: column;
         justify-content: space-between;
         padding: 20px var(--padding-screen) 40px;
@@ -540,6 +548,7 @@
         transition: transform 0.4s ease;
       }
       #success-overlay.show {
+        display: flex; /* Show with flex */
         transform: translateY(0);
       }
       #success-close-btn {
@@ -552,34 +561,34 @@
         cursor: pointer;
       }
       .success-content {
-        text-align: center;
+        text-align: left; /* CHANGED: from center to left */
         margin-top: 8vh;
       }
       .success-checkmark {
-        width: 72px;
-        height: 72px;
+        width: 50px;
+        height: 50px;
         background-color: var(--accent-green);
         border-radius: 50%;
-        display: flex;
+        display: inline-flex; /* CHANGED: to prevent taking full width */
         align-items: center;
         justify-content: center;
-        margin: 0 auto 24px;
+        margin: 0 0 24px 0; /* CHANGED: from auto margin */
       }
       .success-checkmark i {
         color: white;
-        font-size: 36px;
+        font-size: 25px;
       }
       .success-message {
         font-size: 24px;
         font-weight: 600;
       }
       .success-promo-card {
-        background-color: transparent;
+        background-color: #fafafa;
         border-radius: 12px;
         padding: 20px;
         text-align: center;
         margin-top: 15vh;
-        border: 0.3px solid #e0e0e081;
+        border: 1px solid #f0f0f0;
       }
       .success-promo-card img {
         width: 160px;
@@ -591,7 +600,7 @@
         margin-bottom: 20px;
       }
       .success-promo-card button {
-        background-color: rgba(230, 230, 230, 0.37);
+        background-color: #f0f1f2;
         border-radius: 20px;
         padding: 12px 24px;
         font-weight: 600;
@@ -630,9 +639,44 @@
         height: 100%;
         object-fit: cover; /* Ensures the image fits well */
       }
+
+      /* ---- ADDED: Spinner styles ---- */
+      #spinner-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.8);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+      #spinner-overlay.show {
+        display: flex;
+      }
+      .spinner {
+        width: 60px;
+        height: 60px;
+        border: 7px solid rgba(0, 213, 75, 0.3);
+        border-top-color: var(--accent-green);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
     </style>
   </head>
   <body>
+    <!-- ---- ADDED: Spinner Overlay element ---- -->
+    <div id="spinner-overlay">
+      <div class="spinner"></div>
+    </div>
+
     <div class="app-container">
       <header class="app-header">
         <h1>Money</h1>
@@ -654,7 +698,8 @@
           ></a>
           <div class="balance-actions">
             <button id="add-money-btn">Add money</button>
-            <button id="withdraw-btn">Cash Out</button>
+            <!-- ---- CHANGED: Button text is already "Withdraw" as per request ---- -->
+            <button id="withdraw-btn">Withdraw</button>
           </div>
         </section>
 
@@ -903,18 +948,19 @@
           Add
         </button>
       </div>
-      <div class="transaction-modal" id="cash-out-slider-modal">
+      <!-- ---- CHANGED: "Cash Out" modal renamed to "Withdraw" ---- -->
+      <div class="transaction-modal" id="withdraw-slider-modal">
         <div class="modal-grabber"></div>
-        <div class="modal-header"><h2>Cash Out</h2></div>
-        <div class="cash-out-display">
-          <div class="cash-out-amount" id="cash-out-amount-display">$0</div>
-          <div class="cash-out-available" id="cash-out-available"></div>
+        <div class="modal-header"><h2>Withdraw</h2></div>
+        <div class="withdraw-display">
+          <div class="withdraw-amount" id="withdraw-amount-display">$0</div>
+          <div class="withdraw-available" id="withdraw-available"></div>
         </div>
         <div class="slider-container">
-          <input type="range" min="0" value="0" id="cash-out-slider" />
+          <input type="range" min="0" value="0" id="withdraw-slider" />
         </div>
-        <button class="modal-action-btn" id="cash-out-btn" disabled>
-          Cash Out
+        <button class="modal-action-btn" id="withdraw-confirm-btn" disabled>
+          Withdraw
         </button>
       </div>
       <div class="transaction-modal" id="feature-modal">
@@ -925,6 +971,7 @@
       </div>
     </div>
 
+    <!-- ---- CHANGED: Success Overlay content and structure ---- -->
     <div id="success-overlay">
       <button id="success-close-btn">×</button>
       <div class="success-content">
@@ -934,7 +981,7 @@
       <div class="success-promo-card">
         <img
           src="images/bitcoin_asset_explanatory.png"
-          alt="Direct Deposit Check"
+          alt="Direct Deposit Promotion"
         />
         <p>Get paid up to 2 days faster with direct deposit</p>
         <button>Get Started</button>
@@ -953,11 +1000,15 @@
         allModals = document.querySelectorAll(".transaction-modal"),
         addCashPresetsModal = document.getElementById("add-cash-presets-modal"),
         addMoneyKeypadModal = document.getElementById("add-money-keypad-modal"),
-        cashOutSliderModal = document.getElementById("cash-out-slider-modal"),
+        // ---- CHANGED: Renamed cash out modal to withdraw modal
+        withdrawSliderModal = document.getElementById("withdraw-slider-modal"),
         successOverlay = document.getElementById("success-overlay"),
         featureModal = document.getElementById("feature-modal"),
         accountInfoEl = document.getElementById("account-info"),
-        profileIconLink = document.querySelector(".profile-icon-link");
+        profileIconLink = document.querySelector(".profile-icon-link"),
+        // ---- ADDED: Spinner overlay element
+        spinnerOverlay = document.getElementById("spinner-overlay");
+
       let currentBalance = 10100.0,
         isAnimating = false;
       const localStorageBalanceKey = "cashAppBalance",
@@ -1017,7 +1068,7 @@
       }
       function loadState() {
         const savedBalance = localStorage.getItem(localStorageBalanceKey);
-        currentBalance = parseFloat(savedBalance) || 10100.0;
+        currentBalance = parseFloat(savedBalance) || 0.0;
         balanceAmountEl.textContent = formatCurrency(currentBalance);
         footerBalanceDisplay.textContent =
           formatBalanceForFooter(currentBalance);
@@ -1049,25 +1100,40 @@
           JSON.stringify(transactions)
         );
       }
+
+      // ---- CHANGED: Added spinner logic ----
       function handleAddTransaction(amount) {
         if (isAnimating || isNaN(amount) || amount <= 0) return;
         hideAllModals();
-        const startBalance = currentBalance;
-        currentBalance += amount;
-        saveState();
-        saveTransaction("add", amount);
-        animateBalance(startBalance, currentBalance, "add", amount);
+        spinnerOverlay.classList.add("show");
+
+        setTimeout(() => {
+          spinnerOverlay.classList.remove("show");
+          const startBalance = currentBalance;
+          currentBalance += amount;
+          saveState();
+          saveTransaction("add", amount);
+          animateBalance(startBalance, currentBalance, "add", amount);
+        }, 1500);
       }
+
+      // ---- CHANGED: Added spinner logic ----
       function handleWithdrawal(amount) {
         if (isAnimating || isNaN(amount) || amount <= 0) return;
         if (amount > currentBalance) return;
         hideAllModals();
-        const startBalance = currentBalance;
-        currentBalance -= amount;
-        saveState();
-        saveTransaction("withdraw", amount);
-        animateBalance(startBalance, currentBalance, "withdraw", amount);
+        spinnerOverlay.classList.add("show");
+
+        setTimeout(() => {
+          spinnerOverlay.classList.remove("show");
+          const startBalance = currentBalance;
+          currentBalance -= amount;
+          saveState();
+          saveTransaction("withdraw", amount);
+          animateBalance(startBalance, currentBalance, "withdraw", amount);
+        }, 1500);
       }
+
       function showModal(modalEl) {
         transactionOverlay.classList.add("show");
         allModals.forEach((m) => (m.style.display = "none"));
@@ -1082,7 +1148,7 @@
         const message =
           type === "add"
             ? `You added ${formatCurrency(amount)} to your Cash App`
-            : `You cashed out ${formatCurrency(amount)}`;
+            : `You withdrew ${formatCurrency(amount)}`;
         document.getElementById("success-message").textContent = message;
         successOverlay.classList.add("show");
       }
@@ -1129,60 +1195,93 @@
           ),
           addKeypadBtn = document.getElementById("add-keypad-btn");
         let keypadValue = "0";
+
+        // ---- CHANGED: Keypad display function to add commas ----
         const updateKeypadDisplay = () => {
-          keypadAmountDisplay.innerHTML =
-            keypadValue === "0"
-              ? `$0<span class="cursor"></span>`
-              : `$${keypadValue}<span class="cursor"></span>`;
-          addKeypadBtn.disabled = parseFloat(keypadValue) <= 0;
+          let displayValue;
+          if (keypadValue === "0" || keypadValue === "") {
+            displayValue = "0";
+          } else {
+            const parts = keypadValue.split(".");
+            // Format integer part with commas
+            parts[0] = Number(parts[0]).toLocaleString("en-US");
+            displayValue = parts.join(".");
+          }
+
+          keypadAmountDisplay.innerHTML = `$${displayValue}<span class="cursor"></span>`;
+          const numericValue = parseFloat(keypadValue);
+          addKeypadBtn.disabled = numericValue <= 0 || isNaN(numericValue);
         };
+
+        updateKeypadDisplay(); // Initial display
+
         keypad.addEventListener("click", (e) => {
           const key = e.target.closest(".keypad-btn")?.dataset.key;
           if (!key) return;
-          if (key === "<")
+
+          if (key === "<") {
             keypadValue =
               keypadValue.length > 1 ? keypadValue.slice(0, -1) : "0";
-          else if (key === "." && !keypadValue.includes("."))
-            keypadValue += ".";
-          else if (key !== ".")
-            keypadValue = keypadValue === "0" ? key : keypadValue + key;
+          } else if (key === "." && !keypadValue.includes(".")) {
+            if (keypadValue === "0") {
+              keypadValue = "0.";
+            } else {
+              keypadValue += ".";
+            }
+          } else if (key !== ".") {
+            // Prevent multiple leading zeros
+            if (keypadValue === "0" && key !== ".") {
+              keypadValue = key;
+            } else {
+              const decimalIndex = keypadValue.indexOf(".");
+              if (
+                decimalIndex === -1 ||
+                keypadValue.length - decimalIndex <= 2
+              ) {
+                keypadValue += key;
+              }
+            }
+          }
           updateKeypadDisplay();
         });
+
         addKeypadBtn.addEventListener("click", () =>
           handleAddTransaction(parseFloat(keypadValue))
         );
         document
           .getElementById("keypad-close-btn")
           .addEventListener("click", hideAllModals);
-        const cashOutSlider = document.getElementById("cash-out-slider"),
-          cashOutAmountDisplay = document.getElementById(
-            "cash-out-amount-display"
+
+        // ---- CHANGED: "Cash Out" logic renamed to "Withdraw" ----
+        const withdrawSlider = document.getElementById("withdraw-slider"),
+          withdrawAmountDisplay = document.getElementById(
+            "withdraw-amount-display"
           ),
-          cashOutBtn = document.getElementById("cash-out-btn");
+          withdrawConfirmBtn = document.getElementById("withdraw-confirm-btn");
         document
           .getElementById("withdraw-btn")
           .addEventListener("click", () => {
-            cashOutSlider.max = currentBalance;
-            cashOutSlider.value = 0;
+            const maxBalance = Math.floor(currentBalance);
+            withdrawSlider.max = maxBalance;
+            withdrawSlider.value = 0;
             document.getElementById(
-              "cash-out-available"
+              "withdraw-available"
             ).textContent = `${formatCurrency(currentBalance)} AVAILABLE`;
-            cashOutAmountDisplay.textContent = "$0";
-            cashOutBtn.disabled = true;
-            cashOutSlider.style.setProperty("--progress", "0%");
-            showModal(cashOutSliderModal);
+            withdrawAmountDisplay.textContent = "$0";
+            withdrawConfirmBtn.disabled = true;
+            withdrawSlider.style.setProperty("--progress", "0%");
+            showModal(withdrawSliderModal);
           });
-        cashOutSlider.addEventListener("input", () => {
-          const value = parseFloat(cashOutSlider.value);
-          cashOutAmountDisplay.textContent = `$${Math.round(value)}`;
-          cashOutBtn.disabled = value <= 0;
-          cashOutSlider.style.setProperty(
-            "--progress",
-            `${(value / currentBalance) * 100}%`
-          );
+        withdrawSlider.addEventListener("input", () => {
+          const value = parseFloat(withdrawSlider.value);
+          withdrawAmountDisplay.textContent = `$${Math.round(value)}`;
+          withdrawConfirmBtn.disabled = value <= 0;
+          const maxVal = parseFloat(withdrawSlider.max);
+          const progressPercent = maxVal > 0 ? (value / maxVal) * 100 : 0;
+          withdrawSlider.style.setProperty("--progress", `${progressPercent}%`);
         });
-        cashOutBtn.addEventListener("click", () =>
-          handleWithdrawal(parseFloat(cashOutSlider.value))
+        withdrawConfirmBtn.addEventListener("click", () =>
+          handleWithdrawal(parseFloat(withdrawSlider.value))
         );
         transactionOverlay.addEventListener("click", (e) => {
           if (e.target === transactionOverlay) hideAllModals();
