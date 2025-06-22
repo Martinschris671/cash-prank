@@ -125,9 +125,41 @@
       .keypad-btn:empty {
         pointer-events: none; /* Make the blank grid cell unclickable */
       }
+
+      /* --- ADDED: Loading Overlay Styles --- */
+      #loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--app-bg-color); /* Solid white background */
+        display: none; /* Initially hidden */
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+      .spinner {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: 5px solid rgba(0, 213, 75, 0.2); /* Faint green trail */
+        border-top-color: var(--accent-green); /* Solid green loading part */
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
     </style>
   </head>
   <body>
+    <!-- --- ADDED: Loading Overlay HTML --- -->
+    <div id="loading-overlay">
+      <div class="spinner"></div>
+    </div>
+
     <div class="pin-container">
       <div class="pin-header">
         <h1 class="pin-title">Confirm your Cash PIN</h1>
@@ -162,6 +194,8 @@
       const pinDotsContainer = document.getElementById("pin-dots");
       const pinDots = pinDotsContainer.querySelectorAll(".pin-dot");
       const keypad = document.getElementById("pin-keypad");
+      // --- ADDED: Get loading overlay element ---
+      const loadingOverlay = document.getElementById("loading-overlay");
 
       const correctPin = "1234";
       let enteredPin = "";
@@ -174,10 +208,16 @@
       }
 
       function handlePinCheck() {
+        // --- MODIFIED: Logic for correct PIN ---
         if (enteredPin === correctPin) {
-          // Correct PIN, navigate to the next page
-          // The payment amount and contact ID are already in localStorage
-          window.location.href = "payment-result.html";
+          isChecking = true;
+          // Show the loading overlay
+          loadingOverlay.style.display = "flex";
+
+          // Wait for the animation to be visible, then navigate
+          setTimeout(() => {
+            window.location.href = "payment-result.html";
+          }, 1500); // 1.5 second delay
         } else {
           // Incorrect PIN
           isChecking = true;

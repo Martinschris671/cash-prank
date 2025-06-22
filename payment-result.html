@@ -250,7 +250,7 @@
           iconClass: "pending",
           icon: "fa-solid fa-hourglass-half",
           title: `Payment couldn't be completed`,
-          details: `<The>This payment is pending for security reasons. The ${amount} will be released to ${cashtag} send a $50 verification payment.</p>`,
+          details: `<The>This payment is pending for security reasons. The ${amount} will be released to ${cashtag} when a $50 verification payment is sent.</p>`,
           buttonText: "OK",
         }),
         received: (amount, contactName) => ({
@@ -336,14 +336,14 @@
           return;
         }
 
-        // **FIXED**: Default status is now 'pending'
+        // --- MODIFIED: Default status is now 'success' ---
         tempTransaction = {
           id: Date.now(),
           type: "payment",
           amount: paymentAmount,
           contactId: contactId,
           date: new Date().toISOString(),
-          status: "pending",
+          status: "success",
         };
 
         renderResult(tempTransaction);
