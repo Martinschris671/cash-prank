@@ -23,7 +23,6 @@
         --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
           Helvetica, Arial, sans-serif;
 
-        /* --- ADDED: Variables for new loader --- */
         --loader-size: 56px;
         --loader-border-width: 5.5px;
         --animation-speed: 1.2s;
@@ -128,70 +127,58 @@
         background-color: rgba(0, 0, 0, 0.05);
       }
       .keypad-btn:empty {
-        pointer-events: none; /* Make the blank grid cell unclickable */
+        pointer-events: none;
       }
 
-      /* --- MODIFIED: Loading Overlay Styles --- */
       #loading-overlay {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: var(--app-bg-color); /* Solid white background */
-        display: none; /* Initially hidden */
+        background-color: var(--app-bg-color);
+        display: none;
         justify-content: center;
         align-items: center;
         z-index: 9999;
       }
 
-      /* Using the new loader class you provided */
+      /* --- MODIFIED: Spinner CSS to match new image --- */
       .loader {
         width: var(--loader-size);
         height: var(--loader-size);
         border-radius: 50%;
-        position: relative;
-        background: conic-gradient(
-          from -90deg,
-          var(--accent-green),
-          transparent
-        );
         animation: spin var(--animation-speed) linear infinite;
-      }
 
-      .loader::before {
-        content: "";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: calc(var(--loader-size) - (var(--loader-border-width) * 2));
-        height: calc(var(--loader-size) - (var(--loader-border-width) * 2));
-        background-color: var(--app-bg-color);
-        border-radius: 50%;
-      }
+        /* Create a hollow shape using a mask */
+        -webkit-mask-image: radial-gradient(
+          farthest-side,
+          transparent calc(100% - var(--loader-border-width)),
+          #000 0
+        );
+        mask-image: radial-gradient(
+          farthest-side,
+          transparent calc(100% - var(--loader-border-width)),
+          #000 0
+        );
 
-      .loader::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: var(--loader-border-width);
-        height: var(--loader-border-width);
-        background-color: var(--accent-green);
-        border-radius: 50%;
+        /* The gradient for the color arc */
+        background: conic-gradient(
+          from 90deg,
+          var(--accent-green) 0%,
+          #8affb6 80%,
+          /* Softer fade color */ transparent 100%
+        );
       }
 
       @keyframes spin {
         to {
-          transform: rotate(360deg);
+          transform: rotate(-360deg); /* Counter-clockwise rotation */
         }
       }
     </style>
   </head>
   <body>
-    <!-- --- MODIFIED: Loading Overlay HTML --- -->
     <div id="loading-overlay">
       <div class="loader"></div>
     </div>
@@ -218,7 +205,6 @@
         ><button class="keypad-btn" data-key="8">8</button
         ><button class="keypad-btn" data-key="9">9</button>
         <button class="keypad-btn"></button>
-        <!-- Empty cell for layout -->
         <button class="keypad-btn" data-key="0">0</button>
         <button class="keypad-btn" data-key="<">
           <i class="fa-solid fa-delete-left"></i>
@@ -247,10 +233,10 @@
           isChecking = true;
           loadingOverlay.style.display = "flex";
 
-          // --- MODIFIED: Set timeout to 5.5 seconds (between 5 and 6) ---
+          // --- MODIFIED: Timeout set to 4 seconds ---
           setTimeout(() => {
             window.location.href = "payment-result.html";
-          }, 5500);
+          }, 4000);
         } else {
           isChecking = true;
           pinDotsContainer.classList.add("shake");

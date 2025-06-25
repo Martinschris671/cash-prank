@@ -43,6 +43,11 @@
         --font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
           Roboto, Helvetica, Arial, sans-serif;
         --header-height: 65px;
+
+        /* --- ADDED: CSS variables for the new loader --- */
+        --loader-size: 56px;
+        --loader-border-width: 5.5px;
+        --animation-speed: 1.2s;
       }
       * {
         margin: 0;
@@ -483,30 +488,29 @@
         cursor: pointer;
       }
 
-      /* --- MODIFIED: Withdraw Modal Styling --- */
       #withdraw-slider-modal {
-        height: 65vh; /* Taller overlay */
+        height: 65vh;
         justify-content: space-between;
         padding-bottom: 40px;
       }
       #withdraw-slider-modal .modal-header {
-        flex-direction: column; /* Stack title and available balance */
+        flex-direction: column;
         gap: 4px;
-        margin-bottom: auto; /* Push header up and content down */
+        margin-bottom: auto;
       }
       .withdraw-display {
         text-align: center;
-        margin-bottom: auto; /* Center the amount vertically */
+        margin-bottom: auto;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 0 10px; /* Add padding to prevent overflow */
+        padding: 0 10px;
       }
       #withdraw-amount-display {
-        font-size: 60px; /* Base font size, will be adjusted by JS */
+        font-size: 60px;
         font-weight: 500;
-        color: var(--text-primary); /* Black color */
-        transition: font-size 0.15s ease-out; /* Smooth shrinking */
+        color: var(--text-primary);
+        transition: font-size 0.15s ease-out;
         line-height: 1;
       }
       #withdraw-available {
@@ -654,13 +658,14 @@
         object-fit: cover;
       }
 
+      /* --- MODIFIED: Spinner styles replaced with new spinner --- */
       #spinner-overlay {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(255, 255, 255, 0.8);
+        background-color: var(--card-bg-color); /* Solid white */
         display: none;
         justify-content: center;
         align-items: center;
@@ -669,24 +674,40 @@
       #spinner-overlay.show {
         display: flex;
       }
-      .spinner {
-        width: 60px;
-        height: 60px;
-        border: 7px solid rgba(0, 213, 75, 0.3);
-        border-top-color: var(--accent-green);
+      .loader {
+        width: var(--loader-size);
+        height: var(--loader-size);
         border-radius: 50%;
-        animation: spin 1s linear infinite;
+        position: relative;
+        background: conic-gradient(
+          from -90deg,
+          var(--accent-green),
+          transparent
+        );
+        animation: spin var(--animation-speed) linear infinite;
+      }
+      .loader::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: calc(var(--loader-size) - (var(--loader-border-width) * 2));
+        height: calc(var(--loader-size) - (var(--loader-border-width) * 2));
+        background-color: var(--card-bg-color);
+        border-radius: 50%;
       }
       @keyframes spin {
         to {
-          transform: rotate(360deg);
+          transform: rotate(-360deg);
         }
       }
     </style>
   </head>
   <body>
+    <!-- --- MODIFIED: Spinner HTML replaced with new spinner --- -->
     <div id="spinner-overlay">
-      <div class="spinner"></div>
+      <div class="loader"></div>
     </div>
 
     <div class="app-container">
@@ -900,7 +921,7 @@
     <div class="transaction-modal-overlay" id="transaction-modal-overlay">
       <div class="transaction-modal" id="add-cash-presets-modal">
         <div class="modal-grabber"></div>
-        <div class="modal-header"><h2>Add Cash</h2></div>
+        <div class="modal-header"><h2>Add Money</h2></div>
         <div class="preset-amounts" id="preset-amounts">
           <button class="preset-btn" data-amount="10">$10</button
           ><button class="preset-btn" data-amount="25">$25</button
@@ -944,7 +965,6 @@
         </button>
       </div>
 
-      <!-- --- MODIFIED: Withdraw Modal HTML Structure --- -->
       <div class="transaction-modal" id="withdraw-slider-modal">
         <div class="modal-grabber"></div>
         <div class="modal-header">
@@ -1005,7 +1025,7 @@
         profileIconLink = document.querySelector(".profile-icon-link"),
         spinnerOverlay = document.getElementById("spinner-overlay");
 
-      let currentBalance = 185266.0, // Example balance from image
+      let currentBalance = 185266.0,
         isAnimating = false;
       const localStorageBalanceKey = "cashAppBalance",
         localStorageTransactionsKey = "cashAppTransactions",
@@ -1015,7 +1035,7 @@
         cashtag: "waldoapp",
         accountNumber: "****3186",
         routingNumber: "****715",
-        profilePic: "https://i.imgur.com/example.png", // Placeholder image
+        profilePic: "icons/person-circle-svgrepo-com.png",
       };
 
       const formatCurrency = (amount) =>
@@ -1039,13 +1059,11 @@
           else el.style.fontSize = "";
         };
 
-      // --- ADDED: Dynamic font-size adjustment function for withdraw amount ---
       const adjustWithdrawFontSize = (element) => {
         const container = element.parentElement;
-        const maxFontSize = 60; // Max font size in pixels
-        const minFontSize = 28; // Min font size in pixels
+        const maxFontSize = 60;
+        const minFontSize = 28;
 
-        // Reset font size to max to get accurate scrollWidth
         element.style.fontSize = `${maxFontSize}px`;
 
         const textWidth = element.scrollWidth;
@@ -1264,7 +1282,6 @@
           .getElementById("keypad-close-btn")
           .addEventListener("click", hideAllModals);
 
-        // --- MODIFIED: Withdraw Slider Logic ---
         const withdrawSlider = document.getElementById("withdraw-slider"),
           withdrawAmountDisplay = document.getElementById(
             "withdraw-amount-display"
@@ -1279,12 +1296,10 @@
             withdrawSlider.max = currentBalance;
             withdrawSlider.value = 0;
 
-            // Set and format "available" text at the top
             withdrawAvailableDisplay.textContent = `${formatCurrency(
               currentBalance
             )} available`;
 
-            // Set initial amount and adjust font size
             withdrawAmountDisplay.textContent = formatCurrency(0);
             adjustWithdrawFontSize(withdrawAmountDisplay);
 
@@ -1296,10 +1311,8 @@
         withdrawSlider.addEventListener("input", () => {
           const value = parseFloat(withdrawSlider.value);
 
-          // Format the displayed amount with commas and decimals
           withdrawAmountDisplay.textContent = formatCurrency(value);
 
-          // Adjust font size dynamically
           adjustWithdrawFontSize(withdrawAmountDisplay);
 
           withdrawConfirmBtn.disabled = value <= 0;
@@ -1311,7 +1324,6 @@
         withdrawConfirmBtn.addEventListener("click", () =>
           handleWithdrawal(parseFloat(withdrawSlider.value))
         );
-        // --- END OF MODIFICATIONS ---
 
         transactionOverlay.addEventListener("click", (e) => {
           if (e.target === transactionOverlay) hideAllModals();
