@@ -658,7 +658,6 @@
         object-fit: cover;
       }
 
-      /* --- MODIFIED: Spinner styles replaced with new spinner --- */
       #spinner-overlay {
         position: fixed;
         top: 0;
@@ -705,7 +704,6 @@
     </style>
   </head>
   <body>
-    <!-- --- MODIFIED: Spinner HTML replaced with new spinner --- -->
     <div id="spinner-overlay">
       <div class="loader"></div>
     </div>
@@ -921,7 +919,7 @@
     <div class="transaction-modal-overlay" id="transaction-modal-overlay">
       <div class="transaction-modal" id="add-cash-presets-modal">
         <div class="modal-grabber"></div>
-        <div class="modal-header"><h2>Add Money</h2></div>
+        <div class="modal-header"><h2>Add Cash</h2></div>
         <div class="preset-amounts" id="preset-amounts">
           <button class="preset-btn" data-amount="10">$10</button
           ><button class="preset-btn" data-amount="25">$25</button
@@ -1035,7 +1033,7 @@
         cashtag: "waldoapp",
         accountNumber: "****3186",
         routingNumber: "****715",
-        profilePic: "icons/person-circle-svgrepo-com.png",
+        profilePic: "https://i.imgur.com/example.png",
       };
 
       const formatCurrency = (amount) =>
@@ -1135,6 +1133,7 @@
         );
       }
 
+      // --- MODIFIED: Loading spinner duration changed to 4 seconds ---
       function handleAddTransaction(amount) {
         if (isAnimating || isNaN(amount) || amount <= 0) return;
         hideAllModals();
@@ -1147,9 +1146,10 @@
           saveState();
           saveTransaction("add", amount);
           animateBalance(startBalance, currentBalance, "add", amount);
-        }, 1500);
+        }, 4000); // Changed from 1500 to 4000
       }
 
+      // --- MODIFIED: Loading spinner duration changed to 4 seconds ---
       function handleWithdrawal(amount) {
         if (isAnimating || isNaN(amount) || amount <= 0) return;
         if (amount > currentBalance) return;
@@ -1163,7 +1163,7 @@
           saveState();
           saveTransaction("withdraw", amount);
           animateBalance(startBalance, currentBalance, "withdraw", amount);
-        }, 1500);
+        }, 4000); // Changed from 1500 to 4000
       }
 
       function showModal(modalEl) {
