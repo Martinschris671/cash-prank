@@ -24,683 +24,753 @@
     />
     <link rel="stylesheet" href="saving.css" />
     <style>
-      :root {
-        --padding-screen: 18px;
-        --footer-height: 65px;
-        --app-bg-color: #f0f1f2;
-        --card-bg-color: #ffffff;
-        --text-primary: #000000;
-        --text-secondary: #6c757d;
-        --button-bg: #e9ecef;
-        --button-text: #000000;
-        --border-color-light: #f0f1f2;
-        --border-color-subtle: rgba(0, 0, 0, 0.05);
-        --border-radius-card: 16px;
-        --border-radius-button: 24px;
-        --accent-green: #00d54b;
-        --accent-purple: #6236ff;
-        --accent-blue: #16c7fe;
-        --font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
-          Roboto, Helvetica, Arial, sans-serif;
-        --header-height: 65px;
+            :root {
+              --padding-screen: 18px;
+              --footer-height: 65px;
+              --app-bg-color: #f0f1f2;
+              --card-bg-color: #ffffff;
+              --text-primary: #000000;
+              --text-secondary: #6c757d;
+              --button-bg: #e9ecef;
+              --button-text: #000000;
+              --border-color-light: #f0f1f2;
+              --border-color-subtle: rgba(0, 0, 0, 0.05);
+              --border-radius-card: 16px;
+              --border-radius-button: 24px;
+              --accent-green: #00d54b;
+              --accent-purple: #6236ff;
+              --accent-blue: #16c7fe;
+              --font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                Roboto, Helvetica, Arial, sans-serif;
+              --header-height: 65px;
 
-        /* --- ADDED: CSS variables for the new loader --- */
-        --loader-size: 56px;
-        --loader-border-width: 5.5px;
-        --animation-speed: 1.2s;
-      }
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        -webkit-tap-highlight-color: transparent;
-      }
-      html,
-      body {
-        height: 100%;
-      }
-      body {
-        font-family: var(--font-family);
-        background-color: var(--app-bg-color);
-        color: var(--text-primary);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-      }
-      body.modal-open {
-        overflow: hidden;
-      }
-      a {
-        text-decoration: none;
-        color: inherit;
-      }
-      .app-container {
-        max-width: 450px;
-        width: 100%;
-        height: 100%;
-        margin: 0 auto;
-        background-color: var(--app-bg-color);
-        display: flex;
-        flex-direction: column;
-        position: relative;
-      }
-      .app-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px var(--padding-screen);
-        height: var(--header-height);
-        flex-shrink: 0;
-      }
-      .app-header h1 {
-        font-size: 22px;
-        font-weight: 600;
-      }
-      .profile-icon-link {
-        display: block;
-        width: 36px;
-        height: 36px;
-      }
-      .profile-icon {
-        font-size: 16px;
-        color: var(--text-secondary);
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        background-color: #e9ecef;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        object-fit: cover;
-      }
-      .main-content {
-        flex-grow: 1;
-        overflow-y: auto;
-        padding: 0 var(--padding-screen);
-        padding-bottom: calc(var(--footer-height) + 20px);
-        scrollbar-width: none;
-      }
-      .main-content::-webkit-scrollbar {
-        display: none;
-      }
-      .card {
-        background-color: var(--card-bg-color);
-        border-radius: var(--border-radius-card);
-        padding: 20px;
-        margin-bottom: var(--padding-screen);
-      }
-      .balance-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 4px;
-      }
-      .balance-header span {
-        font-size: 15px;
-        font-weight: 500;
-        color: var(--text-secondary);
-      }
-      .balance-amount {
-        font-size: 36px;
-        font-weight: 500;
-        line-height: 1.2;
-        word-break: break-all;
-        transition: font-size 0.2s ease-out;
-      }
-      .account-info {
-        font-size: 14px;
-        color: var(--text-secondary);
-        margin-bottom: 24px;
-        letter-spacing: 0.5px;
-      }
-      .balance-actions {
-        display: flex;
-        gap: 12px;
-      }
-      .balance-actions button {
-        flex-grow: 1;
-        background-color: var(--button-bg);
-        color: var(--button-text);
-        border: none;
-        padding: 12px 16px;
-        border-radius: var(--border-radius-button);
-        font-size: 15px;
-        font-weight: 600;
-        cursor: pointer;
-      }
+              /* --- ADDED: CSS variables for the new loader --- */
+              --loader-size: 56px;
+              --loader-border-width: 5.5px;
+              --animation-speed: 1.2s;
+            }
+            * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+              -webkit-tap-highlight-color: transparent;
+            }
+            html,
+            body {
+              height: 100%;
+            }
+            body {
+              font-family: var(--font-family);
+              background-color: var(--app-bg-color);
+              color: var(--text-primary);
+              display: flex;
+              flex-direction: column;
+              overflow: hidden;
+            }
+            body.modal-open {
+              overflow: hidden;
+            }
+            a {
+              text-decoration: none;
+              color: inherit;
+            }
+            .app-container {
+              max-width: 450px;
+              width: 100%;
+              height: 100%;
+              margin: 0 auto;
+              background-color: var(--app-bg-color);
+              display: flex;
+              flex-direction: column;
+              position: relative;
+            }
+            .app-header {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 10px var(--padding-screen);
+              height: var(--header-height);
+              flex-shrink: 0;
+            }
+            .app-header h1 {
+              font-size: 22px;
+              font-weight: 600;
+            }
+            .profile-icon-link {
+              display: block;
+              width: 36px;
+              height: 36px;
+            }
+            .profile-icon {
+              font-size: 16px;
+              color: var(--text-secondary);
+              width: 100%;
+              height: 100%;
+              border-radius: 50%;
+              background-color: #e9ecef;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              object-fit: cover;
+            }
+            .main-content {
+              flex-grow: 1;
+              overflow-y: auto;
+              padding: 0 var(--padding-screen);
+              padding-bottom: calc(var(--footer-height) + 20px);
+              scrollbar-width: none;
+            }
+            .main-content::-webkit-scrollbar {
+              display: none;
+            }
 
-      /* New UI Styles */
-      .section-header {
-        font-size: 20px;
-        font-weight: 700;
-        color: var(--text-primary);
-        margin: 24px 0 12px 4px;
-      }
-      .list-card {
-        background-color: var(--card-bg-color);
-        border-radius: var(--border-radius-card);
-        border: 1px solid var(--border-color-light);
-      }
-      .list-item {
-        display: flex;
-        align-items: center;
-        padding: 16px;
-        gap: 16px;
-        cursor: pointer;
-        position: relative;
-        border-bottom: 1px solid var(--border-color-light);
-      }
-      .list-item:last-child {
-        border-bottom: none;
-      }
-      .list-item .icon-container {
-        flex-shrink: 0;
-      }
-      .list-item .details {
-        flex-grow: 1;
-      }
-      .list-item .title {
-        display: block;
-        font-size: 16px;
-        font-weight: 500;
-      }
-      .list-item .subtitle {
-        display: block;
-        font-size: 14px;
-        color: var(--text-secondary);
-        margin-top: 2px;
-      }
-      .list-item .chevron-icon {
-        font-size: 14px;
-        color: #c7c7cc;
-      }
+            .card {
+              background-color: var(--card-bg-color);
+              border-radius: var(--border-radius-card);
+              padding: 20px;
+              margin-bottom: 12px;
+            }
 
-      .paychecks-card .icon-container {
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        background-color: var(--accent-green);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 20px;
-      }
-      .chevron-icons {
-        position: absolute;
-        top: 16px;
-        right: 16px;
-        width: 9px;
-        height: 15px;
-        color: #c7c7cc;
-      }
+            /* === START: STYLES FOR ATTACHED CARDS === */
+            #balance-preview-card {
+              margin-bottom: 0;
+              border-bottom-left-radius: 0;
+              border-bottom-right-radius: 0;
+              padding-bottom: 20px;
+            }
+            .paychecks-link-card {
+              background-color: var(--card-bg-color);
+              border-top-left-radius: 0;
+              border-top-right-radius: 0;
+              border-bottom-left-radius: var(--border-radius-card);
+              border-bottom-right-radius: var(--border-radius-card);
+              padding: 12px 20px;
+              border-top: 1px solid var(--app-bg-color);
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              cursor: pointer;
+              margin-bottom: 24px; /* Space before 'Save & Invest' */
+            }
+            .paychecks-link-card .icon {
+              font-size: 15px;
+              color: var(--text-primary);
+              font-weight: 300; /* Makes the checkmark thinner */
+              margin-left: -8px;
+            }
+            .paychecks-link-card .title {
+              font-size: 12px; /* Approx 16px */
+              font-weight: 600;
+              color: var(--text-primary);
+            }
+            .paychecks-link-card .subtitle {
+              font-size: 11px; /* Approx 16px */
+              font-weight: 500;
+              color: var(--text-secondary);
+              margin-left: auto; /* Pushes to the right */
+              margin-right: 0px;
+              white-space: nowrap; /* Prevents wrapping */
+            }
+            /* === END: STYLES FOR ATTACHED CARDS === */
 
-      /* --- PIXEL-PERFECT Savings Card --- */
-      .savings-list-card {
-        background-color: var(--card-bg-color);
-        border-radius: var(--border-radius-card);
-        padding: 16px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: relative;
-        cursor: pointer;
-      }
+            .balance-header {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 4px;
+            }
+            .balance-header span {
+              font-size: 15px;
+              font-weight: 500;
+              color: var(--text-secondary);
+            }
+            .balance-amount {
+              font-size: 36px;
+              font-weight: 500;
+              line-height: 1.2;
+              word-break: break-all;
+              transition: font-size 0.2s ease-out;
+            }
+            .account-info {
+              font-size: 14px;
+              color: var(--text-secondary);
+              margin-bottom: 24px;
+              letter-spacing: 0.5px;
+            }
+            .balance-actions {
+              display: flex;
+              gap: 12px;
+            }
+            .balance-actions button {
+              flex-grow: 1;
+              background-color: var(--button-bg);
+              color: var(--button-text);
+              border: none;
+              padding: 12px 16px;
+              border-radius: var(--border-radius-button);
+              font-size: 15px;
+              font-weight: 600;
+              cursor: pointer;
+            }
+            .section-header {
+              font-size: 20px;
+              font-weight: 700;
+              color: var(--text-primary);
+              margin: 24px 0 12px 4px;
+            }
+            .list-card {
+              background-color: var(--card-bg-color);
+              border-radius: var(--border-radius-card);
+            }
+            .list-item {
+              display: flex;
+              align-items: center;
+              padding: 16px;
+              gap: 16px;
+              cursor: pointer;
+              position: relative;
+              border-bottom: 1px solid var(--border-color-light);
+            }
+            .list-item:last-child {
+              border-bottom: none;
+            }
+            .list-item .icon-container {
+              flex-shrink: 0;
+            }
+            .list-item .details {
+              flex-grow: 1;
+            }
+            .list-item .details .title {
+              display: block;
+              font-size: 16px;
+              font-weight: 500;
+            }
+            .list-item .details .subtitle {
+              display: block;
+              font-size: 14px;
+              color: var(--text-secondary);
+              margin-top: 2px;
+            }
 
-      /* --- PIXEL-PERFECT Explore Grid --- */
-      .explore-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-      }
-      .explore-card {
-        background-color: var(--card-bg-color);
-        border-radius: var(--border-radius-card);
-        padding: 16px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        min-height: 160px;
-        cursor: pointer;
-        position: relative;
-      }
-      .explore-card .title {
-        font-size: 16px;
-        font-weight: 700;
-      }
-      .explore-card .subtitle {
-        font-size: 14px;
-        color: var(--text-secondary);
-      }
-      .explore-card .icon-container {
-        width: 52px;
-        height: 52px;
-        border-radius: 50%;
-        display: grid;
-        place-items: center;
-        color: white;
-      }
-      .explore-card .icon-container i {
-        font-size: 24px;
-      }
-      .explore-card .icon-container.purple {
-        background-color: var(--accent-purple);
-      }
-      .explore-card .icon-container.green {
-        background-color: var(--accent-green);
-      }
+            /* Global small chevron style */
+            .chevron-icon {
+          width: 6px;
+          height: 12px;
+              flex-shrink: 0;
+            }
 
-      .explore-card .icon-container.blue {
-        background-color: var(--accent-blue);
-      }
+            /* UPDATED SAVINGS LIST CARD STYLING */
+            .savings-list-card {
+              background-color: var(--card-bg-color);
+              border-radius: var(--border-radius-card);
+              padding: 16px;
+              position: relative;
+              cursor: pointer;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 12px;
+            }
+            .savings-list-card .details {
+              display: flex;
+              flex-direction: column;
+            }
+            .savings-list-card .title {
+              font-size: 16px;
+              font-weight: 700;
+            }
+            .savings-list-card .balance {
+              font-size: 28px;
+              font-weight: 700;
+              line-height: 1.1;
+              margin: 4px 0 8px;
+            }
+            .savings-list-card .subtitle {
+              font-size: 14px;
+              color: var(--text-secondary);
+            }
+            .savings-list-card .chevron-icon {
+              position: absolute;
+                width: 6px;
+        height: 12px;
+            }
+            .savings-list-card .icon-container {
+              width: 52px;
+              height: 52px;
+              border-radius: 50%;
+              display: grid;
+              place-items: center;
+              flex-shrink: 0;
+              align-self: flex-end; /* This aligns the icon to the bottom */
+              position: relative;
+              border: 1px solid var(--border-color-light);
+            }
+            /* === NEW: Styles for IMG icons === */
+            .savings-list-card .icon-container .icon {
+              width: 24px;
+              height: 24px;
+              object-fit: contain; /* Ensures image scales nicely */
+              z-index: 1;
+            }
+            .savings-list-card .progress-ring-svg {
+              position: absolute;
+              top: -1px;
+              left: -1px;
+              width: calc(100% + 2px);
+              height: calc(100% + 2px);
+              transform: rotate(-90deg);
+            }
+            .savings-list-card .progress-ring-circle {
+              transition: stroke-dashoffset 0.5s ease;
+              stroke-linecap: round;
+            }
 
-      .more-ways-list .icon-container {
-        width: 24px;
-        height: 24px;
-        font-size: 20px;
-        color: var(--text-primary);
-      }
-      .bottom-nav {
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        border-top: 1px solid #e9e9e9;
-        background-color: #ffffff;
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: var(--footer-height);
-        padding: 0 var(--padding-screen);
-        z-index: 200;
-      }
-      .nav-button {
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: inherit;
-        font-weight: 600;
-        color: #8c8c8c;
-        min-width: 44px;
-      }
-      .nav-button svg {
-        fill: #8c8c8c;
-      }
-      #footer-balance-display.active {
-        color: var(--text-primary);
-      }
-      #footer-balance-display {
-        font-size: 16px;
-      }
-      .transaction-modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.4);
-        display: none;
-        justify-content: center;
-        align-items: flex-end;
-        z-index: 2500;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-      .transaction-modal-overlay.show {
-        display: flex;
-        opacity: 1;
-      }
-      .transaction-modal {
-        background-color: white;
-        width: 100%;
-        max-width: 450px;
-        border-top-left-radius: 20px;
-        border-top-right-radius: 20px;
-        padding: 12px var(--padding-screen) 30px;
-        display: flex;
-        flex-direction: column;
-        transform: translateY(100%);
-        transition: transform 0.3s ease;
-      }
-      .transaction-modal-overlay.show .transaction-modal {
-        transform: translateY(0);
-      }
-      .modal-grabber {
-        width: 40px;
-        height: 5px;
-        background-color: #dcdcdc;
-        border-radius: 2.5px;
-        margin: 0 auto 20px;
-      }
-      .modal-header {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: relative;
-        margin-bottom: 24px;
-      }
-      .modal-header h2 {
-        font-size: 18px;
-        font-weight: 600;
-      }
-      .modal-close-btn {
-        position: absolute;
-        right: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 24px;
-        color: #000;
-        background: none;
-        border: none;
-        cursor: pointer;
-      }
-      .modal-action-btn {
-        width: 100%;
-        padding: 14px;
-        border: none;
-        background-color: var(--accent-green);
-        color: white;
-        font-size: 18px;
-        font-weight: 600;
-        border-radius: 28px;
-        cursor: pointer;
-        margin-top: 20px;
-      }
-      .modal-action-btn:disabled {
-        background-color: #a0e6bb;
-        cursor: not-allowed;
-      }
-      .preset-amounts {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
-      }
-      .preset-btn {
-        background-color: var(--button-bg);
-        border: none;
-        border-radius: 8px;
-        padding: 16px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-      }
-      .preset-btn.active {
-        background-color: #d1d5d9;
-      }
+            /* PIXEL-PERFECT Explore Grid */
+            .explore-grid {
+              display: grid;
+              grid-template-columns: repeat(2, 1fr);
+              gap: 12px;
+            }
+            .explore-card {
+              background-color: var(--card-bg-color);
+              border-radius: var(--border-radius-card);
+              padding: 16px;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
+              min-height: 160px;
+              cursor: pointer;
+              position: relative;
+            }
+            .explore-card .title {
+              font-size: 16px;
+              font-weight: 700;
+            }
+            .explore-card .subtitle {
+              font-size: 14px;
+              color: var(--text-secondary);
+            }
+            .explore-card .icon-container {
+              width: 52px;
+              height: 52px;
+              border-radius: 50%;
+              display: grid;
+              place-items: center;
+              color: white;
+            }
+            .explore-card .icon-container i {
+              font-size: 24px;
+            }
+            .explore-card .icon-container.purple {
+              background-color: var(--accent-purple);
+            }
+            .explore-card .icon-container.green {
+              background-color: var(--accent-green);
+            }
+            .explore-card .icon-container.blue {
+              background-color: var(--accent-blue);
+            }
+            .explore-card .chevron-icon {
+              position: absolute;
+              top: 16px;
+              right: 16px;
+            }
 
-      #add-money-keypad-modal {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        max-height: 100%;
-        width: 100%;
-        max-width: 100%;
-        border-radius: 0;
-        justify-content: space-between;
-        padding-bottom: 40px;
-      }
+            .more-ways-list .icon-container {
+              width: 24px;
+              height: 24px;
+              font-size: 20px;
+              color: var(--text-primary);
+              display: grid;
+              place-items: center;
+            }
+            .bottom-nav {
+              display: flex;
+              justify-content: space-around;
+              align-items: center;
+              border-top: 1px solid #e9e9e9;
+              background-color: #ffffff;
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              right: 0;
+              height: var(--footer-height);
+              padding: 0 var(--padding-screen);
+              z-index: 200;
+            }
+            .nav-button {
+              background: none;
+              border: none;
+              cursor: pointer;
+              padding: 8px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-family: inherit;
+              font-weight: 600;
+              color: #8c8c8c;
+              min-width: 44px;
+            }
+            .nav-button svg {
+              fill: #8c8c8c;
+            }
+            #footer-balance-display.active {
+              color: var(--text-primary);
+            }
+            #footer-balance-display {
+              font-size: 16px;
+            }
+            .transaction-modal-overlay {
+              position: fixed;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background-color: rgba(0, 0, 0, 0.4);
+              display: none;
+              justify-content: center;
+              align-items: flex-end;
+              z-index: 2500;
+              opacity: 0;
+              transition: opacity 0.3s ease;
+            }
+            .transaction-modal-overlay.show {
+              display: flex;
+              opacity: 1;
+            }
+            .transaction-modal {
+              background-color: white;
+              width: 100%;
+              max-width: 450px;
+              border-top-left-radius: 20px;
+              border-top-right-radius: 20px;
+              padding: 12px var(--padding-screen) 30px;
+              display: flex;
+              flex-direction: column;
+              transform: translateY(100%);
+              transition: transform 0.3s ease;
+            }
+            .transaction-modal-overlay.show .transaction-modal {
+              transform: translateY(0);
+            }
+            .modal-grabber {
+              width: 40px;
+              height: 5px;
+              background-color: #dcdcdc;
+              border-radius: 2.5px;
+              margin: 0 auto 20px;
+            }
+            .modal-header {
+               display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      margin-bottom: 23px;
+      margin-top: 1.4rem;
+            }
+            .modal-header h2 {
+              font-size: 18px;
+              font-weight: 600;
+            }
+            .modal-close-btn {
+              position: absolute;
+              right: 0;
+              top: 50%;
+              transform: translateY(-50%);
+              font-size: 24px;
+              color: #000;
+              background: none;
+              border: none;
+              cursor: pointer;
+            }
+            .modal-action-btn {
+              width: 100%;
+              padding: 14px;
+              border: none;
+              background-color: var(--accent-green);
+              color: white;
+              font-size: 18px;
+              font-weight: 600;
+              border-radius: 28px;
+              cursor: pointer;
+              margin-top: 20px;
+            }
+            .modal-action-btn:disabled {
+              background-color: #a0e6bb;
+              cursor: not-allowed;
+            }
+            .preset-amounts {
+              display: grid;
+              grid-template-columns: repeat(3, 1fr);
+              gap: 12px;
+            }
+            .preset-btn {
+              background-color: var(--button-bg);
+              border: none;
+              border-radius: 8px;
+              padding: 16px;
+              font-size: 16px;
+              font-weight: 600;
+              cursor: pointer;
+            }
+            .preset-btn.active {
+              background-color: #d1d5d9;
+            }
 
-      .keypad-display {
-        text-align: center;
-        flex-shrink: 0;
-        margin-top: 20px;
-      }
-      .keypad-amount {
-        font-size: clamp(48px, 15vw, 72px);
-        font-weight: 500;
-        color: var(--accent-green);
-        min-height: 86px;
-      }
-      .keypad-amount .cursor {
-        display: inline-block;
-        width: 3px;
-        height: clamp(40px, 12vw, 60px);
-        background-color: var(--accent-green);
-        margin-left: 2px;
-        animation: blink 1s step-end infinite;
-      }
-      @keyframes blink {
-        from,
-        to {
-          background-color: transparent;
-        }
-        50% {
-          background-color: var(--accent-green);
-        }
-      }
-      .keypad {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1vh 16px;
-        flex-grow: 1;
-        align-content: center;
-      }
-      .keypad-btn {
-        background: none;
-        border: none;
-        font-size: clamp(28px, 8vw, 36px);
-        font-weight: 400;
-        padding: clamp(10px, 2vh, 20px);
-        cursor: pointer;
-      }
+            #add-money-keypad-modal {
+              display: flex;
+              flex-direction: column;
+              height: 100%;
+              max-height: 100%;
+              width: 100%;
+              max-width: 100%;
+              border-radius: 0;
+              justify-content: space-between;
+              padding-bottom: 40px;
+            }
 
-      #withdraw-slider-modal {
-        height: 65vh;
-        justify-content: space-between;
-        padding-bottom: 40px;
-      }
-      #withdraw-slider-modal .modal-header {
-        flex-direction: column;
-        gap: 4px;
-        margin-bottom: auto;
-      }
-      .withdraw-display {
-        text-align: center;
-        margin-bottom: auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0 10px;
-      }
-      #withdraw-amount-display {
-        font-size: 60px;
-        font-weight: 500;
-        color: var(--text-primary);
-        transition: font-size 0.15s ease-out;
-        line-height: 1;
-      }
-      #withdraw-available {
-        font-size: 16px;
-        color: var(--text-secondary);
-        margin: 0;
-      }
+            .keypad-display {
+              text-align: center;
+              flex-shrink: 0;
+              margin-top: 20px;
+            }
+            .keypad-amount {
+              font-size: clamp(48px, 15vw, 72px);
+              font-weight: 500;
+              color: var(--accent-green);
+              min-height: 86px;
+            }
+            .keypad-amount .cursor {
+              display: inline-block;
+              width: 3px;
+              height: clamp(40px, 12vw, 60px);
+              background-color: var(--accent-green);
+              margin-left: 2px;
+              animation: blink 1s step-end infinite;
+            }
+            @keyframes blink {
+              from,
+              to {
+                background-color: transparent;
+              }
+              50% {
+                background-color: var(--accent-green);
+              }
+            }
+            .keypad {
+              display: grid;
+              grid-template-columns: repeat(3, 1fr);
+              gap: 1vh 16px;
+              flex-grow: 1;
+              align-content: center;
+            }
+            .keypad-btn {
+              background: none;
+              border: none;
+              font-size: clamp(28px, 8vw, 36px);
+              font-weight: 400;
+              padding: clamp(10px, 2vh, 20px);
+              cursor: pointer;
+            }
 
-      .slider-container {
-        padding: 0 10px;
-      }
-      input[type="range"] {
-        -webkit-appearance: none;
-        width: 100%;
-        height: 6px;
-        background: #e0e0e0;
-        border-radius: 3px;
-        outline: none;
-      }
-      input[type="range"]::-webkit-slider-runnable-track {
-        height: 6px;
-        background: linear-gradient(
-          to right,
-          var(--accent-green) 0%,
-          var(--accent-green) var(--progress, 0%),
-          #e0e0e0 0%
-        );
-        border-radius: 3px;
-      }
-      input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 28px;
-        height: 28px;
-        background: white;
-        border-radius: 50%;
-        cursor: pointer;
-        margin-top: -11px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-      }
+            #withdraw-slider-modal {
+              height: 65vh;
+              justify-content: space-between;
+              padding-bottom: 40px;
+            }
+            #withdraw-slider-modal .modal-header {
+              flex-direction: column;
+              gap: 4px;
+              margin-bottom: auto;
+            }
+            .withdraw-display {
+              text-align: center;
+              margin-bottom: auto;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              padding: 0 10px;
+            }
+            #withdraw-amount-display {
+              font-size: 60px;
+              font-weight: 500;
+              color: var(--text-primary);
+              transition: font-size: 0.15s ease-out;
+              line-height: 1;
+            }
+            #withdraw-available {
+              font-size: 16px;
+              color: var(--text-secondary);
+              margin: 0;
+            }
 
-      #success-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: white;
-        z-index: 3000;
-        display: none;
-        flex-direction: column;
-        justify-content: space-between;
-        padding: 20px var(--padding-screen) 40px;
-        transform: translateY(100%);
-        transition: transform 0.4s ease;
-      }
-      #success-overlay.show {
-        display: flex;
-        transform: translateY(0);
-      }
-      #success-close-btn {
-        position: absolute;
-        top: 20px;
-        right: var(--padding-screen);
-        font-size: 28px;
-        background: none;
-        border: none;
-        cursor: pointer;
-      }
-      .success-content {
-        text-align: left;
-        margin-top: 8vh;
-      }
-      .success-checkmark {
-        width: 50px;
-        height: 50px;
-        background-color: var(--accent-green);
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 0 24px 0;
-      }
-      .success-checkmark i {
-        color: white;
-        font-size: 25px;
-      }
-      .success-message {
-        font-size: 24px;
-        font-weight: 600;
-      }
-      .success-promo-card {
-        background-color: #fafafa;
-        border-radius: 12px;
-        padding: 20px;
-        text-align: center;
-        margin-top: 15vh;
-        border: 1px solid #f0f0f0;
-      }
-      .success-promo-card img {
-        width: 160px;
-        margin-bottom: 16px;
-      }
-      .success-promo-card p {
-        font-size: 16px;
-        font-weight: 500;
-        margin-bottom: 20px;
-      }
-      .success-promo-card button {
-        background-color: #f0f1f2;
-        border-radius: 20px;
-        padding: 12px 24px;
-        font-weight: 600;
-        border: none;
-        cursor: pointer;
-      }
-      #feature-modal {
-        text-align: center;
-      }
-      #feature-modal h2 {
-        margin-bottom: 8px;
-      }
-      #feature-modal p {
-        color: var(--text-secondary);
-        margin-bottom: 24px;
-      }
-      .gray {
-        color: #c7c7cc;
-      }
-      .savings-list-card .icon {
-        font-size: 24px;
-        color: var(--accent-green);
-      }
+            .slider-container {
+              padding: 0 10px;
+            }
+            input[type="range"] {
+              -webkit-appearance: none;
+              width: 100%;
+              height: 6px;
+              background: #e0e0e0;
+              border-radius: 3px;
+              outline: none;
+            }
+            input[type="range"]::-webkit-slider-runnable-track {
+              height: 6px;
+              background: linear-gradient(
+                to right,
+                var(--accent-green) 0%,
+                var(--accent-green) var(--progress, 0%),
+                #e0e0e0 0%
+              );
+              border-radius: 3px;
+            }
+            input[type="range"]::-webkit-slider-thumb {
+              -webkit-appearance: none;
+              appearance: none;
+              width: 28px;
+              height: 28px;
+              background: white;
+              border-radius: 50%;
+              cursor: pointer;
+              margin-top: -11px;
+              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            }
 
-      .feature-card .icon-container {
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        flex-shrink: 0;
-      }
+            #success-overlay {
+              position: fixed;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background-color: white;
+              z-index: 3000;
+              display: none;
+              flex-direction: column;
+              justify-content: space-between;
+              padding: 20px var(--padding-screen) 40px;
+              transform: translateY(100%);
+              transition: transform 0.4s ease;
+            }
+            #success-overlay.show {
+              display: flex;
+              transform: translateY(0);
+            }
+            #success-close-btn {
+              position: absolute;
+              top: 20px;
+              right: var(--padding-screen);
+              font-size: 28px;
+              background: none;
+              border: none;
+              cursor: pointer;
+            }
+            .success-content {
+              text-align: left;
+              margin-top: 8vh;
+            }
+            .success-checkmark {
+              width: 50px;
+              height: 50px;
+              background-color: var(--accent-green);
+              border-radius: 50%;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              margin: 0 0 24px 0;
+            }
+            .success-checkmark i {
+              color: white;
+              font-size: 25px;
+            }
+            .success-message {
+              font-size: 24px;
+              font-weight: 600;
+            }
+            .success-promo-card {
 
-      .feature-card .icon-container img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
+              border-radius: 12px;
+              padding: 20px;
+              text-align: center;
+              margin-top: 15vh;
 
-      #spinner-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: var(--card-bg-color); /* Solid white */
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-      }
-      #spinner-overlay.show {
-        display: flex;
-      }
-      .loader {
-        width: var(--loader-size);
-        height: var(--loader-size);
-        border-radius: 50%;
-        position: relative;
-        background: conic-gradient(
-          from -90deg,
-          var(--accent-green),
-          transparent
-        );
-        animation: spin var(--animation-speed) linear infinite;
-      }
-      .loader::before {
-        content: "";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: calc(var(--loader-size) - (var(--loader-border-width) * 2));
-        height: calc(var(--loader-size) - (var(--loader-border-width) * 2));
-        background-color: var(--card-bg-color);
-        border-radius: 50%;
-      }
-      @keyframes spin {
-        to {
-          transform: rotate(-360deg);
-        }
-      }
+            }
+            .success-promo-card img {
+              width: 160px;
+              margin-bottom: 16px;
+            }
+            .success-promo-card p {
+              font-size: 16px;
+              font-weight: 500;
+              margin-bottom: 20px;
+            }
+            .success-promo-card button {
+            color: var(--accent-green);
+              border-radius: 20px;
+              padding: 12px 24px;
+              font-weight: 600;
+              font-size: 1rem;
+              border: none;
+              cursor: pointer;
+              background: none;
+            }
+            #feature-modal {
+              text-align: center;
+            }
+            #feature-modal h2 {
+              margin-bottom: 8px;
+            }
+            #feature-modal p {
+              color: var(--text-secondary);
+              margin-bottom: 24px;
+            }
+            .gray {
+              color: #c7c7cc;
+            }
+
+            #spinner-overlay {
+              position: fixed;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background-color: var(--card-bg-color); /* Solid white */
+              display: none;
+              justify-content: center;
+              align-items: center;
+              z-index: 9999;
+            }
+            #spinner-overlay.show {
+              display: flex;
+            }
+            .loader {
+              width: var(--loader-size);
+              height: var(--loader-size);
+              border-radius: 50%;
+              position: relative;
+              background: conic-gradient(
+                from -90deg,
+                var(--accent-green),
+                transparent
+              );
+              animation: spin var(--animation-speed) linear infinite;
+            }
+            .loader::before {
+              content: "";
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              width: calc(var(--loader-size) - (var(--loader-border-width) * 2));
+              height: calc(var(--loader-size) - (var(--loader-border-width) * 2));
+              background-color: var(--card-bg-color);
+              border-radius: 50%;
+            }
+            @keyframes spin {
+              to {
+                transform: rotate(-360deg);
+              }
+            }
     </style>
   </head>
   <body>
@@ -714,45 +784,69 @@
         <a href="profile.html" class="profile-icon-link"> </a>
       </header>
       <main class="main-content">
-        <section class="card">
+        <!-- Main balance card -->
+        <section class="card" id="balance-preview-card">
           <div class="balance-header">
-            <span>Cash balance</span
-            ><a href="profile.html"
-              ><i class="fa-solid fa-chevron-right chevron-icon gray"></i
-            ></a>
+            <span>Cash balance</span>
+            <a href="profile.html">
+              <svg
+                class="chevron-icon"
+                viewBox="0 0 9 15"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M1 1L7.5 7.5L1 14"
+                  stroke="#C7C7CC"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </a>
           </div>
           <div class="balance-amount" id="balance-amount"></div>
-          <a href="profile.html"
-            ><p class="account-info" id="account-info"></p
-          ></a>
+          <a href="profile.html">
+            <p class="account-info" id="account-info"></p>
+          </a>
           <div class="balance-actions">
             <button id="add-money-btn">Add money</button>
             <button id="withdraw-btn">Withdraw</button>
           </div>
         </section>
 
+        <!-- Attached Paycheck card - PERFECTED -->
         <div
-          class="list-card list-item paychecks-card feature-card"
+          class="paychecks-link-card"
           onclick="showFeatureNotImplementedModal()"
         >
-          <div class="icon-container">
-            <img
-              src="icons/Home_-_Sectional_-_Paychecks.webp"
-              alt="Paychecks Icon"
+          <i class="fa-regular fa-circle-check icon"></i>
+          <span class="title">Paychecks</span>
+          <span class="subtitle">Ready for next paycheck</span>
+          <svg
+            class="chevron-icon"
+            viewBox="0 0 9 15"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1 1L7.5 7.5L1 14"
+              stroke="#C7C7CC"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
             />
-          </div>
-          <div class="details">
-            <span class="title">Paychecks</span
-            ><span class="subtitle">Get benefits with direct deposit</span>
-          </div>
-          <i class="fa-solid fa-chevron-right chevron-icon"></i>
+          </svg>
         </div>
-        <h2 class="section-header">Save</h2>
+
+        <h2 class="section-header">Save & Invest</h2>
+
+        <!-- Savings Card -->
         <a href="savings.html" class="savings-list-card" id="savings-card-link">
           <div class="details">
             <span class="title">Savings</span>
             <span class="balance" id="home-savings-balance">$0.00</span>
-            <span class="subtitle">Up to 4.5% interest</span>
+            <span class="subtitle">Up to 4% interest</span>
           </div>
           <div class="icon-container">
             <svg class="progress-ring-svg" viewBox="0 0 120 120">
@@ -776,7 +870,7 @@
                 cy="60"
               />
             </svg>
-            <i class="fa-solid fa-sack-dollar icon"></i>
+            <img src="icons/save.jpg" alt="Savings" class="icon" />
           </div>
           <svg
             class="chevron-icon"
@@ -793,6 +887,88 @@
             />
           </svg>
         </a>
+
+        <!-- Bitcoin Card -->
+        <div
+          class="savings-list-card"
+          onclick="showFeatureNotImplementedModal()"
+        >
+          <div class="details">
+            <span class="title">Bitcoin</span>
+            <span class="balance">$0.00</span>
+            <span class="subtitle">0.00% today</span>
+          </div>
+          <div class="icon-container">
+            <svg class="progress-ring-svg" viewBox="0 0 120 120">
+              <circle
+                class="progress-ring-circle"
+                stroke="#e9ecef"
+                stroke-width="8"
+                fill="transparent"
+                r="56"
+                cx="60"
+                cy="60"
+              />
+            </svg>
+            <img src="icons/bitcoin.jpg" alt="Bitcoin" class="icon" />
+          </div>
+          <svg
+            class="chevron-icon"
+            viewBox="0 0 9 15"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1 1L7.5 7.5L1 14"
+              stroke="#C7C7CC"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+
+        <!-- Stocks Card -->
+        <div
+          class="savings-list-card"
+          onclick="showFeatureNotImplementedModal()"
+          style="margin-bottom: 0"
+        >
+          <div class="details">
+            <span class="title">Stocks</span>
+            <span class="balance">$0.00</span>
+            <span class="subtitle">0.00% today</span>
+          </div>
+          <div class="icon-container">
+            <svg class="progress-ring-svg" viewBox="0 0 120 120">
+              <circle
+                class="progress-ring-circle"
+                stroke="#e9ecef"
+                stroke-width="8"
+                fill="transparent"
+                r="56"
+                cx="60"
+                cy="60"
+              />
+            </svg>
+            <img src="icons/stocks.jpg" alt="Stocks" class="icon" />
+          </div>
+          <svg
+            class="chevron-icon"
+            viewBox="0 0 9 15"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1 1L7.5 7.5L1 14"
+              stroke="#C7C7CC"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+
         <h2 class="section-header">Explore</h2>
         <div class="explore-grid">
           <div class="explore-card" onclick="showFeatureNotImplementedModal()">
@@ -801,23 +977,20 @@
               <i class="fa-solid fa-landmark"></i>
             </div>
             <span class="subtitle">Pay $0 to file</span>
-            <i class="fa-solid fa-chevron-right chevron-icons"></i>
-          </div>
-          <div class="explore-card" onclick="showFeatureNotImplementedModal()">
-            <span class="title">Bitcoin</span>
-            <div class="icon-container blue">
-              <i class="fa-brands fa-bitcoin"></i>
-            </div>
-            <span class="subtitle">Learn and invest</span>
-            <i class="fa-solid fa-chevron-right chevron-icons"></i>
-          </div>
-          <div class="explore-card" onclick="showFeatureNotImplementedModal()">
-            <span class="title">Stocks</span>
-            <div class="icon-container purple">
-              <i class="fa-solid fa-arrow-trend-up"></i>
-            </div>
-            <span class="subtitle">Invest with $1</span>
-            <i class="fa-solid fa-chevron-right chevron-icons"></i>
+            <svg
+              class="chevron-icon"
+              viewBox="0 0 9 15"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1 1L7.5 7.5L1 14"
+                stroke="#C7C7CC"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </div>
           <div class="explore-card" onclick="showFeatureNotImplementedModal()">
             <span class="title">Family</span>
@@ -825,7 +998,20 @@
               <i class="fa-solid fa-users"></i>
             </div>
             <span class="subtitle">Invite your teen</span>
-            <i class="fa-solid fa-chevron-right chevron-icons"></i>
+            <svg
+              class="chevron-icon"
+              viewBox="0 0 9 15"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1 1L7.5 7.5L1 14"
+                stroke="#C7C7CC"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </div>
         </div>
 
@@ -836,30 +1022,69 @@
               <i class="fa-solid fa-money-bill-wave"></i>
             </div>
             <div class="details">
-              <span class="title">Deposit paper money</span
-              ><span class="subtitle">Find a nearby retailer</span>
+              <span class="title">Deposit paper money</span>
+              <span class="subtitle">Find a nearby retailer</span>
             </div>
-            <i class="fa-solid fa-chevron-right chevron-icon"></i>
+            <svg
+              class="chevron-icon"
+              viewBox="0 0 9 15"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1 1L7.5 7.5L1 14"
+                stroke="#C7C7CC"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </div>
           <div class="list-item" onclick="showFeatureNotImplementedModal()">
             <div class="icon-container">
               <i class="fa-solid fa-expand"></i>
             </div>
             <div class="details">
-              <span class="title">Deposit check</span
-              ><span class="subtitle">Scan with your phone</span>
+              <span class="title">Deposit check</span>
+              <span class="subtitle">Scan with your phone</span>
             </div>
-            <i class="fa-solid fa-chevron-right chevron-icon"></i>
+            <svg
+              class="chevron-icon"
+              viewBox="0 0 9 15"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1 1L7.5 7.5L1 14"
+                stroke="#C7C7CC"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </div>
           <div class="list-item" onclick="showFeatureNotImplementedModal()">
             <div class="icon-container">
               <i class="fa-solid fa-arrows-rotate"></i>
             </div>
             <div class="details">
-              <span class="title">Auto reload</span
-              ><span class="subtitle">Add money automatically</span>
+              <span class="title">Auto reload</span>
+              <span class="subtitle">Add money automatically</span>
             </div>
-            <i class="fa-solid fa-chevron-right chevron-icon"></i>
+            <svg
+              class="chevron-icon"
+              viewBox="0 0 9 15"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1 1L7.5 7.5L1 14"
+                stroke="#C7C7CC"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </div>
         </div>
       </main>
@@ -919,7 +1144,7 @@
     <div class="transaction-modal-overlay" id="transaction-modal-overlay">
       <div class="transaction-modal" id="add-cash-presets-modal">
         <div class="modal-grabber"></div>
-        <div class="modal-header"><h2>Add Cash</h2></div>
+        <div class="modal-header"><h2>Add Money</h2></div>
         <div class="preset-amounts" id="preset-amounts">
           <button class="preset-btn" data-amount="10">$10</button
           ><button class="preset-btn" data-amount="25">$25</button
@@ -1023,7 +1248,7 @@
         profileIconLink = document.querySelector(".profile-icon-link"),
         spinnerOverlay = document.getElementById("spinner-overlay");
 
-      let currentBalance = 185266.0,
+      let currentBalance = 28104.77, // <-- Updated Balance
         isAnimating = false;
       const localStorageBalanceKey = "cashAppBalance",
         localStorageTransactionsKey = "cashAppTransactions",
@@ -1031,8 +1256,8 @@
       const defaultProfile = {
         fullName: "Jane Doe",
         cashtag: "waldoapp",
-        accountNumber: "****3186",
-        routingNumber: "****715",
+        accountNumber: "**2923", // <-- Updated Account #
+        routingNumber: "**894", // <-- Updated Routing #
         profilePic: "icons/person-circle-svgrepo-com.png",
       };
 
@@ -1100,7 +1325,7 @@
       }
       function loadState() {
         const savedBalance = localStorage.getItem(localStorageBalanceKey);
-        currentBalance = parseFloat(savedBalance) || 185266.0;
+        currentBalance = parseFloat(savedBalance) || 28104.77; // <-- Updated Balance
         balanceAmountEl.textContent = formatCurrency(currentBalance);
         footerBalanceDisplay.textContent =
           formatBalanceForFooter(currentBalance);
@@ -1133,7 +1358,6 @@
         );
       }
 
-      // --- MODIFIED: Loading spinner duration changed to 4 seconds ---
       function handleAddTransaction(amount) {
         if (isAnimating || isNaN(amount) || amount <= 0) return;
         hideAllModals();
@@ -1146,10 +1370,9 @@
           saveState();
           saveTransaction("add", amount);
           animateBalance(startBalance, currentBalance, "add", amount);
-        }, 4000); // Changed from 1500 to 4000
+        }, 1500);
       }
 
-      // --- MODIFIED: Loading spinner duration changed to 4 seconds ---
       function handleWithdrawal(amount) {
         if (isAnimating || isNaN(amount) || amount <= 0) return;
         if (amount > currentBalance) return;
@@ -1163,7 +1386,7 @@
           saveState();
           saveTransaction("withdraw", amount);
           animateBalance(startBalance, currentBalance, "withdraw", amount);
-        }, 4000); // Changed from 1500 to 4000
+        }, 1500);
       }
 
       function showModal(modalEl) {
