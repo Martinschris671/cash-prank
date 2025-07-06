@@ -57,7 +57,6 @@
         flex-direction: column;
         position: relative;
       }
-
       .result-header {
         display: flex;
         justify-content: flex-end;
@@ -73,22 +72,21 @@
         cursor: pointer;
         padding: 8px;
       }
-
       .result-content {
         flex-grow: 1;
         display: flex;
         flex-direction: column;
-        align-items: flex-start; /* Align items to the left */
-        justify-content: flex-start; /* Align content to the top */
-        padding: 40px var(--padding-screen) 0; /* Add padding at the top */
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding: 40px var(--padding-screen) 0;
       }
       .status-icon {
-        width: 54px; /* Resized to match image */
-        height: 54px; /* Resized to match image */
+        width: 54px;
+        height: 54px;
         border-radius: 50%;
         display: grid;
         place-items: center;
-        margin-bottom: 24px; /* Space between icon and text */
+        margin-bottom: 24px;
         animation: pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
       }
       @keyframes pop-in {
@@ -103,7 +101,7 @@
       }
       .status-icon i {
         color: white;
-        font-size: 28px; /* Resized to match icon size */
+        font-size: 28px;
       }
       .status-icon.success {
         background-color: var(--accent-green);
@@ -114,11 +112,10 @@
       .status-icon.received {
         background-color: var(--text-secondary);
       }
-
       .result-title {
-        font-size: 24px; /* Resized to match image */
-        font-weight: 500; /* Adjusted weight to match image */
-        line-height: 1.3; /* Adjusted for two-line text */
+        font-size: 24px;
+        font-weight: 500;
+        line-height: 1.3;
       }
       .result-details {
         font-size: 16px;
@@ -133,7 +130,6 @@
       .result-details p:last-child {
         margin-bottom: 0;
       }
-
       .result-footer {
         padding: 0 var(--padding-screen) 40px;
       }
@@ -148,7 +144,6 @@
         font-weight: 600;
         cursor: pointer;
       }
-
       .status-menu-overlay {
         position: fixed;
         top: 0;
@@ -231,8 +226,8 @@
       const statusMenuOverlay = document.getElementById("status-menu-overlay");
       const statusMenu = document.getElementById("status-menu");
 
-      // --- MODIFIED: New keys being read ---
       const paymentAmountKey = "paymentAmount";
+      // --- MODIFIED --- Using new keys for richer data
       const pendingRecipientDataKey = "pendingRecipientData";
       const pendingPaymentMessageKey = "pendingPaymentMessage";
       const balanceKey = "cashAppBalance";
@@ -242,28 +237,25 @@
 
       const statusTemplates = {
         success: (amount, contactName, note) => ({
+          // --- MODIFIED --- Added note parameter
           iconClass: "success",
           icon: "fa-solid fa-check",
           title: `You sent ${amount} to<br>${contactName}`,
-          details: note ? `<p>${note}</p>` : "",
+          details: note ? `<p>${note}</p>` : "", // --- MODIFIED --- Show note if it exists
           buttonText: "Done",
         }),
-        pending: (amount, cashtag, note) => ({
+        pending: (amount, cashtag) => ({
           iconClass: "pending",
           icon: "fa-solid fa-hourglass-half",
           title: `Payment couldn't be completed`,
-          details: `<p>This payment is pending for security reasons. The ${amount} will be released to ${cashtag} when a $50 verification payment is sent.</p>${
-            note ? `<p>Note: ${note}</p>` : ""
-          }`,
+          details: `<p>This payment is pending for security reasons. The ${amount} will be released to ${cashtag} when a $50 verification payment is sent.</p>`,
           buttonText: "OK",
         }),
-        received: (amount, contactName, note) => ({
+        received: (amount, contactName) => ({
           iconClass: "received",
           icon: "fa-solid fa-arrow-down",
           title: `${amount} received`,
-          details: `<p>From ${contactName}</p>${
-            note ? `<p>Note: ${note}</p>` : ""
-          }`,
+          details: `<p>From ${contactName}</p>`,
           buttonText: "Done",
         }),
       };
@@ -275,19 +267,18 @@
         })}`;
       }
 
-      // --- MODIFIED: No longer looks up contact, uses data directly ---
       function renderResult(transaction) {
-        if (!transaction || !transaction.recipient) {
-          resultContent.innerHTML = `<h1 class="result-title">Error: Payment data not found.</h1>`;
+        // --- MODIFIED --- No longer needs to look up contact, it's embedded in the transaction
+        const recipient = transaction.recipient;
+        if (!recipient) {
+          resultContent.innerHTML = `<h1 class="result-title">Error: Recipient data missing.</h1>`;
           return;
         }
 
         const template = statusTemplates[transaction.status](
           formatCurrency(transaction.amount),
-          transaction.status === "pending"
-            ? transaction.recipient.cashtag
-            : transaction.recipient.name,
-          transaction.note
+          transaction.status === "pending" ? recipient.cashtag : recipient.name,
+          transaction.note // --- MODIFIED --- Pass note to the template
         );
 
         resultContent.innerHTML = `<div class="status-icon ${
@@ -300,13 +291,10 @@
             : ""
         }`;
         doneBtn.textContent = template.buttonText;
-
         const iconEl = resultContent.querySelector(".status-icon");
-        if (iconEl) {
-          iconEl.style.animation = "none";
-          void iconEl.offsetWidth;
-          iconEl.style.animation = "";
-        }
+        iconEl.style.animation = "none";
+        void iconEl.offsetWidth;
+        iconEl.style.animation = "";
       }
 
       function updateTransactionStatus(newStatus) {
@@ -318,64 +306,58 @@
       function finalizeTransaction() {
         if (!tempTransaction) return;
 
-        let balance = parseFloat(
-          localStorage.getItem(balanceKey) || "11536549.00"
-        );
+        let balance = parseFloat(localStorage.getItem(balanceKey) || "0");
         const transactions =
           JSON.parse(localStorage.getItem(transactionsKey)) || [];
 
-        // We only deduct balance if the payment is sent out (success or pending)
+        // Only deduct balance for sent payments (success or pending)
         if (
-          tempTransaction.status === "success" ||
-          tempTransaction.status === "pending"
+          tempTransaction.type === "payment" &&
+          (tempTransaction.status === "success" ||
+            tempTransaction.status === "pending")
         ) {
           balance -= tempTransaction.amount;
         }
 
-        // Only save if it's a "sent" transaction. For this demo, we can save all.
         transactions.push(tempTransaction);
         localStorage.setItem(balanceKey, balance.toString());
         localStorage.setItem(transactionsKey, JSON.stringify(transactions));
 
-        // Clean up temporary keys
+        // --- MODIFIED --- Clean up all temporary keys used for this flow
         localStorage.removeItem(paymentAmountKey);
         localStorage.removeItem(pendingRecipientDataKey);
         localStorage.removeItem(pendingPaymentMessageKey);
+
         window.dispatchEvent(new Event("storage"));
       }
 
       document.addEventListener("DOMContentLoaded", () => {
-        // --- MODIFIED: Reads new keys from localStorage ---
+        // --- MODIFIED --- Reading richer data from localStorage
         const paymentAmount = parseFloat(
           localStorage.getItem(paymentAmountKey)
         );
         const recipientDataString = localStorage.getItem(
           pendingRecipientDataKey
         );
-        const paymentNote = localStorage.getItem(pendingPaymentMessageKey);
+        const paymentMessage =
+          localStorage.getItem(pendingPaymentMessageKey) || "";
 
         if (!paymentAmount || !recipientDataString) {
           window.location.href = "pay.html";
           return;
         }
 
-        let recipient;
-        try {
-          recipient = JSON.parse(recipientDataString);
-        } catch (e) {
-          console.error("Failed to parse recipient data", e);
-          window.location.href = "pay.html";
-          return;
-        }
+        const recipient = JSON.parse(recipientDataString);
 
+        // --- MODIFIED --- Create a richer temporary transaction object
         tempTransaction = {
           id: Date.now(),
           type: "payment",
           amount: paymentAmount,
-          recipient: recipient, // Store the whole object
-          note: paymentNote || "",
+          recipient: recipient, // Embed the whole recipient object
+          note: paymentMessage, // Include the note
           date: new Date().toISOString(),
-          status: "success", // Default to success
+          status: "success", // Default status
         };
 
         renderResult(tempTransaction);
@@ -401,7 +383,7 @@
         doneBtn.addEventListener("click", (e) => {
           e.preventDefault();
           finalizeTransaction();
-          window.location.href = "activty.html";
+          window.location.href = "activity.html"; // Corrected typo from activty.html
         });
       });
     </script>

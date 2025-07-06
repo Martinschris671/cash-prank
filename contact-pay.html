@@ -14,7 +14,6 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <script src="guard.js"></script>
     <style>
       :root {
         --padding-screen: 18px;
@@ -27,11 +26,6 @@
         --accent-green: #00d54b;
         --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
           Helvetica, Arial, sans-serif;
-
-        /* --- ADDED: Loader Variables from pin.html --- */
-        --loader-size: 56px;
-        --loader-border-width: 5.5px;
-        --animation-speed: 1.2s;
       }
       * {
         margin: 0;
@@ -453,7 +447,12 @@
         margin-top: auto;
       }
 
-      /* --- ADDED: Loader CSS from pin.html --- */
+      /* --- NEW --- CSS for the loading spinner, imported from pin.html */
+      :root {
+        --loader-size: 56px;
+        --loader-border-width: 5.5px;
+        --animation-speed: 1.2s;
+      }
       #loading-overlay {
         position: fixed;
         top: 0;
@@ -496,6 +495,11 @@
     </style>
   </head>
   <body>
+    <!-- --- NEW --- Loading overlay HTML -->
+    <div id="loading-overlay">
+      <div class="loader"></div>
+    </div>
+
     <div class="contact-pay-container">
       <header class="cp-header">
         <a href="pay.html"><button class="cp-close-btn">×</button></a>
@@ -568,7 +572,6 @@
       </main>
     </div>
 
-    <!-- Alert Modal -->
     <div class="modal-overlay" id="alert-modal-overlay">
       <div class="modal-content" id="alert-modal">
         <p id="alert-message"></p>
@@ -576,15 +579,10 @@
       </div>
     </div>
 
-    <!-- ADDED: Loader Overlay from pin.html -->
-    <div id="loading-overlay">
-      <div class="loader"></div>
-    </div>
-
     <script>
       const contactListEl = document.getElementById("contact-list"),
         toInput = document.getElementById("to-input"),
-        forInput = document.getElementById("for-input"), // Added for note
+        forInput = document.getElementById("for-input"), // --- NEW --- Get the "For" input
         payBtn = document.getElementById("cp-pay-btn"),
         amountDisplay = document.getElementById("cp-amount"),
         sourceDisplay = document.getElementById("cp-source"),
@@ -601,14 +599,13 @@
         alertModalOverlay = document.getElementById("alert-modal-overlay"),
         alertMessage = document.getElementById("alert-message"),
         alertOkBtn = document.getElementById("alert-ok-btn"),
-        loadingOverlay = document.getElementById("loading-overlay"); // Added
+        loadingOverlay = document.getElementById("loading-overlay"); // --- NEW --- Get the loading overlay
 
-      // --- MODIFIED: Added new key for recipient data ---
       const contactStorageKey = "cashAppContacts",
         balanceStorageKey = "cashAppBalance",
         paymentAmountKey = "paymentAmount",
-        pendingRecipientDataKey = "pendingRecipientData", // NEW
-        pendingPaymentMessageKey = "pendingPaymentMessage"; // NEW
+        pendingRecipientDataKey = "pendingRecipientData", // --- NEW --- Key for passing full recipient object
+        pendingPaymentMessageKey = "pendingPaymentMessage"; // --- NEW --- Key for passing the note
 
       let selectedContactId = null,
         contacts = [],
@@ -711,7 +708,7 @@
           id: 14,
           name: "punchmadedomo",
           cashtag: "$denaro",
-          avatar: "images/demo.jpg",
+          avatar: "images/coffe.png",
           color: "#DAA520",
         },
       ];
@@ -734,14 +731,6 @@
       const saveContacts = () => {
         localStorage.setItem(contactStorageKey, JSON.stringify(contacts));
       };
-
-      // --- MODIFIED: New function to validate Pay button state ---
-      function validatePayButton() {
-        const isRecipientEntered =
-          selectedContactId !== null || toInput.value.trim().length > 0;
-        payBtn.disabled = !isRecipientEntered;
-      }
-
       function renderContacts() {
         contactListEl.innerHTML = "";
         contacts.forEach((contact, i) => {
@@ -768,6 +757,12 @@
           i.classList.toggle("hide", !(n.includes(q) || c.includes(q)));
         });
       };
+      // --- MODIFIED --- Centralized function to validate the pay button state
+      function validatePayButton() {
+        const isRecipientSelected = !!selectedContactId;
+        const isRecipientTyped = toInput.value.trim().length > 0;
+        payBtn.disabled = !(isRecipientSelected || isRecipientTyped);
+      }
       function handleContactSelection(targetItem) {
         const id = targetItem.dataset.id,
           isSelected = targetItem.classList.contains("selected");
@@ -785,8 +780,8 @@
           toInput.value = "";
           toInputCursor.style.display = "block";
         }
-        validatePayButton(); // MODIFIED
         filterContacts();
+        validatePayButton(); // --- MODIFIED ---
       }
       function openEditModal(id) {
         editingContact = { ...contacts.find((c) => c.id == id) };
@@ -845,13 +840,13 @@
         alertModalOverlay.classList.remove("show");
       }
 
-      // --- MODIFIED: Pay Button Logic is now completely different ---
+      // --- MODIFIED --- Logic for handling payment confirmation
       function handlePayment() {
         const paymentAmount = parseFloat(
           localStorage.getItem(paymentAmountKey) || "0"
         );
         const cashBalance = parseFloat(
-          localStorage.getItem(balanceStorageKey) || "11536549.00"
+          localStorage.getItem(balanceStorageKey) || "0"
         );
 
         if (paymentAmount > cashBalance) {
@@ -861,41 +856,34 @@
 
         let recipientData;
 
-        // Case 1: A contact from the list is selected
+        // If a contact was selected from the list
         if (selectedContactId) {
           recipientData = contacts.find((c) => c.id == selectedContactId);
-        }
-        // Case 2: A random cashtag/name is typed
-        else if (toInput.value.trim()) {
-          const typedValue = toInput.value.trim();
+        } else {
+          // Create a temporary recipient object for a random name/cashtag
+          const typedName = toInput.value.trim();
           recipientData = {
-            id: `random_${Date.now()}`, // Unique ID for this transaction
-            name: typedValue,
-            cashtag: typedValue.startsWith("$")
-              ? typedValue
-              : `$${typedValue.toLowerCase().replace(/[^a-z0-9]/g, "")}`,
+            id: `temp-${Date.now()}`, // A unique ID for this transaction only
+            name: typedName,
+            cashtag:
+              "$" +
+              typedName
+                .toLowerCase()
+                .replace(/\s+/g, "")
+                .replace(/[^a-z0-9]/g, ""),
             avatar: "", // No avatar for random contacts
             color: "#6c757d", // Default gray color
           };
         }
-        // Case 3: Nothing is entered (button should be disabled anyway)
-        else {
-          return;
-        }
 
-        // Save data for payment-result.html to use
+        // Save all necessary data for the result page
         localStorage.setItem(
           pendingRecipientDataKey,
           JSON.stringify(recipientData)
         );
-        const paymentNote = forInput.value.trim();
-        if (paymentNote) {
-          localStorage.setItem(pendingPaymentMessageKey, paymentNote);
-        } else {
-          localStorage.removeItem(pendingPaymentMessageKey);
-        }
+        localStorage.setItem(pendingPaymentMessageKey, forInput.value.trim());
 
-        // Show loader and redirect after 5 seconds
+        // Show loading spinner and redirect after 5 seconds
         loadingOverlay.style.display = "flex";
         setTimeout(() => {
           window.location.href = "payment-result.html";
@@ -908,21 +896,17 @@
           window.location.href = "pay.html";
           return;
         }
-
         const cashBalance = parseFloat(
           localStorage.getItem(balanceStorageKey) || "11536549.00"
         );
-
         amountDisplay.textContent = formatCurrency(
           parseFloat(paymentAmountRaw)
         );
         sourceDisplay.innerHTML = `Cash Balance ${formatCurrency(
           cashBalance
         )} <i class="fa-solid fa-chevron-down fa-xs"></i>`;
-
         contacts = getContacts();
         renderContacts();
-
         contactListEl.addEventListener("click", (e) => {
           if (e.target.closest(".contact-icon")) {
             openEditModal(e.target.closest(".contact-icon").dataset.editId);
@@ -931,19 +915,18 @@
             if (item) handleContactSelection(item);
           }
         });
-
         toInput.addEventListener("input", () => {
-          // If user starts typing, deselect any chosen contact
+          toInputCursor.style.display = "none";
+          // If user types, deselect any chosen contact
           if (selectedContactId) {
-            const selectedEl = document.querySelector(".contact-item.selected");
-            if (selectedEl) selectedEl.classList.remove("selected");
+            document
+              .querySelector(".contact-item.selected")
+              ?.classList.remove("selected");
             selectedContactId = null;
           }
-          toInputCursor.style.display = "none";
-          validatePayButton();
           filterContacts();
+          validatePayButton(); // --- MODIFIED ---
         });
-
         toInput.addEventListener("focus", () => {
           if (!selectedContactId) toInputCursor.style.display = "block";
         });
@@ -951,7 +934,6 @@
           if (toInput.value.length === 0) toInputCursor.style.display = "block";
           else toInputCursor.style.display = "none";
         });
-
         editAvatar.addEventListener("click", () => editPicInput.click());
         editPicInput.addEventListener("change", (e) => {
           const f = e.target.files[0];
@@ -990,7 +972,7 @@
           btn.classList.add("active");
         });
 
-        // MODIFIED: Attach the new payment handler
+        // --- MODIFIED --- Simplified pay button listener
         payBtn.addEventListener("click", handlePayment);
 
         alertOkBtn.addEventListener("click", hideAlert);

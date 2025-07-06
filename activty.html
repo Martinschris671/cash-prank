@@ -465,7 +465,6 @@
             aria-label="Home"
           ></button
         ></a>
-        <!-- ... other nav buttons ... -->
         <a href="card.html"
           ><button class="nav-button" aria-label="Cards">
             <svg width="22" height="18" viewBox="0 0 24 21">
@@ -566,8 +565,11 @@
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         })}`;
+      
+      // --- FIX --- Reverted to your original styling for payment amounts (e.g., $50 instead of $50.00)
       const formatSimpleCurrency = (amount) =>
         `$${Math.abs(amount).toLocaleString("en-US")}`;
+
       const generateTransactionNumber = () =>
         `#D-${Math.random().toString(16).substr(2, 8).toUpperCase()}`;
 
@@ -585,9 +587,11 @@
       }
 
       function renderActivity(query = "") {
+        // --- FIX --- The sort function is correct and ensures newest transactions are first.
         const transactions = (
           JSON.parse(localStorage.getItem(transactionsKey)) || []
         ).sort((a, b) => new Date(b.date) - new Date(a.date));
+        
         const contacts =
           JSON.parse(localStorage.getItem(contactStorageKey)) ||
           defaultContacts;
@@ -604,9 +608,11 @@
           if (!searchTerm) return true;
           if (t.amount.toString().includes(searchTerm)) return true;
           if (t.type.includes(searchTerm)) return true;
+          
+          // --- FIX --- Search now correctly checks both old and new transaction formats.
           if (t.type === "payment") {
-            const contact = contacts.find((c) => c.id == t.contactId);
-            return contact && contact.name.toLowerCase().includes(searchTerm);
+            const recipientName = t.recipient ? t.recipient.name : (contacts.find(c => c.id == t.contactId) || {}).name;
+            return recipientName && recipientName.toLowerCase().includes(searchTerm);
           }
           return false;
         });
@@ -628,6 +634,7 @@
           groups[date].push(t);
           return groups;
         }, {});
+
         let html = "";
         for (const dateGroup in groupedTransactions) {
           html += `<div class="date-group-header">${dateGroup}</div><ul class="transaction-list">`;
@@ -644,13 +651,25 @@
             });
             switch (t.type) {
               case "payment":
-                const contact = contacts.find((c) => c.id == t.contactId);
-                avatar = contact.avatar
-                  ? `<img src="${contact.avatar}" class="transaction-avatar" />`
+                // --- FIX --- This logic now handles BOTH old and new transaction formats.
+                let recipient;
+                if (t.recipient) {
+                  // New format (recipient object is embedded)
+                  recipient = t.recipient;
+                } else {
+                  // Old format (fallback to look up contactId)
+                  recipient = contacts.find((c) => c.id == t.contactId);
+                }
+
+                // If for some reason the recipient isn't found, skip this item to prevent errors.
+                if (!recipient) break; 
+                
+                avatar = recipient.avatar
+                  ? `<img src="${recipient.avatar}" class="transaction-avatar" />`
                   : `<div class="transaction-avatar" style="background-color:${
-                      contact.color
-                    };">${contact.name.charAt(0)}</div>`;
-                name = contact.name;
+                      recipient.color
+                    };">${recipient.name.charAt(0)}</div>`;
+                name = recipient.name;
                 info =
                   t.status === "success"
                     ? `Payment sent • ${time}`
@@ -678,13 +697,10 @@
         activityListContainer.innerHTML = html;
       }
 
-      // **FIXED** This function now checks the transaction type before proceeding.
       function renderTransactionDetails(transactionId) {
         const transactions =
           JSON.parse(localStorage.getItem(transactionsKey)) || [];
         const transaction = transactions.find((t) => t.id == transactionId);
-
-        // If the transaction is not a 'payment', do nothing.
         if (!transaction || transaction.type !== "payment") return;
 
         const contacts =
@@ -692,11 +708,16 @@
           defaultContacts;
         const userProfile =
           JSON.parse(localStorage.getItem(userProfileKey)) || defaultProfile;
-        const contact = contacts.find((c) => c.id == transaction.contactId);
 
-        // This check is now safer because we know it's a payment transaction.
-        if (!contact) return;
-
+        // --- FIX --- Logic to handle both old and new formats in the details view.
+        let recipient;
+        if (transaction.recipient) {
+          recipient = transaction.recipient;
+        } else {
+          recipient = contacts.find((c) => c.id == transaction.contactId);
+        }
+        if (!recipient) return;
+        
         const time = new Date(transaction.date).toLocaleTimeString("en-US", {
           hour: "numeric",
           minute: "2-digit",
@@ -711,18 +732,19 @@
             : transaction.status === "pending"
             ? "Payment on hold"
             : "Received";
-        const avatar = contact.avatar
-          ? `<img src="${contact.avatar}" class="transaction-avatar" />`
+        const avatar = recipient.avatar
+          ? `<img src="${recipient.avatar}" class="transaction-avatar" />`
           : `<div class="transaction-avatar" style="background-color:${
-              contact.color
-            };">${contact.name.charAt(0)}</div>`;
+              recipient.color
+            };">${recipient.name.charAt(0)}</div>`;
 
+        // --- FIX --- Restored formatSimpleCurrency to show decimals in the details view for consistency.
         detailsOverlay.innerHTML = `<header class="details-header"><button class="details-close-btn" id="details-close-btn">×</button></header><main class="details-content"><div class="details-hero">${avatar}<h1 class="transaction-name">${
-          contact.name
-        }</h1><p class="transaction-info">Today at ${time}</p><h2 class="details-amount">${formatSimpleCurrency(
-          transaction.amount
+          recipient.name
+        }</h1><p class="transaction-info">Today at ${time}</p><h2 class="details-amount">${formatCurrency(
+          transaction.amount, false
         )}</h2></div><ul class="details-list"><li class="details-item"><i class="details-icon fa-solid fa-check"></i><span class="details-label">${statusText}</span><span class="details-value">${statusDetail}</span></li><li class="details-item"><i class="details-icon fa-solid fa-user-group"></i><span class="details-label">Payment between</span><div class="details-value">To: ${
-          contact.name
+          recipient.name
         }<br>From: ${
           userProfile.fullName
         }</div></li><li class="details-item"><i class="details-icon fa-solid fa-dollar-sign"></i><span class="details-label">Payment Source</span><span class="details-value">Cash balance</span></li><li class="details-item"><i class="details-icon fa-solid fa-dollar-sign"></i><span class="details-label">Fees</span><span class="details-value">None applied <i class="fa-solid fa-circle-info"></i></span></li><li class="details-item"><i class="details-icon fa-solid fa-receipt"></i><span class="details-label">Transaction number</span><span class="details-value">${generateTransactionNumber()}</span></li></ul></main>`;
@@ -742,8 +764,6 @@
         deleteModalOverlay.classList.remove("show");
         transactionToDelete = null;
       }
-
-      // **FIXED**: Deletion logic now works for all transaction types
       function deleteTransaction() {
         if (!transactionToDelete) return;
         let transactions =
@@ -781,21 +801,19 @@
         activityListContainer.addEventListener("pointerdown", (e) => {
           const item = e.target.closest(".transaction-item");
           if (!item) return;
-          // Prevent context menu on desktop
           e.preventDefault();
           longPressTimer = setTimeout(() => {
             showDeleteModal(item.dataset.id);
           }, 500);
         });
 
-        // Clear timer if pointer moves or is released
         const clearLongPress = () => clearTimeout(longPressTimer);
         activityListContainer.addEventListener("pointerup", clearLongPress);
         activityListContainer.addEventListener("pointerleave", clearLongPress);
         activityListContainer.addEventListener("pointermove", clearLongPress);
 
         activityListContainer.addEventListener("click", (e) => {
-          clearTimeout(longPressTimer); // Prevent click from firing after a long press
+          clearTimeout(longPressTimer);
           const item = e.target.closest(".transaction-item");
           if (item && item.dataset.id && item.dataset.type === "payment") {
             renderTransactionDetails(item.dataset.id);
