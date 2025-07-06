@@ -14,7 +14,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-     <script src="guard.js"></script>
+    <script src="guard.js"></script>
     <style>
       :root {
         --padding-screen: 24px;
@@ -231,34 +231,39 @@
       const statusMenuOverlay = document.getElementById("status-menu-overlay");
       const statusMenu = document.getElementById("status-menu");
 
+      // --- MODIFIED: New keys being read ---
       const paymentAmountKey = "paymentAmount";
-      const selectedContactIdKey = "selectedContactId";
+      const pendingRecipientDataKey = "pendingRecipientData";
+      const pendingPaymentMessageKey = "pendingPaymentMessage";
       const balanceKey = "cashAppBalance";
       const transactionsKey = "cashAppTransactions";
-      const contactStorageKey = "cashAppContacts";
 
       let tempTransaction = null;
 
       const statusTemplates = {
-        success: (amount, contactName) => ({
+        success: (amount, contactName, note) => ({
           iconClass: "success",
           icon: "fa-solid fa-check",
           title: `You sent ${amount} to<br>${contactName}`,
-          details: "",
+          details: note ? `<p>${note}</p>` : "",
           buttonText: "Done",
         }),
-        pending: (amount, cashtag) => ({
+        pending: (amount, cashtag, note) => ({
           iconClass: "pending",
           icon: "fa-solid fa-hourglass-half",
           title: `Payment couldn't be completed`,
-          details: `<The>This payment is pending for security reasons. The ${amount} will be released to ${cashtag} when a $50 verification payment is sent.</p>`,
+          details: `<p>This payment is pending for security reasons. The ${amount} will be released to ${cashtag} when a $50 verification payment is sent.</p>${
+            note ? `<p>Note: ${note}</p>` : ""
+          }`,
           buttonText: "OK",
         }),
-        received: (amount, contactName) => ({
+        received: (amount, contactName, note) => ({
           iconClass: "received",
           icon: "fa-solid fa-arrow-down",
           title: `${amount} received`,
-          details: `<p>From ${contactName}</p>`,
+          details: `<p>From ${contactName}</p>${
+            note ? `<p>Note: ${note}</p>` : ""
+          }`,
           buttonText: "Done",
         }),
       };
@@ -270,18 +275,21 @@
         })}`;
       }
 
+      // --- MODIFIED: No longer looks up contact, uses data directly ---
       function renderResult(transaction) {
-        const contacts =
-          JSON.parse(localStorage.getItem(contactStorageKey)) || [];
-        const contact = contacts.find((c) => c.id == transaction.contactId);
-        if (!contact) {
-          resultContent.innerHTML = `<h1 class="result-title">Error: Contact not found.</h1>`;
+        if (!transaction || !transaction.recipient) {
+          resultContent.innerHTML = `<h1 class="result-title">Error: Payment data not found.</h1>`;
           return;
         }
+
         const template = statusTemplates[transaction.status](
           formatCurrency(transaction.amount),
-          transaction.status === "pending" ? contact.cashtag : contact.name
+          transaction.status === "pending"
+            ? transaction.recipient.cashtag
+            : transaction.recipient.name,
+          transaction.note
         );
+
         resultContent.innerHTML = `<div class="status-icon ${
           template.iconClass
         }"><i class="${template.icon}"></i></div><h1 class="result-title">${
@@ -292,10 +300,13 @@
             : ""
         }`;
         doneBtn.textContent = template.buttonText;
+
         const iconEl = resultContent.querySelector(".status-icon");
-        iconEl.style.animation = "none";
-        void iconEl.offsetWidth;
-        iconEl.style.animation = "";
+        if (iconEl) {
+          iconEl.style.animation = "none";
+          void iconEl.offsetWidth;
+          iconEl.style.animation = "";
+        }
       }
 
       function updateTransactionStatus(newStatus) {
@@ -307,10 +318,13 @@
       function finalizeTransaction() {
         if (!tempTransaction) return;
 
-        let balance = parseFloat(localStorage.getItem(balanceKey) || "0");
+        let balance = parseFloat(
+          localStorage.getItem(balanceKey) || "11536549.00"
+        );
         const transactions =
           JSON.parse(localStorage.getItem(transactionsKey)) || [];
 
+        // We only deduct balance if the payment is sent out (success or pending)
         if (
           tempTransaction.status === "success" ||
           tempTransaction.status === "pending"
@@ -318,33 +332,50 @@
           balance -= tempTransaction.amount;
         }
 
+        // Only save if it's a "sent" transaction. For this demo, we can save all.
         transactions.push(tempTransaction);
         localStorage.setItem(balanceKey, balance.toString());
         localStorage.setItem(transactionsKey, JSON.stringify(transactions));
+
+        // Clean up temporary keys
         localStorage.removeItem(paymentAmountKey);
-        localStorage.removeItem(selectedContactIdKey);
+        localStorage.removeItem(pendingRecipientDataKey);
+        localStorage.removeItem(pendingPaymentMessageKey);
         window.dispatchEvent(new Event("storage"));
       }
 
       document.addEventListener("DOMContentLoaded", () => {
+        // --- MODIFIED: Reads new keys from localStorage ---
         const paymentAmount = parseFloat(
           localStorage.getItem(paymentAmountKey)
         );
-        const contactId = localStorage.getItem(selectedContactIdKey);
+        const recipientDataString = localStorage.getItem(
+          pendingRecipientDataKey
+        );
+        const paymentNote = localStorage.getItem(pendingPaymentMessageKey);
 
-        if (!paymentAmount || !contactId) {
+        if (!paymentAmount || !recipientDataString) {
           window.location.href = "pay.html";
           return;
         }
 
-        // --- MODIFIED: Default status is now 'success' ---
+        let recipient;
+        try {
+          recipient = JSON.parse(recipientDataString);
+        } catch (e) {
+          console.error("Failed to parse recipient data", e);
+          window.location.href = "pay.html";
+          return;
+        }
+
         tempTransaction = {
           id: Date.now(),
           type: "payment",
           amount: paymentAmount,
-          contactId: contactId,
+          recipient: recipient, // Store the whole object
+          note: paymentNote || "",
           date: new Date().toISOString(),
-          status: "success",
+          status: "success", // Default to success
         };
 
         renderResult(tempTransaction);

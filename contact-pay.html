@@ -14,6 +14,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <script src="guard.js"></script>
     <style>
       :root {
         --padding-screen: 18px;
@@ -26,6 +27,11 @@
         --accent-green: #00d54b;
         --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
           Helvetica, Arial, sans-serif;
+
+        /* --- ADDED: Loader Variables from pin.html --- */
+        --loader-size: 56px;
+        --loader-border-width: 5.5px;
+        --animation-speed: 1.2s;
       }
       * {
         margin: 0;
@@ -446,6 +452,47 @@
         cursor: pointer;
         margin-top: auto;
       }
+
+      /* --- ADDED: Loader CSS from pin.html --- */
+      #loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--app-bg-color);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+      .loader {
+        width: var(--loader-size);
+        height: var(--loader-size);
+        border-radius: 50%;
+        animation: spin var(--animation-speed) linear infinite;
+        -webkit-mask-image: radial-gradient(
+          farthest-side,
+          transparent calc(100% - var(--loader-border-width)),
+          #000 0
+        );
+        mask-image: radial-gradient(
+          farthest-side,
+          transparent calc(100% - var(--loader-border-width)),
+          #000 0
+        );
+        background: conic-gradient(
+          from 90deg,
+          var(--accent-green) 0%,
+          #8affb6 80%,
+          transparent 100%
+        );
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(-360deg);
+        }
+      }
     </style>
   </head>
   <body>
@@ -521,6 +568,7 @@
       </main>
     </div>
 
+    <!-- Alert Modal -->
     <div class="modal-overlay" id="alert-modal-overlay">
       <div class="modal-content" id="alert-modal">
         <p id="alert-message"></p>
@@ -528,9 +576,15 @@
       </div>
     </div>
 
+    <!-- ADDED: Loader Overlay from pin.html -->
+    <div id="loading-overlay">
+      <div class="loader"></div>
+    </div>
+
     <script>
       const contactListEl = document.getElementById("contact-list"),
         toInput = document.getElementById("to-input"),
+        forInput = document.getElementById("for-input"), // Added for note
         payBtn = document.getElementById("cp-pay-btn"),
         amountDisplay = document.getElementById("cp-amount"),
         sourceDisplay = document.getElementById("cp-source"),
@@ -546,10 +600,16 @@
         sendAsSection = document.getElementById("send-as-section"),
         alertModalOverlay = document.getElementById("alert-modal-overlay"),
         alertMessage = document.getElementById("alert-message"),
-        alertOkBtn = document.getElementById("alert-ok-btn");
+        alertOkBtn = document.getElementById("alert-ok-btn"),
+        loadingOverlay = document.getElementById("loading-overlay"); // Added
+
+      // --- MODIFIED: Added new key for recipient data ---
       const contactStorageKey = "cashAppContacts",
         balanceStorageKey = "cashAppBalance",
-        paymentAmountKey = "paymentAmount";
+        paymentAmountKey = "paymentAmount",
+        pendingRecipientDataKey = "pendingRecipientData", // NEW
+        pendingPaymentMessageKey = "pendingPaymentMessage"; // NEW
+
       let selectedContactId = null,
         contacts = [],
         editingContact = null;
@@ -651,7 +711,7 @@
           id: 14,
           name: "punchmadedomo",
           cashtag: "$denaro",
-          avatar: "images/coffe.png",
+          avatar: "images/demo.jpg",
           color: "#DAA520",
         },
       ];
@@ -674,6 +734,14 @@
       const saveContacts = () => {
         localStorage.setItem(contactStorageKey, JSON.stringify(contacts));
       };
+
+      // --- MODIFIED: New function to validate Pay button state ---
+      function validatePayButton() {
+        const isRecipientEntered =
+          selectedContactId !== null || toInput.value.trim().length > 0;
+        payBtn.disabled = !isRecipientEntered;
+      }
+
       function renderContacts() {
         contactListEl.innerHTML = "";
         contacts.forEach((contact, i) => {
@@ -709,16 +777,15 @@
         if (!isSelected) {
           targetItem.classList.add("selected");
           selectedContactId = id;
-          payBtn.disabled = false;
           const c = contacts.find((c) => c.id == id);
           toInput.value = c.name;
           toInputCursor.style.display = "none";
         } else {
           selectedContactId = null;
-          payBtn.disabled = true;
           toInput.value = "";
           toInputCursor.style.display = "block";
         }
+        validatePayButton(); // MODIFIED
         filterContacts();
       }
       function openEditModal(id) {
@@ -778,6 +845,63 @@
         alertModalOverlay.classList.remove("show");
       }
 
+      // --- MODIFIED: Pay Button Logic is now completely different ---
+      function handlePayment() {
+        const paymentAmount = parseFloat(
+          localStorage.getItem(paymentAmountKey) || "0"
+        );
+        const cashBalance = parseFloat(
+          localStorage.getItem(balanceStorageKey) || "11536549.00"
+        );
+
+        if (paymentAmount > cashBalance) {
+          showAlert("Insufficient funds");
+          return;
+        }
+
+        let recipientData;
+
+        // Case 1: A contact from the list is selected
+        if (selectedContactId) {
+          recipientData = contacts.find((c) => c.id == selectedContactId);
+        }
+        // Case 2: A random cashtag/name is typed
+        else if (toInput.value.trim()) {
+          const typedValue = toInput.value.trim();
+          recipientData = {
+            id: `random_${Date.now()}`, // Unique ID for this transaction
+            name: typedValue,
+            cashtag: typedValue.startsWith("$")
+              ? typedValue
+              : `$${typedValue.toLowerCase().replace(/[^a-z0-9]/g, "")}`,
+            avatar: "", // No avatar for random contacts
+            color: "#6c757d", // Default gray color
+          };
+        }
+        // Case 3: Nothing is entered (button should be disabled anyway)
+        else {
+          return;
+        }
+
+        // Save data for payment-result.html to use
+        localStorage.setItem(
+          pendingRecipientDataKey,
+          JSON.stringify(recipientData)
+        );
+        const paymentNote = forInput.value.trim();
+        if (paymentNote) {
+          localStorage.setItem(pendingPaymentMessageKey, paymentNote);
+        } else {
+          localStorage.removeItem(pendingPaymentMessageKey);
+        }
+
+        // Show loader and redirect after 5 seconds
+        loadingOverlay.style.display = "flex";
+        setTimeout(() => {
+          window.location.href = "payment-result.html";
+        }, 5000);
+      }
+
       document.addEventListener("DOMContentLoaded", () => {
         const paymentAmountRaw = localStorage.getItem(paymentAmountKey);
         if (!paymentAmountRaw || parseFloat(paymentAmountRaw) <= 0) {
@@ -785,7 +909,6 @@
           return;
         }
 
-        // **FIXED**: Default value is now a proper number, not a string with commas.
         const cashBalance = parseFloat(
           localStorage.getItem(balanceStorageKey) || "11536549.00"
         );
@@ -796,8 +919,10 @@
         sourceDisplay.innerHTML = `Cash Balance ${formatCurrency(
           cashBalance
         )} <i class="fa-solid fa-chevron-down fa-xs"></i>`;
+
         contacts = getContacts();
         renderContacts();
+
         contactListEl.addEventListener("click", (e) => {
           if (e.target.closest(".contact-icon")) {
             openEditModal(e.target.closest(".contact-icon").dataset.editId);
@@ -806,10 +931,19 @@
             if (item) handleContactSelection(item);
           }
         });
+
         toInput.addEventListener("input", () => {
+          // If user starts typing, deselect any chosen contact
+          if (selectedContactId) {
+            const selectedEl = document.querySelector(".contact-item.selected");
+            if (selectedEl) selectedEl.classList.remove("selected");
+            selectedContactId = null;
+          }
           toInputCursor.style.display = "none";
+          validatePayButton();
           filterContacts();
         });
+
         toInput.addEventListener("focus", () => {
           if (!selectedContactId) toInputCursor.style.display = "block";
         });
@@ -817,6 +951,7 @@
           if (toInput.value.length === 0) toInputCursor.style.display = "block";
           else toInputCursor.style.display = "none";
         });
+
         editAvatar.addEventListener("click", () => editPicInput.click());
         editPicInput.addEventListener("change", (e) => {
           const f = e.target.files[0];
@@ -854,22 +989,10 @@
             .forEach((b) => b.classList.remove("active"));
           btn.classList.add("active");
         });
-        payBtn.addEventListener("click", () => {
-          const paymentAmount = parseFloat(
-            localStorage.getItem(paymentAmountKey) || "0"
-          );
-          const cashBalance = parseFloat(
-            localStorage.getItem(balanceStorageKey) || "0"
-          );
-          if (selectedContactId) {
-            if (paymentAmount > cashBalance) {
-              showAlert("Insufficient funds");
-            } else {
-              localStorage.setItem("selectedContactId", selectedContactId);
-              window.location.href = "pin.html";
-            }
-          }
-        });
+
+        // MODIFIED: Attach the new payment handler
+        payBtn.addEventListener("click", handlePayment);
+
         alertOkBtn.addEventListener("click", hideAlert);
       });
     </script>
