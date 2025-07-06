@@ -14,6 +14,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <script src="guard.js"></script>
     <style>
       :root {
         --header-height: 65px;
@@ -565,7 +566,7 @@
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         })}`;
-      
+
       // --- FIX --- Reverted to your original styling for payment amounts (e.g., $50 instead of $50.00)
       const formatSimpleCurrency = (amount) =>
         `$${Math.abs(amount).toLocaleString("en-US")}`;
@@ -591,7 +592,7 @@
         const transactions = (
           JSON.parse(localStorage.getItem(transactionsKey)) || []
         ).sort((a, b) => new Date(b.date) - new Date(a.date));
-        
+
         const contacts =
           JSON.parse(localStorage.getItem(contactStorageKey)) ||
           defaultContacts;
@@ -608,11 +609,15 @@
           if (!searchTerm) return true;
           if (t.amount.toString().includes(searchTerm)) return true;
           if (t.type.includes(searchTerm)) return true;
-          
+
           // --- FIX --- Search now correctly checks both old and new transaction formats.
           if (t.type === "payment") {
-            const recipientName = t.recipient ? t.recipient.name : (contacts.find(c => c.id == t.contactId) || {}).name;
-            return recipientName && recipientName.toLowerCase().includes(searchTerm);
+            const recipientName = t.recipient
+              ? t.recipient.name
+              : (contacts.find((c) => c.id == t.contactId) || {}).name;
+            return (
+              recipientName && recipientName.toLowerCase().includes(searchTerm)
+            );
           }
           return false;
         });
@@ -662,8 +667,8 @@
                 }
 
                 // If for some reason the recipient isn't found, skip this item to prevent errors.
-                if (!recipient) break; 
-                
+                if (!recipient) break;
+
                 avatar = recipient.avatar
                   ? `<img src="${recipient.avatar}" class="transaction-avatar" />`
                   : `<div class="transaction-avatar" style="background-color:${
@@ -717,7 +722,7 @@
           recipient = contacts.find((c) => c.id == transaction.contactId);
         }
         if (!recipient) return;
-        
+
         const time = new Date(transaction.date).toLocaleTimeString("en-US", {
           hour: "numeric",
           minute: "2-digit",
@@ -742,7 +747,8 @@
         detailsOverlay.innerHTML = `<header class="details-header"><button class="details-close-btn" id="details-close-btn">×</button></header><main class="details-content"><div class="details-hero">${avatar}<h1 class="transaction-name">${
           recipient.name
         }</h1><p class="transaction-info">Today at ${time}</p><h2 class="details-amount">${formatCurrency(
-          transaction.amount, false
+          transaction.amount,
+          false
         )}</h2></div><ul class="details-list"><li class="details-item"><i class="details-icon fa-solid fa-check"></i><span class="details-label">${statusText}</span><span class="details-value">${statusDetail}</span></li><li class="details-item"><i class="details-icon fa-solid fa-user-group"></i><span class="details-label">Payment between</span><div class="details-value">To: ${
           recipient.name
         }<br>From: ${
