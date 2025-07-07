@@ -34,7 +34,7 @@
         --header-height: 65px;
         --padding-screen: 18px;
         --footer-height: 70px;
-        --accent-green: #19b93b;
+        --accent-green: #00d54b;
         --text-on-green: #ffffff;
         --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
           sans-serif;
@@ -81,8 +81,8 @@
         width: 100%;
         height: 100%;
         margin: 0 auto;
-        display: flex;
-        flex-direction: column;
+        display: grid; /* Switched to Grid for perfect row control */
+        grid-template-rows: auto 1fr auto; /* Header, Main (flexible), Footer */
         position: relative;
       }
 
@@ -115,28 +115,36 @@
         object-fit: cover;
       }
 
-      /* Main Content */
+      /* Main Content (Middle, Flexible Row) */
       .pay-main {
-        flex-grow: 1;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
-        padding-bottom: 85px; /* Space for footer */
+        justify-content: flex-end; /* Align content towards the bottom */
       }
 
-      /* Amount Display */
+      /* Amount Display (Takes up all remaining space) */
       .amount-display {
-        margin-top: 30px;
+        flex-grow: 1; /* This makes it take all available vertical space */
+        display: flex;
+        align-items: center; /* Vertically centers the text */
+        justify-content: center; /* Horizontally centers the text */
         text-align: center;
-        padding: 2vh 0;
+        padding: 1rem var(--padding-screen);
         font-variant-numeric: tabular-nums;
       }
       .amount-text {
-        font-size: clamp(60px, 18vw, 90px);
+        font-size: clamp(80px, 22vw, 120px); /* MADE BIGGER */
         font-weight: 500;
         line-height: 1.1;
-        min-height: 1em;
       }
+
+      /* --- NEW: Keypad Wrapper for fixed bottom positioning --- */
+      .keypad-wrapper {
+        padding: 0 var(--padding-screen);
+        padding-bottom: 1rem; /* Space from bottom of main area */
+        flex-shrink: 0; /* Prevents it from shrinking */
+      }
+
       /* CHANGE 3: Completely hiding the cursor. */
       .amount-text .cursor {
         display: none;
@@ -155,9 +163,7 @@
       .pay-keypad {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 1vh 20px;
-        padding: 0 18px;
-        margin-top: 3.5rem;
+        gap: 1.5vh 20px; /* Adjusted gap slightly for better feel */
       }
       .keypad-btn {
         background: none;
@@ -212,14 +218,8 @@
         display: flex;
         justify-content: space-around;
         align-items: center;
-        background-color: var(--accent-green);
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 65px;
+        height: var(--footer-height);
         padding: 0 18px;
-        z-index: 200;
       }
       .nav-button {
         background: none;
