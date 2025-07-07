@@ -21,8 +21,13 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-     <script src="guard.js"></script>
+    <script src="guard.js"></script>
     <style>
+      @font-face {
+        font-family: "CashMarket";
+        font-style: normal;
+        src: url(font/CashMarket-MediumRounded.otf);
+      }
       :root {
         --header-height: 65px;
         --padding-screen: 18px;
@@ -30,8 +35,8 @@
         --accent-green: #00d54b;
         --text-on-green: #ffffff;
         /* **NEW**: Using Inter font */
-        --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+        --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
+          sans-serif;
       }
       * {
         margin: 0;
