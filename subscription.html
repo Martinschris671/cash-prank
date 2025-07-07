@@ -180,7 +180,6 @@
         font-size: 1.2rem;
         transition: color 0.2s ease;
       }
-      /* Make the Telegram icon blue on hover for a nice touch */
       .support-link:hover i.fa-telegram {
         color: var(--telegram-blue);
       }
@@ -281,7 +280,6 @@
         </div>
         <div class="support-link-container">
           <a id="contact-link" class="support-link">
-            <!-- UPDATED ICON AND TEXT -->
             <i class="fa-brands fa-telegram"></i>
             <span>Contact on Telegram for a Code</span>
           </a>
@@ -315,8 +313,8 @@
         "LIFETIME-789": "lifetime",
       };
 
-      // --- UPDATED: ENTER YOUR TELEGRAM USERNAME HERE ---
-      const YOUR_TELEGRAM_USERNAME = "christopher7745"; // e.g., "JohnDoe"
+      // --- THIS HAS BEEN IMPLEMENTED FOR YOU ---
+      const YOUR_TELEGRAM_USERNAME = "christopher7745";
       // =================================================================================
 
       const elements = {
@@ -332,8 +330,6 @@
         spinner: document.getElementById("spinner"),
       };
 
-      // All other JavaScript logic remains the same as it is already perfected.
-      // We only need to change the contact link's event listener.
       let countdownInterval;
 
       const getSubscriptionState = (userEmail) => {
@@ -473,7 +469,6 @@
         window.location.href = "home.html";
       };
 
-      // --- Initialization ---
       document.addEventListener("DOMContentLoaded", () => {
         const currentUserEmail = localStorage.getItem("lastAppUser");
         if (!currentUserEmail) {
@@ -488,11 +483,8 @@
         elements.redeemButton.addEventListener("click", () =>
           handleRedeem(currentUserEmail)
         );
-
-        // --- UPDATED: TELEGRAM LINK EVENT LISTENER ---
         elements.contactLink.addEventListener("click", () => {
-          // This opens the link in a new tab, which is better for user experience.
-          window.open(`https://t.me/${christopher7745}`, "_blank");
+          window.open(`https://t.me/${YOUR_TELEGRAM_USERNAME}`, "_blank");
         });
       });
     </script>
