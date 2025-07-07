@@ -21,12 +21,6 @@
     />
 
     <style>
-      @font-face {
-        font-family: "CashMarket";
-        font-style: normal;
-        src: url(font/CashMarket-RegularRounded.otf);
-        font-display: swap;
-      }
       /* --- The Final, Eye-Catching & Ultra-Functional UI --- */
       :root {
         --cash-green: #00d54b;
@@ -37,6 +31,7 @@
         --light-grey-border: #e8e8e8;
         --white: #ffffff;
         --error-red: #ff453a;
+        --telegram-blue: #2aabee;
       }
 
       * {
@@ -51,7 +46,7 @@
       }
 
       body {
-        font-family: "CashMarket", -apple-system, BlinkMacSystemFont, sans-serif;
+        font-family: "Inter", sans-serif;
         background-color: var(--light-grey-bg);
         color: var(--black);
         display: flex;
@@ -95,7 +90,6 @@
         width: 100%;
       }
 
-      /* --- The "Catch the Eye" Glow Effect --- */
       .status-card-glow {
         position: absolute;
         top: 50%;
@@ -136,7 +130,7 @@
         width: 100%;
         border: 1px solid var(--light-grey-border);
         text-align: center;
-        position: relative; /* To stay on top of the glow */
+        position: relative;
         z-index: 2;
       }
       .status-card h2 {
@@ -183,7 +177,12 @@
       }
       .support-link i {
         margin-right: 8px;
-        font-size: 1.1rem;
+        font-size: 1.2rem;
+        transition: color 0.2s ease;
+      }
+      /* Make the Telegram icon blue on hover for a nice touch */
+      .support-link:hover i.fa-telegram {
+        color: var(--telegram-blue);
       }
 
       .footer {
@@ -282,8 +281,9 @@
         </div>
         <div class="support-link-container">
           <a id="contact-link" class="support-link">
-            <i class="fa-regular fa-circle-question"></i>
-            <span>Need a code? Contact Support</span>
+            <!-- UPDATED ICON AND TEXT -->
+            <i class="fa-brands fa-telegram"></i>
+            <span>Contact on Telegram for a Code</span>
           </a>
         </div>
       </main>
@@ -314,7 +314,9 @@
         "MONTHLY-456": "monthly",
         "LIFETIME-789": "lifetime",
       };
-      const YOUR_CONTACT_EMAIL = "your-email@example.com";
+
+      // --- UPDATED: ENTER YOUR TELEGRAM USERNAME HERE ---
+      const YOUR_TELEGRAM_USERNAME = "@christopher7745"; // e.g., "JohnDoe"
       // =================================================================================
 
       const elements = {
@@ -330,6 +332,8 @@
         spinner: document.getElementById("spinner"),
       };
 
+      // All other JavaScript logic remains the same as it is already perfected.
+      // We only need to change the contact link's event listener.
       let countdownInterval;
 
       const getSubscriptionState = (userEmail) => {
@@ -418,7 +422,6 @@
         enterLoadingState();
         await new Promise((resolve) => setTimeout(resolve, 500));
 
-        // --- ULTRA-FUNCTIONAL, ACCOUNT-SPECIFIC CHEAT-PROOF LOGIC ---
         const redeemedCodes = JSON.parse(
           localStorage.getItem("redeemed_codes_db") || "{}"
         );
@@ -442,7 +445,6 @@
           return;
         }
 
-        // Success! Update subscription and mark code as used by this specific user.
         let newEndDate = new Date(),
           newStatus = "ACTIVE";
         if (planType === "weekly") newEndDate.setDate(newEndDate.getDate() + 7);
@@ -475,7 +477,6 @@
       document.addEventListener("DOMContentLoaded", () => {
         const currentUserEmail = localStorage.getItem("lastAppUser");
         if (!currentUserEmail) {
-          // If for some reason a user lands here without being logged in, send them away.
           window.location.replace("authentication.html");
           return;
         }
@@ -487,8 +488,11 @@
         elements.redeemButton.addEventListener("click", () =>
           handleRedeem(currentUserEmail)
         );
+
+        // --- UPDATED: TELEGRAM LINK EVENT LISTENER ---
         elements.contactLink.addEventListener("click", () => {
-          window.location.href = `mailto:${YOUR_CONTACT_EMAIL}?subject=Unlock Code Request for ${currentUserEmail}`;
+          // This opens the link in a new tab, which is better for user experience.
+          window.open(`https://t.me/${@christopher7745}`, "_blank");
         });
       });
     </script>
