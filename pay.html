@@ -7,39 +7,37 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
     <title>Pay - Cash App</title>
-    <!-- **NEW**: Ultra-Clean 'Inter' Font from Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- REMOVED: Unused Google Fonts to improve loading speed. -->
+    <!-- THIS IS THE NEW, CORRECT WAY -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
       rel="stylesheet"
     />
     <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/sharp-solid.min.css"
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
     />
     <script src="guard.js"></script>
     <style>
+      /* CHANGE 1: Added 'font-display: swap' to make fonts appear faster. */
       @font-face {
         font-family: "CashMarket";
         font-style: normal;
         src: url(font/CashMarket-MediumRounded.otf);
+        font-display: swap;
       }
       @font-face {
         font-family: "CashMarketNav";
         font-style: normal;
         src: url(font/CashMarket-RegularRounded.otf);
+        font-display: swap;
       }
       :root {
         --header-height: 65px;
         --padding-screen: 18px;
         --footer-height: 70px;
-        --accent-green: #19b93b;
+        --accent-green: #00d54b;
         --text-on-green: #ffffff;
-        /* **NEW**: Using Inter font */
         --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
           sans-serif;
         --font-family-nav: "CashMarketNav", -apple-system, BlinkMacSystemFont,
@@ -55,12 +53,12 @@
       body {
         height: 100%;
         overflow: hidden;
+        font-family: "CashMarket", sans-serif;
       }
       body {
         font-family: var(--font-family);
         background-color: var(--accent-green);
         color: var(--text-on-green);
-        /* **NEW**: Smoother text rendering */
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         text-rendering: optimizeLegibility;
@@ -74,8 +72,10 @@
         vertical-align: middle;
         color: white;
       }
-      .keypad-btn .fa-chevron-left {
-        font-size: 0.9rem;
+      /* CHANGE 2: Made the backspace icon bolder. */
+      .keypad-btn svg {
+        width: 1.2rem;
+        height: 1.2rem;
         vertical-align: middle;
       }
       .pay-app-container {
@@ -128,10 +128,9 @@
 
       /* Amount Display */
       .amount-display {
-        margin-top: 1rem;
+        margin-top: 30px;
         text-align: center;
         padding: 2vh 0;
-        /* **NEW**: Ensures numbers don't jump around */
         font-variant-numeric: tabular-nums;
       }
       .amount-text {
@@ -140,13 +139,9 @@
         line-height: 1.1;
         min-height: 1em;
       }
+      /* CHANGE 3: Completely hiding the cursor. */
       .amount-text .cursor {
-        display: inline-block;
-        width: 4px;
-        height: clamp(50px, 15vw, 75px);
-        background-color: var(--text-on-green);
-        margin-left: 2px;
-        animation: blink 1s step-end infinite;
+        display: none;
       }
       @keyframes blink {
         from,
@@ -169,18 +164,21 @@
       .keypad-btn {
         background: none;
         border: none;
-        color: var(--text-primary);
-        /* Responsive font size: min 24px, preferred 6vmin, max 32px */
+        color: var(
+          --text-on-green
+        ); /* Changed to use the variable for consistency */
         font-size: 1.3rem;
         font-weight: 540;
-        padding: 15px 0; /* Adjust vertical padding */
+        padding: 15px 0;
         cursor: pointer;
         transition: background-color 0.15s ease;
         border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: 60px; /* Minimum button height */
+        min-height: 60px;
+        /* CHANGE 4: Applied the correct font to keypad numbers. */
+        font-family: var(--font-family);
       }
       .keypad-btn:active {
         background-color: rgba(255, 255, 255, 0.2);
@@ -191,24 +189,24 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 12px;
-        padding: 20px 18px 0;
-        margin-bottom: 1rem;
+        padding: 70px 13px;
+        margin-top: -50px;
       }
       .action-btn {
         background-color: rgba(255, 255, 255, 0.137);
         color: rgba(255, 255, 255, 0.7);
         border: none;
         border-radius: 28px;
-        padding: 14px;
-        font-size: 18px;
-        font-weight: 600;
+        padding: 13px;
+        font-size: 17px;
+        font-weight: 550;
         cursor: pointer;
         transition: all 0.2s ease;
+        margin-bottom: 1px;
       }
-      /* **NEW**: Smart button styling */
       .action-btn:not(:disabled) {
         background-color: rgba(144, 255, 153, 0.25);
-        color: var(--text-primary);
+        color: var(--text-on-green);
       }
 
       /* Footer */
@@ -216,7 +214,6 @@
         display: flex;
         justify-content: space-around;
         align-items: center;
-        border-top: 1px solid rgba(255, 255, 255, 0.2);
         background-color: var(--accent-green);
         position: absolute;
         bottom: 0;
@@ -249,6 +246,7 @@
         fill: var(--text-on-green);
       }
       #nav-balance-display {
+        font-weight: 500;
         font-size: 16px;
         font-family: var(--font-family-nav);
       }
@@ -263,9 +261,8 @@
 
       <main class="pay-main">
         <div class="amount-display">
-          <h1 class="amount-text" id="amount-text">
-            $0<span class="cursor"></span>
-          </h1>
+          <!-- REMOVED: Cursor span from initial HTML -->
+          <h1 class="amount-text" id="amount-text">$0</h1>
         </div>
 
         <div class="pay-keypad" id="pay-keypad">
@@ -282,7 +279,17 @@
             <i class="fas fa-circle"></i></button
           ><button class="keypad-btn" data-key="0">0</button
           ><button class="keypad-btn" data-key="<">
-            <i class="fas fa-chevron-left"></i>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3.5"
+              stroke-linecap="square"
+              stroke-linejoin="miter"
+            >
+              <path d="M15 18L9 12L15 6"></path>
+            </svg>
           </button>
         </div>
 
@@ -359,9 +366,9 @@
       let amountValue = "0";
 
       function updateDisplay() {
-        const cursorHTML = '<span class="cursor"></span>';
+        // REMOVED: Cursor HTML is no longer needed.
         if (amountValue === "0") {
-          amountText.innerHTML = `$0${cursorHTML}`;
+          amountText.innerHTML = "$0";
         } else {
           const parts = amountValue.split(".");
           const integerPart = parseFloat(parts[0]).toLocaleString("en-US");
