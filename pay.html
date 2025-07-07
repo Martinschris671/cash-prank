@@ -28,14 +28,21 @@
         font-style: normal;
         src: url(font/CashMarket-MediumRounded.otf);
       }
+      @font-face {
+        font-family: "CashMarketNav";
+        font-style: normal;
+        src: url(font/CashMarket-RegularRounded.otf);
+      }
       :root {
         --header-height: 65px;
         --padding-screen: 18px;
         --footer-height: 70px;
-        --accent-green: #00d54b;
+        --accent-green: #19b93b;
         --text-on-green: #ffffff;
         /* **NEW**: Using Inter font */
         --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
+          sans-serif;
+        --font-family-nav: "CashMarketNav", -apple-system, BlinkMacSystemFont,
           sans-serif;
       }
       * {
@@ -62,7 +69,15 @@
         text-decoration: none;
         color: inherit;
       }
-
+      .keypad-btn .fa-circle {
+        font-size: 0.3rem;
+        vertical-align: middle;
+        color: white;
+      }
+      .keypad-btn .fa-chevron-left {
+        font-size: 0.9rem;
+        vertical-align: middle;
+      }
       .pay-app-container {
         max-width: 450px;
         width: 100%;
@@ -156,8 +171,8 @@
         border: none;
         color: var(--text-primary);
         /* Responsive font size: min 24px, preferred 6vmin, max 32px */
-        font-size: clamp(24px, 6vmin, 32px);
-        font-weight: 400;
+        font-size: 1.3rem;
+        font-weight: 540;
         padding: 15px 0; /* Adjust vertical padding */
         cursor: pointer;
         transition: background-color 0.15s ease;
@@ -235,6 +250,7 @@
       }
       #nav-balance-display {
         font-size: 16px;
+        font-family: var(--font-family-nav);
       }
     </style>
   </head>
@@ -262,10 +278,11 @@
           <button class="keypad-btn" data-key="7">7</button
           ><button class="keypad-btn" data-key="8">8</button
           ><button class="keypad-btn" data-key="9">9</button>
-          <button class="keypad-btn" data-key=".">.</button
+          <button class="keypad-btn" data-key=".">
+            <i class="fas fa-circle"></i></button
           ><button class="keypad-btn" data-key="0">0</button
           ><button class="keypad-btn" data-key="<">
-            <i class="fa-solid fa-delete-left"></i>
+            <i class="fas fa-chevron-left"></i>
           </button>
         </div>
 
