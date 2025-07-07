@@ -74,7 +74,7 @@
       .keypad-btn svg {
         vertical-align: middle;
         width: 1.2rem;
-        width: 1.2rem;
+        height: 1.2rem; /* Corrected typo 'width' to 'height' */
       }
       .pay-app-container {
         max-width: 450px;
@@ -136,6 +136,7 @@
         font-size: clamp(80px, 22vw, 120px); /* MADE BIGGER */
         font-weight: 500;
         line-height: 1.1;
+        white-space: nowrap; /* Prevents text from wrapping during resize checks */
       }
 
       /* --- NEW: Keypad Wrapper for fixed bottom positioning --- */
@@ -262,37 +263,41 @@
           <h1 class="amount-text" id="amount-text">$0</h1>
         </div>
 
-        <div class="pay-keypad" id="pay-keypad">
-          <button class="keypad-btn" data-key="1">1</button
-          ><button class="keypad-btn" data-key="2">2</button
-          ><button class="keypad-btn" data-key="3">3</button>
-          <button class="keypad-btn" data-key="4">4</button
-          ><button class="keypad-btn" data-key="5">5</button
-          ><button class="keypad-btn" data-key="6">6</button>
-          <button class="keypad-btn" data-key="7">7</button
-          ><button class="keypad-btn" data-key="8">8</button
-          ><button class="keypad-btn" data-key="9">9</button>
-          <button class="keypad-btn" data-key=".">
-            <i class="fas fa-circle"></i></button
-          ><button class="keypad-btn" data-key="0">0</button
-          ><button class="keypad-btn" data-key="<">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="3.5"
-              stroke-linecap="square"
-              stroke-linejoin="miter"
-            >
-              <path d="M15 18L9 12L15 6"></path>
-            </svg>
-          </button>
-        </div>
+        <div class="keypad-wrapper">
+          <div class="pay-keypad" id="pay-keypad">
+            <button class="keypad-btn" data-key="1">1</button
+            ><button class="keypad-btn" data-key="2">2</button
+            ><button class="keypad-btn" data-key="3">3</button>
+            <button class="keypad-btn" data-key="4">4</button
+            ><button class="keypad-btn" data-key="5">5</button
+            ><button class="keypad-btn" data-key="6">6</button>
+            <button class="keypad-btn" data-key="7">7</button
+            ><button class="keypad-btn" data-key="8">8</button
+            ><button class="keypad-btn" data-key="9">9</button>
+            <button class="keypad-btn" data-key=".">
+              <i class="fas fa-circle"></i></button
+            ><button class="keypad-btn" data-key="0">0</button
+            ><button class="keypad-btn" data-key="<">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3.5"
+                stroke-linecap="square"
+                stroke-linejoin="miter"
+              >
+                <path d="M15 18L9 12L15 6"></path>
+              </svg>
+            </button>
+          </div>
 
-        <div class="pay-actions">
-          <button class="action-btn" id="request-btn" disabled>Request</button>
-          <button class="action-btn" id="pay-btn" disabled>Pay</button>
+          <div class="pay-actions">
+            <button class="action-btn" id="request-btn" disabled>
+              Request
+            </button>
+            <button class="action-btn" id="pay-btn" disabled>Pay</button>
+          </div>
         </div>
       </main>
 
@@ -363,7 +368,6 @@
       let amountValue = "0";
 
       function updateDisplay() {
-        // REMOVED: Cursor HTML is no longer needed.
         if (amountValue === "0") {
           amountText.innerHTML = "$0";
         } else {
@@ -375,6 +379,26 @@
               : `$${integerPart}`;
         }
 
+        // --- THIS IS THE DYNAMIC FONT SIZING LOGIC YOU REQUESTED ---
+        const parent = amountText.parentElement;
+        const maxTextWidth = parent.clientWidth * 0.9; // Allow 10% padding on the sides
+        amountText.style.fontSize = ""; // Reset to the CSS default first
+
+        // This loop shrinks the font size if the text overflows its container
+        if (amountText.scrollWidth > maxTextWidth) {
+          let currentFontSize = parseFloat(
+            window.getComputedStyle(amountText).fontSize
+          );
+          while (
+            amountText.scrollWidth > maxTextWidth &&
+            currentFontSize > 10
+          ) {
+            currentFontSize--;
+            amountText.style.fontSize = `${currentFontSize}px`;
+          }
+        }
+        // --- END OF DYNAMIC FONT SIZING LOGIC ---
+
         const numericValue = parseFloat(amountValue);
         const isEnabled = numericValue > 0;
         requestBtn.disabled = !isEnabled;
@@ -382,6 +406,9 @@
       }
 
       function handleKeyPress(key) {
+        // Limit total length to prevent excessive numbers
+        if (amountValue.length > 12 && key !== "<") return;
+
         if (key === "<") {
           amountValue = amountValue.length > 1 ? amountValue.slice(0, -1) : "0";
         } else if (key === ".") {
