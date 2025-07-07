@@ -8,14 +8,12 @@
     />
     <title>Pay - Cash App</title>
     <!-- REMOVED: Unused Google Fonts to improve loading speed. -->
-    <!-- THIS IS THE NEW, CORRECT WAY -->
     <link
+      rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/sharp-solid.min.css"
-      rel="stylesheet"
+      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
     />
     <script src="guard.js"></script>
     <style>
@@ -36,7 +34,7 @@
         --header-height: 65px;
         --padding-screen: 18px;
         --footer-height: 70px;
-        --accent-green: #00d54b;
+        --accent-green: #19b93b;
         --text-on-green: #ffffff;
         --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
           sans-serif;
@@ -74,9 +72,9 @@
       }
       /* CHANGE 2: Made the backspace icon bolder. */
       .keypad-btn svg {
-        width: 1.2rem;
-        height: 1.2rem;
         vertical-align: middle;
+        width: 1.2rem;
+        width: 1.2rem;
       }
       .pay-app-container {
         max-width: 450px;
@@ -189,8 +187,8 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 12px;
-        padding: 70px 13px;
-        margin-top: -50px;
+        padding: 20px 13px;
+        margin-bottom: 1px;
       }
       .action-btn {
         background-color: rgba(255, 255, 255, 0.137);
@@ -246,7 +244,6 @@
         fill: var(--text-on-green);
       }
       #nav-balance-display {
-        font-weight: 500;
         font-size: 16px;
         font-family: var(--font-family-nav);
       }
