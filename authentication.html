@@ -18,6 +18,12 @@
     />
 
     <style>
+            @font-face {
+        font-family: "CashMarket";
+        font-style: normal;
+        src: url(font/CashMarket-RegularRounded.otf);
+        font-display: swap;
+      }
       /* --- The Final, "Perfect Feel" Cash App UI --- */
       :root {
         --cash-green: #00d54b;
@@ -41,7 +47,8 @@
       }
 
       body {
-        font-family: "Inter", sans-serif;
+        font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
+          sans-serif;
         background-color: var(--light-grey-bg);
         color: var(--black);
         display: flex;
