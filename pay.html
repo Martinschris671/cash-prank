@@ -143,7 +143,6 @@
       /* --- NEW: Keypad Wrapper for fixed bottom positioning --- */
       .keypad-wrapper {
         padding: 0 var(--padding-screen);
-        padding-bottom: 1rem; /* Space from bottom of main area */
         flex-shrink: 0; /* Prevents it from shrinking */
       }
 
@@ -182,7 +181,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: 60px;
+        min-height: 50px;
         /* CHANGE 4: Applied the correct font to keypad numbers. */
         font-family: var(--font-family);
       }
@@ -195,8 +194,7 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 12px;
-        padding: 20px 13px;
-        margin-bottom: 1px;
+        padding: 5px 1px 0 1px;
       }
       .action-btn {
         background-color: rgba(255, 255, 255, 0.137);
