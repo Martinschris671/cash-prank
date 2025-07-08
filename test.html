@@ -29,10 +29,10 @@
         font-display: swap;
       }
       :root {
-        --header-height: 65px;
-        --padding-screen: 18px;
-        --footer-height: 65px;
-        --accent-green: #00d54b; /* CORRECTED: Official Cash App green */
+        --header-height: 55px;
+        --padding-screen: 20px;
+        --footer-height: 60px;
+        --accent-green: #00d54b;
         --text-on-green: #ffffff;
         --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
           sans-serif;
@@ -49,10 +49,9 @@
       body {
         height: 100%;
         overflow: hidden;
-        font-family: "CashMarket", sans-serif;
+        font-family: var(--font-family);
       }
       body {
-        font-family: var(--font-family);
         background-color: var(--accent-green);
         color: var(--text-on-green);
         -webkit-font-smoothing: antialiased;
@@ -63,136 +62,147 @@
         text-decoration: none;
         color: inherit;
       }
-
-      /* --- NEW: ULTRA-RESPONSIVE LAYOUT STRUCTURE --- */
       .pay-app-container {
         max-width: 450px;
         width: 100%;
         height: 100%;
         margin: 0 auto;
-        display: grid; /* Switched to Grid for perfect row control */
-        grid-template-rows: auto 1fr auto; /* Header, Main (flexible), Footer */
+        display: grid;
+        grid-template-rows: var(--header-height) 1fr var(--footer-height);
         position: relative;
       }
 
-      /* Header (Top Row) */
+      /* Header */
       .pay-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 10px var(--padding-screen);
-        height: var(--header-height);
+        padding: 0 var(--padding-screen);
         flex-shrink: 0;
       }
       .header-icon {
-        font-size: 26px;
+        font-size: 28px;
+        color: white;
       }
-      .profile-icon-link {
-        display: block;
-        width: 36px;
-        height: 36px;
+      .profile-icon-wrapper {
+        position: relative;
+        width: 38px;
+        height: 38px;
       }
       .profile-icon {
         width: 100%;
         height: 100%;
-        border-radius: 50%;
         object-fit: cover;
+        fill: white;
+      }
+      .notification-badge {
+        position: absolute;
+        top: -1px;
+        right: -3px;
+        background-color: #ff453a;
+        color: white;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        font-weight: 600;
+        font-size: 11px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid var(--accent-green);
       }
 
-      /* Main Content (Middle, Flexible Row) */
+      /* Main Content Area */
       .pay-main {
         display: flex;
         flex-direction: column;
-        justify-content: flex-end; /* Align content towards the bottom */
+        justify-content: flex-end; /* Pushes content to the bottom */
+        padding: 0 var(--padding-screen);
+        overflow: hidden;
       }
 
-      /* Amount Display (Takes up all remaining space) */
+      /* Amount Display */
       .amount-display {
-        flex-grow: 1; /* This makes it take all available vertical space */
+        flex-grow: 1; /* Takes up all available space */
         display: flex;
-        align-items: center; /* Vertically centers the text */
-        justify-content: center; /* Horizontally centers the text */
+        align-items: center;
+        justify-content: center;
         text-align: center;
-        padding: 1rem var(--padding-screen);
-        font-variant-numeric: tabular-nums;
+        padding-bottom: 3vh; /* Space above keypad */
       }
       .amount-text {
-        font-size: clamp(80px, 22vw, 120px); /* MADE BIGGER */
+        font-size: clamp(90px, 25vw, 130px);
         font-weight: 500;
-        line-height: 1.1;
-      }
-
-      /* --- NEW: Keypad Wrapper for fixed bottom positioning --- */
-      .keypad-wrapper {
-        padding: 0 var(--padding-screen);
-        padding-bottom: 1rem; /* Space from bottom of main area */
-        flex-shrink: 0; /* Prevents it from shrinking */
+        line-height: 1;
+        transition: transform 0.1s ease-in-out; /* For pop animation */
       }
 
       /* Keypad */
       .pay-keypad {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 1.5vh 20px; /* Adjusted gap slightly for better feel */
+        gap: 2.5vh 20px; /* Precise vertical/horizontal gap */
+        margin-bottom: 4vh; /* Space between keypad and action buttons */
       }
       .keypad-btn {
         background: none;
         border: none;
         color: var(--text-on-green);
-        font-size: 1.3rem;
-        font-weight: 540;
-        padding: 15px 0;
+        font-family: var(--font-family);
+        font-size: 2rem; /* Larger font size */
+        font-weight: 500;
+        padding: 10px 0;
         cursor: pointer;
-        transition: background-color 0.15s ease;
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: 60px;
-        font-family: var(--font-family);
+        min-height: 50px;
+        transition: transform 0.08s ease-out, background-color 0.15s ease; /* Smooth scale transition */
       }
       .keypad-btn:active {
-        background-color: rgba(255, 255, 255, 0.2);
+        transform: scale(1.15); /* Scale up effect on click */
       }
       .keypad-btn .fa-circle {
-        font-size: 0.3rem;
+        font-size: 0.5rem; /* Larger decimal point */
         vertical-align: middle;
       }
       .keypad-btn svg {
-        width: 1.2rem;
-        height: 1.2rem;
+        width: 1.5rem;
+        height: 1.5rem;
       }
 
       /* Action Buttons */
       .pay-actions {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 12px;
-        padding-top: 1rem;
+        gap: 15px; /* Space between buttons */
+        margin-bottom: 20px; /* Space above footer */
       }
       .action-btn {
-        background-color: #333;
-        color: var(--text-on-green);
+        background-color: rgba(0, 0, 0, 0.15);
+        color: rgba(255, 255, 255, 0.5);
         border: none;
-        border-radius: 28px;
-        padding: 14px;
-        font-size: 17px;
-        font-weight: 550;
+        border-radius: 30px; /* More rounded corners */
+        padding: 15px;
+        font-family: var(--font-family);
+        font-size: 18px;
+        font-weight: 600;
         cursor: pointer;
         transition: all 0.2s ease;
       }
       .action-btn:not(:disabled) {
-        background-color: #fff;
-        color: #000;
+        background-color: #ffffff; /* White when active */
+        color: #000000; /* Black text when active */
       }
 
-      /* Footer (Bottom Row) */
+      /* Footer */
       .bottom-nav {
-        display: flex;
-        justify-content: space-around;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
         align-items: center;
-        height: var(--footer-height);
-        padding: 0 18px;
-        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 0 10px;
+        height: 100%;
       }
       .nav-button {
         background: none;
@@ -200,15 +210,18 @@
         cursor: pointer;
         padding: 8px;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        font-family: inherit;
+        height: 100%;
+        font-family: var(--font-family-nav);
         font-weight: 600;
         color: rgba(255, 255, 255, 0.7);
-        min-width: 44px;
+        font-size: 16px;
       }
       .nav-button svg {
         fill: rgba(255, 255, 255, 0.7);
+        margin-bottom: 4px; /* Space between icon and text if any */
       }
       .nav-button.active {
         color: var(--text-on-green);
@@ -216,165 +229,138 @@
       .nav-button.active svg {
         fill: var(--text-on-green);
       }
-      #nav-balance-display {
-        font-size: 16px;
-        font-family: var(--font-family-nav);
+      .nav-button-b {
+        font-family: var(--font-family);
+        font-size: 24px;
+        font-weight: 500;
       }
     </style>
   </head>
   <body>
     <div class="pay-app-container">
       <header class="pay-header">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="26"
-          height="26"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path
-            d="M3 8V6a2 2 0 0 1 2-2h2M3 16v2a2 2 0 0 0 2 2h2M16 3h2a2 2 0 0 1 2 2v2M21 16v2a2 2 0 0 1-2 2h-2M7 12h10"
-          />
-        </svg>
-        <a href="profile.html" class="profile-icon-link"></a>
+        <a href="#"><i class="fa-solid fa-qrcode header-icon"></i></a>
+        <a href="profile.html" class="profile-icon-wrapper">
+          <!-- Icon matching the screenshot -->
+          <svg
+            class="profile-icon"
+            viewBox="0 0 36 36"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M18 36C8.059 36 0 27.941 0 18S8.059 0 18 0s18 8.059 18 18-8.059 18-18 18zM9.9 28.52c.486-.811 1.6-1.996 3.255-2.586a10.82 10.82 0 0110.02 0c1.655.59 2.769 1.775 3.255 2.586A14.935 14.935 0 0118 33C14.161 33 10.74 31.253 9.9 28.52zM18 21a6 6 0 110-12 6 6 0 010 12z"
+            ></path>
+          </svg>
+          <div class="notification-badge">1</div>
+        </a>
       </header>
 
       <main class="pay-main">
         <div class="amount-display">
-          <h1 class="amount-text" id="amount-text">$0</h1>
+          <h1 class="amount-text" id="amount-text">$10</h1>
         </div>
 
-        <div class="keypad-wrapper">
-          <div class="pay-keypad" id="pay-keypad">
-            <button class="keypad-btn" data-key="1">1</button
-            ><button class="keypad-btn" data-key="2">2</button
-            ><button class="keypad-btn" data-key="3">3</button>
-            <button class="keypad-btn" data-key="4">4</button
-            ><button class="keypad-btn" data-key="5">5</button
-            ><button class="keypad-btn" data-key="6">6</button>
-            <button class="keypad-btn" data-key="7">7</button
-            ><button class="keypad-btn" data-key="8">8</button
-            ><button class="keypad-btn" data-key="9">9</button>
-            <button class="keypad-btn" data-key=".">
-              <i class="fas fa-circle"></i></button
-            ><button class="keypad-btn" data-key="0">0</button
-            ><button class="keypad-btn" data-key="<">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="3.5"
-                stroke-linecap="square"
-                stroke-linejoin="miter"
-              >
-                <path d="M15 18L9 12L15 6"></path>
-              </svg>
-            </button>
-          </div>
+        <div class="pay-keypad" id="pay-keypad">
+          <button class="keypad-btn" data-key="1">1</button>
+          <button class="keypad-btn" data-key="2">2</button>
+          <button class="keypad-btn" data-key="3">3</button>
+          <button class="keypad-btn" data-key="4">4</button>
+          <button class="keypad-btn" data-key="5">5</button>
+          <button class="keypad-btn" data-key="6">6</button>
+          <button class="keypad-btn" data-key="7">7</button>
+          <button class="keypad-btn" data-key="8">8</button>
+          <button class="keypad-btn" data-key="9">9</button>
+          <button class="keypad-btn" data-key=".">
+            <i class="fas fa-circle"></i>
+          </button>
+          <button class="keypad-btn" data-key="0">0</button>
+          <button class="keypad-btn" data-key="<">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="4.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M15 18L9 12L15 6"></path>
+            </svg>
+          </button>
+        </div>
 
-          <div class="pay-actions">
-            <button class="action-btn" id="request-btn" disabled>
-              Request
-            </button>
-            <button class="action-btn" id="pay-btn" disabled>Pay</button>
-          </div>
+        <div class="pay-actions">
+          <button class="action-btn" id="request-btn">Request</button>
+          <button class="action-btn" id="pay-btn">Pay</button>
         </div>
       </main>
 
       <nav class="bottom-nav">
-        <a href="home.html"
-          ><button
-            class="nav-button"
-            id="nav-balance-display"
-            aria-label="Home"
-          ></button
-        ></a>
-        <!-- ... other nav buttons ... -->
-        <a href="card.html"
-          ><button class="nav-button" aria-label="Cards">
-            <svg width="22" height="18" viewBox="0 0 24 21">
-              <path
-                transform="translate(-126.25 -18)"
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M131.25 21H145.25C146.355 21 147.25 21.8954 147.25 23V33C147.25 34.1046 146.355 35 145.25 35H131.25C130.145 35 129.25 34.1046 129.25 33V23C129.25 21.8954 130.145 21 131.25 21ZM126.25 23C126.25 20.2386 128.489 18 131.25 18H145.25C148.011 18 150.25 20.2386 150.25 23V33C150.25 35.7614 148.011 38 145.25 38H131.25C128.489 38 126.25 35.7614 126.25 33V23ZM134.25 24C133.145 24 132.25 24.8954 132.25 26C132.25 27.1046 133.145 28 134.25 28H135.25C136.355 28 137.25 27.1046 137.25 26C137.25 24.8954 136.355 24 135.25 24H134.25Z"
-              />
-            </svg>
-          </button>
-          ></a
-        >
-        <a href="#"
-          ><button class="nav-button active" aria-label="Pay">
-            <svg width="14" height="20" viewBox="0 0 15 23">
-              <path
-                transform="translate(-205 -17)"
-                d="M217.675 23.8903C217.923 24.1401 218.336 24.1401 218.569 23.8903L219.811 22.5912C220.075 22.3414 220.06 21.8917 219.782 21.6218C218.805 20.7669 217.671 20.1148 216.442 19.7032L216.835 17.8045C216.919 17.3897 216.611 17 216.199 17H213.794C213.643 17.0016 213.498 17.0551 213.382 17.1515C213.267 17.2479 213.187 17.3814 213.158 17.5296L212.81 19.2185C209.61 19.3834 206.897 21.0173 206.897 24.365C206.897 27.263 209.138 28.5071 211.508 29.3616C213.749 30.221 214.937 30.5408 214.937 31.7499C214.937 32.9941 213.754 33.7236 212.005 33.7236C210.415 33.7236 208.745 33.189 207.453 31.8848C207.393 31.8244 207.322 31.7765 207.243 31.7438C207.165 31.7111 207.081 31.6942 206.996 31.6942C206.911 31.6942 206.827 31.7111 206.748 31.7438C206.67 31.7765 206.599 31.8244 206.539 31.8848L205.197 33.2339C205.071 33.3613 205 33.5338 205 33.7136C205 33.8934 205.071 34.0659 205.197 34.1933C206.241 35.2276 207.562 35.9771 209.069 36.3918L208.701 38.1756C208.617 38.5903 208.92 38.975 209.332 38.98L211.743 39C211.895 39.0007 212.042 38.9482 212.16 38.8516C212.278 38.755 212.359 38.6202 212.388 38.4704L212.736 36.7765C216.586 36.5167 218.932 34.3831 218.932 31.2703C218.932 28.4022 216.596 27.193 213.764 26.2087C212.144 25.6041 210.743 25.1894 210.743 23.9453C210.743 22.7361 212.05 22.2564 213.361 22.2564C215.031 22.2564 216.636 22.9509 217.685 23.9003L217.675 23.8903Z"
-              />
-            </svg>
-          </button>
-          ></a
-        >
-        <a href="search.html"
-          ><button class="nav-button" aria-label="Search">
-            <svg width="21" height="21" viewBox="0 0 23 24">
-              <path
-                transform="translate(-276.25 -16.5)"
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M291.75 26.5C291.75 30.0899 288.84 33 285.25 33C281.66 33 278.75 30.0899 278.75 26.5C278.75 22.9101 281.66 20 285.25 20C288.84 20 291.75 22.9101 291.75 26.5ZM290.823 34.1944C289.258 35.3302 287.332 36 285.25 36C280.003 36 275.75 31.7467 275.75 26.5C275.75 21.2533 280.003 17 285.25 17C290.497 17 294.75 21.2533 294.75 26.5C294.75 28.582 294.08 30.5076 292.944 32.0731L297.882 37.0104C298.468 37.5962 298.468 38.546 297.882 39.1317C297.296 39.7175 296.346 39.7175 295.76 39.1317L290.823 34.1944Z"
-              />
-            </svg>
-          </button>
-          ></a
-        >
-        <a href="activty.html"
-          ><button class="nav-button" aria-label="Activity">
-            <svg width="22" height="22" viewBox="0 0 24 25">
-              <path
-                transform="translate(-349 -16)"
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M370 28C370 32.9706 365.971 37 361 37C356.029 37 352 32.9706 352 28C352 23.0294 356.029 19 361 19C365.971 19 370 23.0294 370 28ZM373 28C373 34.6274 367.627 40 361 40C354.373 40 349 34.6274 349 28C349 21.3726 354.373 16 361 16C367.627 16 373 21.3726 373 28ZM362.5 24C362.5 23.1716 361.828 22.5 361 22.5C360.172 22.5 359.5 23.1716 359.5 24V27.4893C359.5 28.4591 360.061 29.3414 360.939 29.753L364.363 31.3582C365.113 31.7098 366.007 31.3868 366.358 30.6367C366.71 29.8865 366.387 28.9934 365.637 28.6418L362.5 27.1715V24Z"
-              />
-            </svg>
-          </button>
-          ></a
-        >
+        <!-- Footer icons exactly from the image -->
+        <button class="nav-button" aria-label="Home">$20</button>
+        <button class="nav-button" aria-label="Cards">
+          <svg width="24" height="18" viewBox="0 0 24 18" fill="none">
+            <path
+              d="M2.5 0A2.5 2.5 0 000 2.5v13A2.5 2.5 0 002.5 18h19a2.5 2.5 0 002.5-2.5v-13A2.5 2.5 0 0021.5 0h-19zM1.5 2.5a1 1 0 011-1h19a1 1 0 011 1v2H1.5v-2zm0 3.5h21v9a1 1 0 01-1 1h-19a1 1 0 01-1-1v-9z"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </button>
+        <button class="nav-button active" aria-label="Pay">
+          <svg width="15" height="23" viewBox="0 0 15 23">
+            <path
+              d="M12.675 6.89C12.923 7.14 13.336 7.14 13.569 6.89l1.242-1.299c.264-.25.249-.7-.029-.97-1.007-.855-2.14-1.507-3.37-1.918L11.835.805C11.919.39 11.611 0 11.199 0H8.794c-.151 0-.296.054-.412.152a.669.669 0 00-.19.48l-.348 1.688C5.24 3.053 2.897 4.687 2.897 8.035c0 2.9 2.241 4.144 4.611 4.998 2.241.86 3.429 1.18 3.429 2.4C10.937 16.664 9.754 17.394 8.005 17.394c-1.59 0-3.26-.534-4.552-1.839a.46.46 0 00-.658 0L1.197 16.904a.98.98 0 000 1.418C2.241 19.323 3.562 20.072 5.069 20.487l-.368 1.784c-.084.414.22.795.632.8H8.143c.152 0 .299-.053.417-.15.118-.096.2-.23.228-.38l.348-1.693C12.586 20.287 14.932 18.153 14.932 15.04c0-2.868-2.336-4.077-5.168-5.062-1.62-.604-3.02-1.02-3.02-2.263 0-1.21 1.307-1.69 2.618-1.69 1.67 0 3.275.694 4.324 1.644l.01-.01z"
+            ></path>
+          </svg>
+        </button>
+        <button class="nav-button" aria-label="Activity">
+          <svg width="24" height="14" viewBox="0 0 24 14" fill="none">
+            <path
+              d="M1.53.43a1.5 1.5 0 012.35 1.8l-1.12 2.24 3.9-3.9a1.5 1.5 0 012.12 2.12L5.4 6.07l4.6-4.6a1.5 1.5 0 012.12 2.12l-4.6 4.6 3.28-1.64a1.5 1.5 0 011.34 2.68L9.9 12.57a1.5 1.5 0 01-2.12-2.12l2.24-1.12-3.9 3.9a1.5 1.5 0 01-2.12-2.12l3.38-3.38L2.7 11.97a1.5 1.5 0 11-2.12-2.12L4.16 6.27 1.43 3.54a1.5 1.5 0 01-.12-2.12l.22-.29h-.001zM22.47.43a1.5 1.5 0 00-2.35 1.8l1.12 2.24-6.04-6.04a1.5 1.5 0 00-2.12 2.12l6.04 6.04-3.28 1.64a1.5 1.5 0 101.34 2.68l2.24-1.12a1.5 1.5 0 00-1.34-2.68l-1.12.56 6.04-6.04a1.5 1.5 0 00-2.12-2.12l-6.04 6.04-.56-1.12a1.5 1.5 0 00-2.68 1.34l1.12 2.24a1.5 1.5 0 002.12-2.12l-1.12-2.24 6.04 6.04a1.5 1.5 0 102.12-2.12L19.84 6.27l2.73-2.73a1.5 1.5 0 00.12-2.12l-.22-.29z"
+              opacity=".7"
+            ></path>
+            <path d="M0 12.5a1.5 1.5 0 013 0v-11a1.5 1.5 0 01-3 0v11z"></path>
+          </svg>
+        </button>
+        <button class="nav-button nav-button-b" aria-label="Bitcoin">B</button>
       </nav>
     </div>
 
     <script>
-      // The Javascript does not need any changes for this layout fix.
-      // It will work perfectly with the new structure.
       const amountText = document.getElementById("amount-text");
       const keypad = document.getElementById("pay-keypad");
       const requestBtn = document.getElementById("request-btn");
       const payBtn = document.getElementById("pay-btn");
-      const profileIconLink = document.querySelector(".profile-icon-link");
 
-      const userProfileKey = "cashAppUserProfile";
-      const defaultProfile = { profilePic: "" };
+      let amountValue = "10"; // Set initial value to match image
 
-      let amountValue = "0";
+      // Animation for the amount text
+      function animateAmount() {
+        amountText.style.transform = "scale(1.05)";
+        setTimeout(() => {
+          amountText.style.transform = "scale(1)";
+        }, 80);
+      }
 
       function updateDisplay() {
-        if (amountValue === "0") {
+        const numericValue = parseFloat(amountValue) || 0;
+
+        if (numericValue === 0 && !amountValue.includes(".")) {
           amountText.innerHTML = "$0";
         } else {
           const parts = amountValue.split(".");
-          const integerPart = parseFloat(parts[0]).toLocaleString("en-US");
+          // Format with commas, but only if it's not starting with a lone "0"
+          const integerPart =
+            parts[0] === "0"
+              ? "0"
+              : parseFloat(parts[0] || 0).toLocaleString("en-US");
           amountText.innerHTML =
             parts.length > 1
               ? `$${integerPart}.${parts[1]}`
               : `$${integerPart}`;
         }
 
-        const numericValue = parseFloat(amountValue);
         const isEnabled = numericValue > 0;
         requestBtn.disabled = !isEnabled;
         payBtn.disabled = !isEnabled;
@@ -382,35 +368,35 @@
 
       function handleKeyPress(key) {
         if (key === "<") {
-          amountValue = amountValue.length > 1 ? amountValue.slice(0, -1) : "0";
+          // Backspace
+          if (amountValue.length > 1) {
+            amountValue = amountValue.slice(0, -1);
+          } else {
+            amountValue = "0";
+          }
         } else if (key === ".") {
+          // Decimal point
           if (!amountValue.includes(".")) {
             amountValue += ".";
           }
         } else {
+          // Number keys
           const decimalPart = amountValue.split(".")[1];
-          if (decimalPart && decimalPart.length >= 2) return;
+          if (decimalPart && decimalPart.length >= 2) {
+            return; // Don't allow more than 2 decimal places
+          }
 
-          if (amountValue === "0" && key !== ".") {
+          if (amountValue === "0") {
             amountValue = key;
           } else {
-            amountValue += key;
+            // Limit total length to prevent overflow
+            if (amountValue.replace(".", "").length < 10) {
+              amountValue += key;
+            }
           }
         }
         updateDisplay();
-      }
-
-      function loadProfileIcon() {
-        const savedProfile = localStorage.getItem(userProfileKey);
-        const userProfile = savedProfile
-          ? JSON.parse(savedProfile)
-          : defaultProfile;
-
-        if (userProfile.profilePic) {
-          profileIconLink.innerHTML = `<img src="${userProfile.profilePic}" alt="Profile" class="profile-icon">`;
-        } else {
-          profileIconLink.innerHTML = `<img src="icons/person-circle-svgrepo-com-1.png" alt="Profile" class="profile-icon">`;
-        }
+        animateAmount(); // Trigger animation on each key press
       }
 
       keypad.addEventListener("click", (e) => {
@@ -427,8 +413,8 @@
         }
       });
 
+      // Initial load
       document.addEventListener("DOMContentLoaded", () => {
-        loadProfileIcon();
         updateDisplay();
       });
     </script>

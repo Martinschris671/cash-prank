@@ -34,12 +34,14 @@
         --header-height: 65px;
         --padding-screen: 18px;
         --footer-height: 70px;
-        --accent-green: #00d54b;
+        --accent-green: #00b92d;
         --text-on-green: #ffffff;
         --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
           sans-serif;
         --font-family-nav: "CashMarketNav", -apple-system, BlinkMacSystemFont,
           sans-serif;
+        --inactive-alpha: 0.7;
+        --text-on-green: #ffffff;
       }
       * {
         margin: 0;
@@ -165,7 +167,7 @@
       .pay-keypad {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 1.5vh 20px; /* Adjusted gap slightly for better feel */
+        gap: 1vh 23px; /* Adjusted gap slightly for better feel */
       }
       .keypad-btn {
         background: none;
@@ -175,43 +177,51 @@
         ); /* Changed to use the variable for consistency */
         font-size: 1.3rem;
         font-weight: 540;
-        padding: 15px 0;
+        padding: 15px 6px;
         cursor: pointer;
         transition: background-color 0.15s ease;
         border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: 60px;
+        min-height: 30px;
         /* CHANGE 4: Applied the correct font to keypad numbers. */
         font-family: var(--font-family);
       }
       .keypad-btn:active {
         opacity: 0.5;
+        transform: scale(1.2);
       }
 
       /* Action Buttons */
       .pay-actions {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 12px;
-        padding: 5px 1px 0 1px;
+        gap: 15px; /* Space between buttons */
+        margin-bottom: -16px; /* Space above footer */
+        margin-top: 7px;
       }
       .action-btn {
-        background-color: rgba(255, 255, 255, 0.137);
-        color: rgba(255, 255, 255, 0.7);
+        font-family: var(--font-family);
+        background-color: rgba(0, 0, 0, 0.15); /* Darker green effect */
+        color: var(--text-on-green);
         border: none;
         border-radius: 28px;
-        padding: 13px;
+        padding: 16px;
         font-size: 17px;
         font-weight: 550;
         cursor: pointer;
         transition: all 0.2s ease;
         margin-bottom: 1px;
       }
-      .action-btn:not(:disabled) {
-        background-color: rgba(144, 255, 153, 0.25);
-        color: var(--text-on-green);
+      .action-btn:disabled {
+        background-color: rgba(0, 0, 0, 0.15);
+        color: rgba(255, 255, 255, var(--inactive-alpha));
+        cursor: default;
+      }
+      .action-btn:not(:disabled):active {
+        background-color: rgba(0, 0, 0, 0.25);
+        transform: scale(0.98);
       }
 
       /* Footer */
@@ -226,7 +236,8 @@
         background: none;
         border: none;
         cursor: pointer;
-        padding: 8px;
+
+        padding: 0 8px;
         display: flex;
         align-items: center;
         justify-content: center;
