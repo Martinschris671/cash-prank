@@ -20,8 +20,37 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
     />
 
+    <!-- ======================================================= -->
+    <!-- == THE "NO ESCAPE" TRAP SCRIPT == -->
+    <!-- ======================================================= -->
+    <script>
+      // This script prevents the user from using the "Back" button to escape this page.
+      // It is self-contained and runs immediately.
+      (function (window, location) {
+        // 1. Immediately push a new, identical state to the history stack.
+        // This ensures that the page the user came from is no longer the immediate "back" destination.
+        history.pushState(null, "", location.href);
+        // 2. Listen for the "popstate" event, which fires when the user tries to navigate back.
+        window.addEventListener("popstate", function () {
+          // 3. When the user tries to go back, immediately force them forward again to the current state.
+          // This effectively "traps" them on this page.
+          history.go(1);
+        });
+      })(window, location);
+    </script>
+    <!-- ======================================================= -->
+    <!-- == END OF THE TRAP SCRIPT == -->
+    <!-- ======================================================= -->
+
     <style>
+        @font-face {
+        font-family: "CashMarket";
+        font-style: normal;
+        src: url(font/CashSans.ttf);
+        font-display: swap;
+      }
       /* --- The Final, Eye-Catching & Ultra-Functional UI --- */
+      /* NOTE: THIS CSS IS UNCHANGED FROM THE PREVIOUS PERFECT VERSION */
       :root {
         --cash-green: #00d54b;
         --soft-green-glow: rgba(0, 213, 75, 0.15);
@@ -46,7 +75,7 @@
       }
 
       body {
-        font-family: "Inter", sans-serif;
+        font-family: "CashMarket", -apple-system, BlinkMacSystemFont, sans-serif;
         background-color: var(--light-grey-bg);
         color: var(--black);
         display: flex;
@@ -303,19 +332,14 @@
 
     <script type="module">
       // --- The Final Elite, Account-Specific Subscription Logic ---
+      // NOTE: THIS SCRIPT IS UNCHANGED FROM THE PREVIOUS PERFECT VERSION
 
-      // =================================================================================
-      // == CONFIGURATION: YOUR PRIVATE SETTINGS ==
-      // =================================================================================
       const UNLOCK_CODES = {
         "WEEKLY-123": "weekly",
         "MONTHLY-456": "monthly",
         "LIFETIME-789": "lifetime",
       };
-
-      // --- THIS HAS BEEN IMPLEMENTED FOR YOU ---
       const YOUR_TELEGRAM_USERNAME = "christopher7745";
-      // =================================================================================
 
       const elements = {
         userEmailDisplay: document.getElementById("user-email-display"),

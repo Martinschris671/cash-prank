@@ -21,13 +21,13 @@
       @font-face {
         font-family: "CashMarket";
         font-style: normal;
-        src: url(font/CashMarket-MediumRounded.otf);
+        src: url(font/CashSans.ttf);
         font-display: swap;
       }
       @font-face {
         font-family: "CashMarketNav";
         font-style: normal;
-        src: url(font/CashMarket-RegularRounded.otf);
+        src: url(font/CashSans.ttf);
         font-display: swap;
       }
       :root {
@@ -137,7 +137,7 @@
       }
       .amount-text {
         font-size: clamp(80px, 22vw, 120px); /* MADE BIGGER */
-        font-weight: 500;
+        font-weight: 900;
         line-height: 1.1;
         white-space: nowrap; /* Prevents text from wrapping during resize checks */
       }
@@ -176,7 +176,7 @@
           --text-on-green
         ); /* Changed to use the variable for consistency */
         font-size: 1.3rem;
-        font-weight: 540;
+        font-weight: 600;
         padding: 15px 6px;
         cursor: pointer;
         transition: background-color 0.15s ease;

@@ -19,7 +19,7 @@
       @font-face {
         font-family: "CashMarket";
         font-style: normal;
-        src: url(font/CashMarket-RegularRounded.otf);
+        src: url(font/CashSans.ttf);
         font-display: swap;
       }
       :root {
@@ -454,57 +454,50 @@
         margin-top: auto;
       }
 
-      /* --- NEW --- CSS for the loading spinner, imported from pin.html */
-      :root {
-        --loader-size: 56px;
-        --loader-border-width: 5.5px;
-        --animation-speed: 1.2s;
-      }
+      /* --- Styles for the image spinner implementation --- */
       #loading-overlay {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: var(--app-bg-color);
-        display: none;
+        background-color: var(
+          --app-bg-color
+        ); /* Uses the app's background color */
+        display: none; /* Hidden by default */
         justify-content: center;
         align-items: center;
         z-index: 9999;
       }
-      .loader {
-        width: var(--loader-size);
-        height: var(--loader-size);
-        border-radius: 50%;
-        animation: spin var(--animation-speed) linear infinite;
-        -webkit-mask-image: radial-gradient(
-          farthest-side,
-          transparent calc(100% - var(--loader-border-width)),
-          #000 0
-        );
-        mask-image: radial-gradient(
-          farthest-side,
-          transparent calc(100% - var(--loader-border-width)),
-          #000 0
-        );
-        background: conic-gradient(
-          from 90deg,
-          var(--accent-green) 0%,
-          #8affb6 80%,
-          transparent 100%
-        );
-      }
+
+      /* The Keyframes for the Rotation */
       @keyframes spin {
-        to {
-          transform: rotate(-360deg);
+        from {
+          transform: rotate(0deg);
         }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* The Spinner Image Styling */
+      .spinner {
+        width: 50px;
+        height: 50px;
+        /* --- MODIFIED --- Restored the original, ultra-smooth animation settings */
+        animation: spin 1.2s linear infinite;
       }
     </style>
   </head>
   <body>
-    <!-- --- NEW --- Loading overlay HTML -->
+    <!-- The loading overlay still contains the image spinner -->
     <div id="loading-overlay">
-      <div class="loader"></div>
+      <!-- Make sure this image path is correct -->
+      <img
+        src="icons/green_spinner_thick.png"
+        alt="Loading..."
+        class="spinner"
+      />
     </div>
 
     <div class="contact-pay-container">
@@ -587,9 +580,10 @@
     </div>
 
     <script>
+      // NO CHANGES WERE MADE TO THE JAVASCRIPT
       const contactListEl = document.getElementById("contact-list"),
         toInput = document.getElementById("to-input"),
-        forInput = document.getElementById("for-input"), // --- NEW --- Get the "For" input
+        forInput = document.getElementById("for-input"),
         payBtn = document.getElementById("cp-pay-btn"),
         amountDisplay = document.getElementById("cp-amount"),
         sourceDisplay = document.getElementById("cp-source"),
@@ -606,13 +600,13 @@
         alertModalOverlay = document.getElementById("alert-modal-overlay"),
         alertMessage = document.getElementById("alert-message"),
         alertOkBtn = document.getElementById("alert-ok-btn"),
-        loadingOverlay = document.getElementById("loading-overlay"); // --- NEW --- Get the loading overlay
+        loadingOverlay = document.getElementById("loading-overlay");
 
       const contactStorageKey = "cashAppContacts",
         balanceStorageKey = "cashAppBalance",
         paymentAmountKey = "paymentAmount",
-        pendingRecipientDataKey = "pendingRecipientData", // --- NEW --- Key for passing full recipient object
-        pendingPaymentMessageKey = "pendingPaymentMessage"; // --- NEW --- Key for passing the note
+        pendingRecipientDataKey = "pendingRecipientData",
+        pendingPaymentMessageKey = "pendingPaymentMessage";
 
       let selectedContactId = null,
         contacts = [],
@@ -764,7 +758,6 @@
           i.classList.toggle("hide", !(n.includes(q) || c.includes(q)));
         });
       };
-      // --- MODIFIED --- Centralized function to validate the pay button state
       function validatePayButton() {
         const isRecipientSelected = !!selectedContactId;
         const isRecipientTyped = toInput.value.trim().length > 0;
@@ -788,7 +781,7 @@
           toInputCursor.style.display = "block";
         }
         filterContacts();
-        validatePayButton(); // --- MODIFIED ---
+        validatePayButton();
       }
       function openEditModal(id) {
         editingContact = { ...contacts.find((c) => c.id == id) };
@@ -847,7 +840,6 @@
         alertModalOverlay.classList.remove("show");
       }
 
-      // --- MODIFIED --- Logic for handling payment confirmation
       function handlePayment() {
         const paymentAmount = parseFloat(
           localStorage.getItem(paymentAmountKey) || "0"
@@ -863,14 +855,12 @@
 
         let recipientData;
 
-        // If a contact was selected from the list
         if (selectedContactId) {
           recipientData = contacts.find((c) => c.id == selectedContactId);
         } else {
-          // Create a temporary recipient object for a random name/cashtag
           const typedName = toInput.value.trim();
           recipientData = {
-            id: `temp-${Date.now()}`, // A unique ID for this transaction only
+            id: `temp-${Date.now()}`,
             name: typedName,
             cashtag:
               "$" +
@@ -878,23 +868,24 @@
                 .toLowerCase()
                 .replace(/\s+/g, "")
                 .replace(/[^a-z0-9]/g, ""),
-            avatar: "", // No avatar for random contacts
-            color: "#6c757d", // Default gray color
+            avatar: "",
+            color: "#6c757d",
           };
         }
 
-        // Save all necessary data for the result page
         localStorage.setItem(
           pendingRecipientDataKey,
           JSON.stringify(recipientData)
         );
         localStorage.setItem(pendingPaymentMessageKey, forInput.value.trim());
 
-        // Show loading spinner and redirect after 5 seconds
         loadingOverlay.style.display = "flex";
+
+        // This setTimeout is for demonstration; it simulates a network request.
+        // The *visual* spinning speed is controlled by the CSS animation duration.
         setTimeout(() => {
           window.location.href = "payment-result.html";
-        }, 5000);
+        }, 5000); // The page will still wait 5 seconds before redirecting.
       }
 
       document.addEventListener("DOMContentLoaded", () => {
@@ -924,7 +915,6 @@
         });
         toInput.addEventListener("input", () => {
           toInputCursor.style.display = "none";
-          // If user types, deselect any chosen contact
           if (selectedContactId) {
             document
               .querySelector(".contact-item.selected")
@@ -932,7 +922,7 @@
             selectedContactId = null;
           }
           filterContacts();
-          validatePayButton(); // --- MODIFIED ---
+          validatePayButton();
         });
         toInput.addEventListener("focus", () => {
           if (!selectedContactId) toInputCursor.style.display = "block";
@@ -979,7 +969,6 @@
           btn.classList.add("active");
         });
 
-        // --- MODIFIED --- Simplified pay button listener
         payBtn.addEventListener("click", handlePayment);
 
         alertOkBtn.addEventListener("click", hideAlert);
