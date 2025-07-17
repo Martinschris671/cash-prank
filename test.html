@@ -1,423 +1,915 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
-    <title>Pay - Cash App</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <script src="guard.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment Interface</title>
     <style>
-      @font-face {
-        font-family: "CashMarket";
-        font-style: normal;
-        src: url(font/CashMarket-MediumRounded.otf);
-        font-display: swap;
-      }
-      @font-face {
-        font-family: "CashMarketNav";
-        font-style: normal;
-        src: url(font/CashMarket-RegularRounded.otf);
-        font-display: swap;
-      }
-      :root {
-        --header-height: 55px;
-        --padding-screen: 20px;
-        --footer-height: 60px;
-        --accent-green: #00d54b;
-        --text-on-green: #ffffff;
-        --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
-          sans-serif;
-        --font-family-nav: "CashMarketNav", -apple-system, BlinkMacSystemFont,
-          sans-serif;
-      }
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        -webkit-tap-highlight-color: transparent;
-      }
-      html,
-      body {
-        height: 100%;
-        overflow: hidden;
-        font-family: var(--font-family);
-      }
-      body {
-        background-color: var(--accent-green);
-        color: var(--text-on-green);
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        text-rendering: optimizeLegibility;
-      }
-      a {
-        text-decoration: none;
-        color: inherit;
-      }
-      .pay-app-container {
-        max-width: 450px;
-        width: 100%;
-        height: 100%;
-        margin: 0 auto;
-        display: grid;
-        grid-template-rows: var(--header-height) 1fr var(--footer-height);
-        position: relative;
       }
 
-      /* Header */
-      .pay-header {
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Arial, sans-serif;
+        background-color: #000;
+        color: #fff;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .container {
+        max-width: 400px;
+        margin: 0 auto;
+        height: 100vh;
+        background-color: #000;
+        position: relative;
+        overflow-y: auto;
+      }
+
+      .header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0 var(--padding-screen);
-        flex-shrink: 0;
+        padding: 20px 24px;
+        border-bottom: 1px solid #333;
       }
-      .header-icon {
-        font-size: 28px;
-        color: white;
+
+      .close-btn {
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 32px;
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
       }
-      .profile-icon-wrapper {
-        position: relative;
-        width: 38px;
-        height: 38px;
-      }
-      .profile-icon {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        fill: white;
-      }
-      .notification-badge {
-        position: absolute;
-        top: -1px;
-        right: -3px;
-        background-color: #ff453a;
-        color: white;
-        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+
+      .amount {
+        font-size: 20px;
         font-weight: 600;
-        font-size: 11px;
-        width: 16px;
-        height: 16px;
+        color: #fff;
+      }
+
+      .pay-btn {
+        background-color: #34c759;
+        color: #fff;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 16px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        opacity: 0.5;
+        transition: opacity 0.2s;
+      }
+
+      .pay-btn.active {
+        opacity: 1;
+      }
+
+      .form-section {
+        padding: 24px;
+      }
+
+      .input-group {
+        margin-bottom: 16px;
+        border-bottom: 1px solid #333;
+        padding-bottom: 12px;
+      }
+
+      .input-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .input-label {
+        color: #fff;
+        font-size: 16px;
+        font-weight: 600;
+        min-width: 30px;
+      }
+
+      .input-field {
+        flex: 1;
+        background: transparent;
+        border: none;
+        color: #fff;
+        font-size: 16px;
+        padding: 12px 0;
+        outline: none;
+      }
+
+      .input-field::placeholder {
+        color: #666;
+      }
+
+      .search-results {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #111;
+        border: 1px solid #333;
+        border-radius: 8px;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 100;
+        display: none;
+      }
+
+      .search-results.active {
+        display: block;
+      }
+
+      .search-result-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      .search-result-item:hover {
+        background-color: #222;
+      }
+
+      .search-result-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 14px;
+        font-weight: bold;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .search-result-info {
+        flex: 1;
+      }
+
+      .search-result-name {
+        color: #fff;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .search-result-cashtag {
+        color: #666;
+        font-size: 12px;
+      }
+
+      .loading {
+        padding: 12px;
+        text-align: center;
+        color: #666;
+      }
+
+      .note-input {
+        position: relative;
+        flex: 1;
+      }
+
+      .note-icons {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .star-icon {
+        color: #666;
+        font-size: 12px;
+      }
+
+      .payment-method {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 0;
+        margin-bottom: 16px;
+        cursor: pointer;
+      }
+
+      .payment-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .visa-logo {
+        width: 40px;
+        height: 24px;
+        background: #fff;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #1a1f71;
+        font-size: 12px;
+        font-weight: bold;
+        letter-spacing: 2px;
+      }
+
+      .card-info {
+        color: #fff;
+        font-size: 16px;
+      }
+
+      .chevron {
+        color: #666;
+        font-size: 18px;
+        transform: rotate(90deg);
+      }
+
+      .payment-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.8);
+        display: none;
+        align-items: flex-end;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .payment-overlay.active {
+        display: flex;
+        opacity: 1;
+      }
+
+      .payment-modal {
+        background: #000;
+        border-radius: 20px 20px 0 0;
+        width: 100%;
+        max-width: 400px;
+        padding: 24px;
+        transform: translateY(100%);
+        transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      }
+
+      .payment-overlay.active .payment-modal {
+        transform: translateY(0);
+      }
+
+      .payment-modal-header {
+        text-align: center;
+        margin-bottom: 24px;
+      }
+
+      .payment-modal-title {
+        color: #fff;
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 16px;
+      }
+
+      .payment-option {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 0;
+        border-bottom: 1px solid #333;
+        cursor: pointer;
+      }
+
+      .payment-option.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .payment-option-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .payment-icon {
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        border: 2px solid var(--accent-green);
+        font-size: 18px;
+        font-weight: bold;
+        position: relative;
       }
 
-      /* Main Content Area */
-      .pay-main {
+      .payment-icon.cash {
+        background: #34c759;
+        color: #000;
+      }
+
+      .payment-icon.cash::before {
+        content: "$";
+        position: relative;
+        z-index: 1;
+      }
+
+      .payment-icon.visa {
+        background: #fff;
+        color: #1a1f71;
+        font-size: 10px;
+        font-weight: bold;
+        letter-spacing: 1px;
+      }
+
+      .payment-option-info {
         display: flex;
         flex-direction: column;
-        justify-content: flex-end; /* Pushes content to the bottom */
-        padding: 0 var(--padding-screen);
-        overflow: hidden;
+        gap: 4px;
       }
 
-      /* Amount Display */
-      .amount-display {
-        flex-grow: 1; /* Takes up all available space */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding-bottom: 3vh; /* Space above keypad */
-      }
-      .amount-text {
-        font-size: clamp(90px, 25vw, 130px);
+      .payment-option-title {
+        color: #fff;
+        font-size: 16px;
         font-weight: 500;
-        line-height: 1;
-        transition: transform 0.1s ease-in-out; /* For pop animation */
       }
 
-      /* Keypad */
-      .pay-keypad {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 2.5vh 20px; /* Precise vertical/horizontal gap */
-        margin-bottom: 4vh; /* Space between keypad and action buttons */
+      .payment-option-subtitle {
+        color: #666;
+        font-size: 14px;
       }
-      .keypad-btn {
-        background: none;
-        border: none;
-        color: var(--text-on-green);
-        font-family: var(--font-family);
-        font-size: 2rem; /* Larger font size */
-        font-weight: 500;
-        padding: 10px 0;
-        cursor: pointer;
+
+      .payment-warning {
         display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 50px;
-        transition: transform 0.08s ease-out, background-color 0.15s ease; /* Smooth scale transition */
-      }
-      .keypad-btn:active {
-        transform: scale(1.15); /* Scale up effect on click */
-      }
-      .keypad-btn .fa-circle {
-        font-size: 0.5rem; /* Larger decimal point */
-        vertical-align: middle;
-      }
-      .keypad-btn svg {
-        width: 1.5rem;
-        height: 1.5rem;
+        align-items: flex-start;
+        gap: 12px;
+        margin: 16px 0;
+        padding: 12px;
+        border-radius: 8px;
       }
 
-      /* Action Buttons */
-      .pay-actions {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 15px; /* Space between buttons */
-        margin-bottom: 20px; /* Space above footer */
+      .payment-warning-icon {
+        color: #666;
+        font-size: 16px;
+        margin-top: 2px;
       }
-      .action-btn {
-        background-color: rgba(0, 0, 0, 0.15);
-        color: rgba(255, 255, 255, 0.5);
-        border: none;
-        border-radius: 30px; /* More rounded corners */
-        padding: 15px;
-        font-family: var(--font-family);
+
+      .payment-warning-text {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.4;
+      }
+
+      .continue-btn {
+        background: #000;
+        color: #fff;
+        border: 2px solid #333;
+        padding: 16px;
+        border-radius: 25px;
         font-size: 18px;
         font-weight: 600;
+        width: 100%;
+        cursor: pointer;
+        margin-top: 24px;
+        transition: all 0.2s ease;
+      }
+
+      .radio-button {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #666;
+        border-radius: 50%;
+        background: transparent;
+        position: relative;
         cursor: pointer;
         transition: all 0.2s ease;
       }
-      .action-btn:not(:disabled) {
-        background-color: #ffffff; /* White when active */
-        color: #000000; /* Black text when active */
+
+      .radio-button.selected {
+        border-color: #34c759;
+        background: #34c759;
       }
 
-      /* Footer */
-      .bottom-nav {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        align-items: center;
-        padding: 0 10px;
-        height: 100%;
+      .radio-button.selected::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #000;
       }
-      .nav-button {
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 8px;
+
+      .modal-handle {
+        width: 40px;
+        height: 4px;
+        background: #333;
+        border-radius: 2px;
+        margin: 0 auto 20px;
+      }
+
+      .suggested-section {
+        margin-top: 8px;
+      }
+
+      .suggested-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 24px;
+      }
+
+      .contact-list {
         display: flex;
         flex-direction: column;
+        gap: 8px;
+      }
+
+      .contact-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 0;
+        cursor: pointer;
+      }
+
+      .contact-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background-size: cover;
+        background-position: center;
+        background-color: #333;
+        display: flex;
         align-items: center;
         justify-content: center;
-        height: 100%;
-        font-family: var(--font-family-nav);
-        font-weight: 600;
-        color: rgba(255, 255, 255, 0.7);
+        color: #fff;
+        font-size: 18px;
+        font-weight: bold;
+      }
+
+      .contact-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .contact-name {
+        color: #fff;
         font-size: 16px;
-      }
-      .nav-button svg {
-        fill: rgba(255, 255, 255, 0.7);
-        margin-bottom: 4px; /* Space between icon and text if any */
-      }
-      .nav-button.active {
-        color: var(--text-on-green);
-      }
-      .nav-button.active svg {
-        fill: var(--text-on-green);
-      }
-      .nav-button-b {
-        font-family: var(--font-family);
-        font-size: 24px;
         font-weight: 500;
+      }
+
+      .contact-handle {
+        color: #666;
+        font-size: 14px;
+      }
+
+      .checkbox {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #666;
+        border-radius: 6px;
+        background: transparent;
+        cursor: pointer;
+        position: relative;
+        appearance: none;
+      }
+
+      .checkbox:checked {
+        background-color: #34c759;
+        border-color: #34c759;
+      }
+
+      .checkbox:checked::after {
+        content: "✓";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #000;
+        font-size: 12px;
+        font-weight: bold;
+      }
+
+      .search-container {
+        position: relative;
+      }
+
+      .suggested-contacts {
+        height: 400px;
+        overflow-y: auto;
+        padding-right: 8px;
+      }
+
+      .suggested-contacts::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      .suggested-contacts::-webkit-scrollbar-track {
+        background: #111;
+      }
+
+      .suggested-contacts::-webkit-scrollbar-thumb {
+        background: #333;
+        border-radius: 2px;
       }
     </style>
   </head>
   <body>
-    <div class="pay-app-container">
-      <header class="pay-header">
-        <a href="#"><i class="fa-solid fa-qrcode header-icon"></i></a>
-        <a href="profile.html" class="profile-icon-wrapper">
-          <!-- Icon matching the screenshot -->
-          <svg
-            class="profile-icon"
-            viewBox="0 0 36 36"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M18 36C8.059 36 0 27.941 0 18S8.059 0 18 0s18 8.059 18 18-8.059 18-18 18zM9.9 28.52c.486-.811 1.6-1.996 3.255-2.586a10.82 10.82 0 0110.02 0c1.655.59 2.769 1.775 3.255 2.586A14.935 14.935 0 0118 33C14.161 33 10.74 31.253 9.9 28.52zM18 21a6 6 0 110-12 6 6 0 010 12z"
-            ></path>
-          </svg>
-          <div class="notification-badge">1</div>
-        </a>
-      </header>
+    <div class="container">
+      <div class="header">
+        <button class="close-btn">×</button>
+        <div class="amount">$1,000</div>
+        <button class="pay-btn" id="payBtn">Pay</button>
+      </div>
 
-      <main class="pay-main">
-        <div class="amount-display">
-          <h1 class="amount-text" id="amount-text">$10</h1>
+      <div class="form-section">
+        <div class="input-group">
+          <div class="input-row">
+            <label class="input-label">To</label>
+            <div class="search-container">
+              <input
+                type="text"
+                class="input-field"
+                id="searchInput"
+                placeholder="Name, $Cashtag, Phone, Email"
+              />
+              <div class="search-results" id="searchResults"></div>
+            </div>
+          </div>
         </div>
 
-        <div class="pay-keypad" id="pay-keypad">
-          <button class="keypad-btn" data-key="1">1</button>
-          <button class="keypad-btn" data-key="2">2</button>
-          <button class="keypad-btn" data-key="3">3</button>
-          <button class="keypad-btn" data-key="4">4</button>
-          <button class="keypad-btn" data-key="5">5</button>
-          <button class="keypad-btn" data-key="6">6</button>
-          <button class="keypad-btn" data-key="7">7</button>
-          <button class="keypad-btn" data-key="8">8</button>
-          <button class="keypad-btn" data-key="9">9</button>
-          <button class="keypad-btn" data-key=".">
-            <i class="fas fa-circle"></i>
-          </button>
-          <button class="keypad-btn" data-key="0">0</button>
-          <button class="keypad-btn" data-key="<">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="4.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M15 18L9 12L15 6"></path>
-            </svg>
-          </button>
+        <div class="input-group">
+          <div class="input-row">
+            <label class="input-label">For</label>
+            <div class="note-input">
+              <input
+                type="text"
+                class="input-field"
+                placeholder="Note (required)"
+              />
+              <div class="note-icons">
+                <span class="star-icon">✦</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="pay-actions">
-          <button class="action-btn" id="request-btn">Request</button>
-          <button class="action-btn" id="pay-btn">Pay</button>
+        <div class="input-group">
+          <div class="payment-method">
+            <div class="payment-left">
+              <div class="input-label">Use</div>
+              <div class="visa-logo">VISA</div>
+              <div class="card-info">Visa debit card 4042</div>
+            </div>
+            <div class="chevron">⌄</div>
+          </div>
         </div>
-      </main>
 
-      <nav class="bottom-nav">
-        <!-- Footer icons exactly from the image -->
-        <button class="nav-button" aria-label="Home">$20</button>
-        <button class="nav-button" aria-label="Cards">
-          <svg width="24" height="18" viewBox="0 0 24 18" fill="none">
-            <path
-              d="M2.5 0A2.5 2.5 0 000 2.5v13A2.5 2.5 0 002.5 18h19a2.5 2.5 0 002.5-2.5v-13A2.5 2.5 0 0021.5 0h-19zM1.5 2.5a1 1 0 011-1h19a1 1 0 011 1v2H1.5v-2zm0 3.5h21v9a1 1 0 01-1 1h-19a1 1 0 01-1-1v-9z"
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-        </button>
-        <button class="nav-button active" aria-label="Pay">
-          <svg width="15" height="23" viewBox="0 0 15 23">
-            <path
-              d="M12.675 6.89C12.923 7.14 13.336 7.14 13.569 6.89l1.242-1.299c.264-.25.249-.7-.029-.97-1.007-.855-2.14-1.507-3.37-1.918L11.835.805C11.919.39 11.611 0 11.199 0H8.794c-.151 0-.296.054-.412.152a.669.669 0 00-.19.48l-.348 1.688C5.24 3.053 2.897 4.687 2.897 8.035c0 2.9 2.241 4.144 4.611 4.998 2.241.86 3.429 1.18 3.429 2.4C10.937 16.664 9.754 17.394 8.005 17.394c-1.59 0-3.26-.534-4.552-1.839a.46.46 0 00-.658 0L1.197 16.904a.98.98 0 000 1.418C2.241 19.323 3.562 20.072 5.069 20.487l-.368 1.784c-.084.414.22.795.632.8H8.143c.152 0 .299-.053.417-.15.118-.096.2-.23.228-.38l.348-1.693C12.586 20.287 14.932 18.153 14.932 15.04c0-2.868-2.336-4.077-5.168-5.062-1.62-.604-3.02-1.02-3.02-2.263 0-1.21 1.307-1.69 2.618-1.69 1.67 0 3.275.694 4.324 1.644l.01-.01z"
-            ></path>
-          </svg>
-        </button>
-        <button class="nav-button" aria-label="Activity">
-          <svg width="24" height="14" viewBox="0 0 24 14" fill="none">
-            <path
-              d="M1.53.43a1.5 1.5 0 012.35 1.8l-1.12 2.24 3.9-3.9a1.5 1.5 0 012.12 2.12L5.4 6.07l4.6-4.6a1.5 1.5 0 012.12 2.12l-4.6 4.6 3.28-1.64a1.5 1.5 0 011.34 2.68L9.9 12.57a1.5 1.5 0 01-2.12-2.12l2.24-1.12-3.9 3.9a1.5 1.5 0 01-2.12-2.12l3.38-3.38L2.7 11.97a1.5 1.5 0 11-2.12-2.12L4.16 6.27 1.43 3.54a1.5 1.5 0 01-.12-2.12l.22-.29h-.001zM22.47.43a1.5 1.5 0 00-2.35 1.8l1.12 2.24-6.04-6.04a1.5 1.5 0 00-2.12 2.12l6.04 6.04-3.28 1.64a1.5 1.5 0 101.34 2.68l2.24-1.12a1.5 1.5 0 00-1.34-2.68l-1.12.56 6.04-6.04a1.5 1.5 0 00-2.12-2.12l-6.04 6.04-.56-1.12a1.5 1.5 0 00-2.68 1.34l1.12 2.24a1.5 1.5 0 002.12-2.12l-1.12-2.24 6.04 6.04a1.5 1.5 0 102.12-2.12L19.84 6.27l2.73-2.73a1.5 1.5 0 00.12-2.12l-.22-.29z"
-              opacity=".7"
-            ></path>
-            <path d="M0 12.5a1.5 1.5 0 013 0v-11a1.5 1.5 0 01-3 0v11z"></path>
-          </svg>
-        </button>
-        <button class="nav-button nav-button-b" aria-label="Bitcoin">B</button>
-      </nav>
+        <div class="suggested-section">
+          <div class="suggested-title">Suggested</div>
+          <div class="suggested-contacts">
+            <div class="contact-list" id="suggestedContacts">
+              <!-- Contacts will be populated here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment Method Selection Overlay -->
+    <div class="payment-overlay" id="paymentOverlay">
+      <div class="payment-modal">
+        <div class="modal-handle"></div>
+        <div class="payment-modal-header">
+          <div class="payment-modal-title">
+            How would you like to fund this payment?
+          </div>
+        </div>
+
+        <div class="payment-option disabled">
+          <div class="payment-option-left">
+            <div class="payment-icon cash"></div>
+            <div class="payment-option-info">
+              <div class="payment-option-title">Cash balance</div>
+              <div class="payment-option-subtitle">$0</div>
+            </div>
+          </div>
+          <div class="radio-button"></div>
+        </div>
+
+        <div class="payment-warning">
+          <div class="payment-warning-icon">ⓘ</div>
+          <div class="payment-warning-text">
+            Your Cash balance can't cover the full amount. Choose another
+            payment method.
+          </div>
+        </div>
+
+        <div class="payment-option" id="visaOption">
+          <div class="payment-option-left">
+            <div class="payment-icon visa">VISA</div>
+            <div class="payment-option-info">
+              <div class="payment-option-title">Debit card 4042</div>
+              <div class="payment-option-subtitle">Debit Card 4042</div>
+            </div>
+          </div>
+          <div class="radio-button selected"></div>
+        </div>
+
+        <button class="continue-btn" id="continueBtn">Continue</button>
+      </div>
     </div>
 
     <script>
-      const amountText = document.getElementById("amount-text");
-      const keypad = document.getElementById("pay-keypad");
-      const requestBtn = document.getElementById("request-btn");
-      const payBtn = document.getElementById("pay-btn");
+      const payBtn = document.getElementById("payBtn");
+      const inputs = document.querySelectorAll(".input-field");
+      const paymentOverlay = document.getElementById("paymentOverlay");
+      const paymentMethod = document.querySelector(".payment-method");
+      const continueBtn = document.getElementById("continueBtn");
+      const visaOption = document.getElementById("visaOption");
+      const searchInput = document.getElementById("searchInput");
+      const searchResults = document.getElementById("searchResults");
+      const suggestedContacts = document.getElementById("suggestedContacts");
+      let searchTimeout;
+      let selectedContact = null;
 
-      let amountValue = "10"; // Set initial value to match image
+      // Suggested contacts data
+      const suggestedContactsData = [
+        { name: "Max", cashtag: "$fogwraith", initial: "M", color: "#666" },
+        {
+          name: "Brandon Johnson",
+          cashtag: "$blackgoalith510",
+          initial: "B",
+          color: "#333",
+        },
+        { name: "Rockey", cashtag: "$J1brael", initial: "R", color: "#4A90E2" },
+        {
+          name: "Money Mike",
+          cashtag: "$Rackzzmafíaa",
+          initial: "M",
+          color: "#228B22",
+        },
+        { name: "Punchess", cashtag: "$Gwmv", initial: "P", color: "#4A90E2" },
+        { name: "solo", cashtag: "$viaswípes", initial: "S", color: "#D2691E" },
+        { name: "Alex", cashtag: "$alexcash", initial: "A", color: "#FF6B6B" },
+        { name: "Sarah", cashtag: "$sarahpay", initial: "S", color: "#4ECDC4" },
+        { name: "Mike", cashtag: "$mikemoney", initial: "M", color: "#45B7D1" },
+        { name: "Lisa", cashtag: "$lisacash", initial: "L", color: "#96CEB4" },
+      ];
 
-      // Animation for the amount text
-      function animateAmount() {
-        amountText.style.transform = "scale(1.05)";
-        setTimeout(() => {
-          amountText.style.transform = "scale(1)";
-        }, 80);
+      // Load suggested contacts from real Cash App profiles
+      async function loadSuggestedContacts() {
+        const contactsHTML = await Promise.all(
+          suggestedContactsData.map(async (contact) => {
+            const profile = await scrapeCashAppProfile(contact.cashtag);
+            const avatarStyle =
+              profile && profile.pfp
+                ? `background-image: url('${profile.pfp}');`
+                : `background-color: ${contact.color};`;
+            const displayName = profile ? profile.name : contact.name;
+
+            return `
+                    <div class="contact-item" data-cashtag="${contact.cashtag}">
+                        <div class="contact-left">
+                            <div class="avatar" style="${avatarStyle}">
+                                ${profile && profile.pfp ? "" : contact.initial}
+                            </div>
+                            <div class="contact-info">
+                                <div class="contact-name">${displayName}</div>
+                                <div class="contact-handle">${
+                                  contact.cashtag
+                                }</div>
+                            </div>
+                        </div>
+                        <input type="checkbox" class="checkbox">
+                    </div>
+                `;
+          })
+        );
+
+        suggestedContacts.innerHTML = contactsHTML.join("");
+        attachContactListeners();
       }
 
-      function updateDisplay() {
-        const numericValue = parseFloat(amountValue) || 0;
+      // Real Cash App profile scraping
+      async function scrapeCashAppProfile(cashtag) {
+        try {
+          const cleanCashtag = cashtag.replace("$", "");
+          const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(
+            `https://cash.app/${cleanCashtag}`
+          )}`;
 
-        if (numericValue === 0 && !amountValue.includes(".")) {
-          amountText.innerHTML = "$0";
-        } else {
-          const parts = amountValue.split(".");
-          // Format with commas, but only if it's not starting with a lone "0"
-          const integerPart =
-            parts[0] === "0"
-              ? "0"
-              : parseFloat(parts[0] || 0).toLocaleString("en-US");
-          amountText.innerHTML =
-            parts.length > 1
-              ? `$${integerPart}.${parts[1]}`
-              : `$${integerPart}`;
+          const response = await fetch(proxyUrl);
+          const text = await response.text();
+
+          // Extract name from meta tags or title
+          const nameMatch =
+            text.match(/<title[^>]*>([^<]*)<\/title>/i) ||
+            text.match(
+              /<meta[^>]*property="og:title"[^>]*content="([^"]*)"[^>]*>/i
+            ) ||
+            text.match(
+              /<meta[^>]*name="twitter:title"[^>]*content="([^"]*)"[^>]*>/i
+            );
+
+          // Extract profile image
+          const imageMatch =
+            text.match(
+              /<meta[^>]*property="og:image"[^>]*content="([^"]*)"[^>]*>/i
+            ) ||
+            text.match(
+              /<meta[^>]*name="twitter:image"[^>]*content="([^"]*)"[^>]*>/i
+            );
+
+          let name = cashtag;
+          if (nameMatch && nameMatch[1]) {
+            name = nameMatch[1].replace(/\s*\|\s*Cash App.*$/i, "").trim();
+          }
+
+          return {
+            name: name || cashtag,
+            cashtag: cashtag,
+            pfp: imageMatch && imageMatch[1] ? imageMatch[1] : null,
+          };
+        } catch (error) {
+          console.error("Error scraping profile:", error);
+          return null;
+        }
+      }
+
+      // Search functionality
+      function debounceSearch(query) {
+        clearTimeout(searchTimeout);
+        if (query.length < 2) {
+          searchResults.classList.remove("active");
+          return;
         }
 
-        const isEnabled = numericValue > 0;
-        requestBtn.disabled = !isEnabled;
-        payBtn.disabled = !isEnabled;
-      }
+        searchTimeout = setTimeout(async () => {
+          if (query.startsWith("$")) {
+            searchResults.innerHTML = '<div class="loading">Loading...</div>';
+            searchResults.classList.add("active");
 
-      function handleKeyPress(key) {
-        if (key === "<") {
-          // Backspace
-          if (amountValue.length > 1) {
-            amountValue = amountValue.slice(0, -1);
-          } else {
-            amountValue = "0";
-          }
-        } else if (key === ".") {
-          // Decimal point
-          if (!amountValue.includes(".")) {
-            amountValue += ".";
-          }
-        } else {
-          // Number keys
-          const decimalPart = amountValue.split(".")[1];
-          if (decimalPart && decimalPart.length >= 2) {
-            return; // Don't allow more than 2 decimal places
-          }
+            const profile = await scrapeCashAppProfile(query);
 
-          if (amountValue === "0") {
-            amountValue = key;
-          } else {
-            // Limit total length to prevent overflow
-            if (amountValue.replace(".", "").length < 10) {
-              amountValue += key;
+            if (profile) {
+              const avatarStyle = profile.pfp
+                ? `background-image: url('${profile.pfp}');`
+                : `background-color: #333;`;
+              const avatarText = profile.pfp
+                ? ""
+                : profile.name.charAt(0).toUpperCase();
+
+              searchResults.innerHTML = `
+                            <div class="search-result-item" data-name="${profile.name}" data-cashtag="${profile.cashtag}">
+                                <div class="search-result-avatar" style="${avatarStyle}">
+                                    ${avatarText}
+                                </div>
+                                <div class="search-result-info">
+                                    <div class="search-result-name">${profile.name}</div>
+                                    <div class="search-result-cashtag">${profile.cashtag}</div>
+                                </div>
+                            </div>
+                        `;
+
+              document
+                .querySelector(".search-result-item")
+                .addEventListener("click", function () {
+                  const name = this.getAttribute("data-name");
+                  const cashtag = this.getAttribute("data-cashtag");
+                  searchInput.value = `${name} ${cashtag}`;
+                  searchResults.classList.remove("active");
+                  selectedContact = { name, cashtag };
+                  updatePayButton();
+                });
+            } else {
+              searchResults.innerHTML =
+                '<div class="loading">Profile not found</div>';
             }
+          } else {
+            searchResults.classList.remove("active");
           }
-        }
-        updateDisplay();
-        animateAmount(); // Trigger animation on each key press
+        }, 500);
       }
 
-      keypad.addEventListener("click", (e) => {
-        const btn = e.target.closest(".keypad-btn");
-        if (btn && btn.dataset.key) {
-          handleKeyPress(btn.dataset.key);
+      // Attach listeners to contact items
+      function attachContactListeners() {
+        const contactItems = document.querySelectorAll(".contact-item");
+        contactItems.forEach((item) => {
+          item.addEventListener("click", function () {
+            const cashtag = this.getAttribute("data-cashtag");
+            const name = this.querySelector(".contact-name").textContent;
+            searchInput.value = `${name} ${cashtag}`;
+
+            // Clear all checkboxes
+            document
+              .querySelectorAll(".checkbox")
+              .forEach((cb) => (cb.checked = false));
+
+            // Check current checkbox
+            const checkbox = this.querySelector(".checkbox");
+            checkbox.checked = true;
+
+            selectedContact = { name, cashtag };
+            updatePayButton();
+          });
+        });
+      }
+
+      // Update pay button state
+      function updatePayButton() {
+        const hasSelectedContact = selectedContact !== null;
+        const noteField = document.querySelector(
+          'input[placeholder="Note (required)"]'
+        );
+        const hasNote = noteField.value.trim() !== "";
+
+        if (hasSelectedContact && hasNote) {
+          payBtn.classList.add("active");
+        } else {
+          payBtn.classList.remove("active");
+        }
+      }
+
+      // Event listeners
+      searchInput.addEventListener("input", function () {
+        debounceSearch(this.value);
+      });
+
+      document.addEventListener("click", function (e) {
+        if (!e.target.closest(".search-container")) {
+          searchResults.classList.remove("active");
         }
       });
 
-      payBtn.addEventListener("click", () => {
-        if (parseFloat(amountValue) > 0) {
-          localStorage.setItem("paymentAmount", amountValue);
-          window.location.href = "contact-pay.html";
+      inputs.forEach((input) => {
+        input.addEventListener("input", updatePayButton);
+      });
+
+      document
+        .querySelector(".close-btn")
+        .addEventListener("click", function () {
+          console.log("Closing interface");
+        });
+
+      payBtn.addEventListener("click", function () {
+        if (this.classList.contains("active")) {
+          console.log("Payment initiated");
         }
       });
 
-      // Initial load
-      document.addEventListener("DOMContentLoaded", () => {
-        updateDisplay();
+      paymentMethod.addEventListener("click", function () {
+        paymentOverlay.style.display = "flex";
+        setTimeout(() => {
+          paymentOverlay.classList.add("active");
+        }, 10);
       });
+
+      paymentOverlay.addEventListener("click", function (e) {
+        if (e.target === paymentOverlay) {
+          closeModal();
+        }
+      });
+
+      function closeModal() {
+        paymentOverlay.classList.remove("active");
+        setTimeout(() => {
+          paymentOverlay.style.display = "none";
+        }, 300);
+      }
+
+      continueBtn.addEventListener("click", function () {
+        closeModal();
+      });
+
+      // Initialize
+      loadSuggestedContacts();
+      searchInput.focus();
     </script>
-    <script src="footer.display.js"></script>
   </body>
 </html>
