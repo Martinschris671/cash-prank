@@ -50,8 +50,6 @@
         --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
           sans-serif;
         --header-height: 65px;
-
-        /* --- ADDED: CSS variables for the new loader --- */
         --loader-size: 56px;
         --loader-border-width: 5.5px;
         --animation-speed: 1.2s;
@@ -91,13 +89,11 @@
         flex-direction: column;
         position: relative;
       }
-      /* --- NEW: Wrapper for header and main content to allow them to move together --- */
       .page-body {
         display: flex;
         flex-direction: column;
         flex-grow: 1;
-        overflow: hidden; /* Prevents double scrollbars */
-        /* The ultra-smooth snap-back animation is now on this wrapper */
+        overflow: hidden;
         transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       }
       .app-header {
@@ -107,8 +103,6 @@
         padding: 10px var(--padding-screen);
         height: var(--header-height);
         flex-shrink: 0;
-        /* --- NEW: Makes header part of the drag zone --- */
-        cursor: grab;
         user-select: none;
       }
       .app-header h1 {
@@ -150,20 +144,12 @@
         margin-bottom: 12px;
       }
 
-      /* === START: STYLES FOR ATTACHED CARDS === */
       #balance-preview-card {
         margin-bottom: 0;
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
         padding-bottom: 20px;
-        /* --- NEW: Makes balance card part of the drag zone --- */
-        cursor: grab;
         user-select: none;
-      }
-      /* --- NEW: Changes cursor to "grabbing" on both drag zones when active --- */
-      .app-header:active,
-      #balance-preview-card:active {
-        cursor: grabbing;
       }
       .paychecks-link-card {
         background-color: var(--card-bg-color);
@@ -177,28 +163,27 @@
         align-items: center;
         gap: 10px;
         cursor: pointer;
-        margin-bottom: 24px; /* Space before 'Save & Invest' */
+        margin-bottom: 24px;
       }
       .paychecks-link-card .icon {
         font-size: 16px;
         color: var(--text-primary);
-        font-weight: 300; /* Makes the checkmark thinner */
+        font-weight: 300;
         margin-left: -8px;
       }
       .paychecks-link-card .title {
-        font-size: 13px; /* Approx 16px */
+        font-size: 13px;
         font-weight: 600;
         color: var(--text-primary);
       }
       .paychecks-link-card .subtitle {
-        font-size: 12px; /* Approx 16px */
+        font-size: 12px;
         font-weight: 500;
         color: var(--text-secondary);
-        margin-left: auto; /* Pushes to the right */
+        margin-left: auto;
         margin-right: 0px;
-        white-space: nowrap; /* Prevents wrapping */
+        white-space: nowrap;
       }
-      /* === END: STYLES FOR ATTACHED CARDS === */
 
       .balance-header {
         display: flex;
@@ -278,15 +263,11 @@
         color: var(--text-secondary);
         margin-top: 2px;
       }
-
-      /* Global small chevron style */
       .chevron-icon {
         width: 6px;
         height: 12px;
         flex-shrink: 0;
       }
-
-      /* UPDATED SAVINGS LIST CARD STYLING */
       .savings-list-card {
         background-color: var(--card-bg-color);
         border-radius: var(--border-radius-card);
@@ -328,15 +309,14 @@
         display: grid;
         place-items: center;
         flex-shrink: 0;
-        align-self: flex-end; /* This aligns the icon to the bottom */
+        align-self: flex-end;
         position: relative;
         border: 1px solid var(--border-color-light);
       }
-      /* === NEW: Styles for IMG icons === */
       .savings-list-card .icon-container .icon {
         width: 24px;
         height: 24px;
-        object-fit: contain; /* Ensures image scales nicely */
+        object-fit: contain;
         z-index: 1;
       }
       .savings-list-card .progress-ring-svg {
@@ -351,8 +331,6 @@
         transition: stroke-dashoffset 0.5s ease;
         stroke-linecap: round;
       }
-
-      /* PIXEL-PERFECT Explore Grid */
       .explore-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -402,7 +380,6 @@
         top: 16px;
         right: 16px;
       }
-
       .more-ways-list .icon-container {
         width: 24px;
         height: 24px;
@@ -804,14 +781,12 @@
     </div>
 
     <div class="app-container">
-      <!-- NEW: Wrapper for header and main content -->
       <div class="page-body">
         <header class="app-header">
           <h1>Money</h1>
           <a href="profile.html" class="profile-icon-link"> </a>
         </header>
         <main class="main-content">
-          <!-- Main balance card -->
           <section class="card" id="balance-preview-card">
             <div class="balance-header">
               <span>Cash balance</span>
@@ -842,7 +817,6 @@
             </div>
           </section>
 
-          <!-- Attached Paycheck card - PERFECTED -->
           <div
             class="paychecks-link-card"
             onclick="showFeatureNotImplementedModal()"
@@ -868,7 +842,6 @@
 
           <h2 class="section-header">Save & Invest</h2>
 
-          <!-- Savings Card -->
           <a
             href="savings.html"
             class="savings-list-card"
@@ -919,7 +892,6 @@
             </svg>
           </a>
 
-          <!-- Bitcoin Card -->
           <div
             class="savings-list-card"
             onclick="showFeatureNotImplementedModal()"
@@ -959,7 +931,6 @@
             </svg>
           </div>
 
-          <!-- Stocks Card -->
           <div
             class="savings-list-card"
             onclick="showFeatureNotImplementedModal()"
@@ -1286,7 +1257,7 @@
         profileIconLink = document.querySelector(".profile-icon-link"),
         spinnerOverlay = document.getElementById("spinner-overlay");
 
-      let currentBalance = 28104.77, // <-- Updated Balance
+      let currentBalance = 28104.77,
         isAnimating = false;
       const localStorageBalanceKey = "cashAppBalance",
         localStorageTransactionsKey = "cashAppTransactions",
@@ -1294,8 +1265,8 @@
       const defaultProfile = {
         fullName: "Jane Doe",
         cashtag: "waldoapp",
-        accountNumber: "**2923", // <-- Updated Account #
-        routingNumber: "**894", // <-- Updated Routing #
+        accountNumber: "**2923",
+        routingNumber: "**894",
         profilePic: "icons/person-circle-svgrepo-com.png",
       };
 
@@ -1324,12 +1295,9 @@
         const container = element.parentElement;
         const maxFontSize = 60;
         const minFontSize = 28;
-
         element.style.fontSize = `${maxFontSize}px`;
-
         const textWidth = element.scrollWidth;
         const containerWidth = container.clientWidth;
-
         if (textWidth > containerWidth) {
           const scaleFactor = containerWidth / textWidth;
           const newSize = Math.floor(maxFontSize * scaleFactor);
@@ -1363,7 +1331,7 @@
       }
       function loadState() {
         const savedBalance = localStorage.getItem(localStorageBalanceKey);
-        currentBalance = parseFloat(savedBalance) || 28104.77; // <-- Updated Balance
+        currentBalance = parseFloat(savedBalance) || 28104.77;
         balanceAmountEl.textContent = formatCurrency(currentBalance);
         footerBalanceDisplay.textContent =
           formatBalanceForFooter(currentBalance);
@@ -1395,12 +1363,10 @@
           JSON.stringify(transactions)
         );
       }
-
       function handleAddTransaction(amount) {
         if (isAnimating || isNaN(amount) || amount <= 0) return;
         hideAllModals();
         spinnerOverlay.classList.add("show");
-
         setTimeout(() => {
           spinnerOverlay.classList.remove("show");
           const startBalance = currentBalance;
@@ -1410,13 +1376,11 @@
           animateBalance(startBalance, currentBalance, "add", amount);
         }, 1500);
       }
-
       function handleWithdrawal(amount) {
         if (isAnimating || isNaN(amount) || amount <= 0) return;
         if (amount > currentBalance) return;
         hideAllModals();
         spinnerOverlay.classList.add("show");
-
         setTimeout(() => {
           spinnerOverlay.classList.remove("show");
           const startBalance = currentBalance;
@@ -1426,7 +1390,6 @@
           animateBalance(startBalance, currentBalance, "withdraw", amount);
         }, 1500);
       }
-
       function showModal(modalEl) {
         transactionOverlay.classList.add("show");
         allModals.forEach((m) => (m.style.display = "none"));
@@ -1454,18 +1417,16 @@
       document.addEventListener("DOMContentLoaded", () => {
         loadState();
 
-        // --- *** START: NEW PULL-TO-REFRESH IMPLEMENTATION *** ---
-        const dragZones = [
-          document.querySelector(".app-header"),
-          document.getElementById("balance-preview-card"),
-        ];
-        const movableContent = document.querySelector(".page-body");
+        // --- *** START: ULTRA-PERFECT PULL-TO-REFRESH IMPLEMENTATION *** ---
+        const pageBody = document.querySelector(".page-body");
         const scrollContainer = document.querySelector(".main-content");
 
-        const PULL_THRESHOLD = 80;
+        const PULL_TO_REFRESH_THRESHOLD = 80;
         const PULL_RESISTANCE = 0.5;
+        const DRAG_START_THRESHOLD = 10; // Pixels to move before a drag is confirmed
 
         let isPulling = false;
+        let isDragPotential = false;
         let startPullY = 0;
         let pullDistance = 0;
 
@@ -1474,46 +1435,60 @@
         }
 
         function onPullStart(e) {
-          // Only start the pull if the main content is scrolled to the top
-          if (scrollContainer.scrollTop === 0) {
-            isPulling = true;
+          if (scrollContainer.scrollTop === 0 && !isAnimating) {
+            isDragPotential = true;
             startPullY = getEventY(e);
-            movableContent.style.transition = "none"; // Disable transition for direct feedback
           }
         }
 
         function onPullMove(e) {
-          if (!isPulling) return;
-          e.preventDefault();
+          if (!isDragPotential) return;
+
           const currentY = getEventY(e);
           let deltaY = currentY - startPullY;
-          if (deltaY < 0) deltaY = 0;
-          pullDistance = deltaY * PULL_RESISTANCE;
-          movableContent.style.transform = `translateY(${pullDistance}px)`;
+
+          // This is the key fix: only start a "pull" after a certain drag distance
+          if (!isPulling && deltaY > DRAG_START_THRESHOLD) {
+            isPulling = true;
+            pageBody.style.transition = "none"; // Disable transition for direct feedback
+          }
+
+          if (isPulling) {
+            // Prevent default ONLY when we are confirmed to be pulling
+            e.preventDefault();
+
+            if (deltaY < 0) deltaY = 0;
+            pullDistance = (deltaY - DRAG_START_THRESHOLD) * PULL_RESISTANCE;
+            pageBody.style.transform = `translateY(${pullDistance}px)`;
+          }
         }
 
         function onPullEnd() {
-          if (!isPulling) return;
-          isPulling = false;
-          movableContent.style.transition =
-            "transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
-          if (pullDistance >= PULL_THRESHOLD) {
-            loadState(); // Refresh the data
+          if (isPulling) {
+            pageBody.style.transition =
+              "transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
+            if (pullDistance >= PULL_TO_REFRESH_THRESHOLD) {
+              loadState(); // Refresh the data
+            }
+            pageBody.style.transform = "translateY(0)"; // Snap back
           }
-          movableContent.style.transform = "translateY(0)"; // Snap back
+          // Reset all state flags regardless
+          isDragPotential = false;
+          isPulling = false;
         }
 
-        // Attach listeners to both drag zones (header and balance card)
-        dragZones.forEach((zone) => {
-          zone.addEventListener("mousedown", onPullStart);
-          zone.addEventListener("touchstart", onPullStart, { passive: true });
+        // The listener is on the scroll container, making the drag feel natural
+        scrollContainer.addEventListener("mousedown", onPullStart);
+        scrollContainer.addEventListener("touchstart", onPullStart, {
+          passive: true,
         });
 
+        // Move and end listeners are on the document to catch events anywhere
         document.addEventListener("mousemove", onPullMove, { passive: false });
         document.addEventListener("mouseup", onPullEnd);
         document.addEventListener("touchmove", onPullMove, { passive: false });
         document.addEventListener("touchend", onPullEnd);
-        // --- *** END: NEW PULL-TO-REFRESH IMPLEMENTATION *** ---
+        // --- *** END: ULTRA-PERFECT PULL-TO-REFRESH IMPLEMENTATION *** ---
 
         const presetAmountsContainer =
             document.getElementById("preset-amounts"),
@@ -1562,7 +1537,6 @@
             );
             displayValue = parts.join(".");
           }
-
           keypadAmountDisplay.innerHTML = `$${displayValue}<span class="cursor"></span>`;
           const numericValue = parseFloat(keypadValue.replace(/,/g, ""));
           addKeypadBtn.disabled = numericValue <= 0 || isNaN(numericValue);
@@ -1618,14 +1592,11 @@
           .addEventListener("click", () => {
             withdrawSlider.max = currentBalance;
             withdrawSlider.value = 0;
-
             withdrawAvailableDisplay.textContent = `${formatCurrency(
               currentBalance
             )} available`;
-
             withdrawAmountDisplay.textContent = formatCurrency(0);
             adjustWithdrawFontSize(withdrawAmountDisplay);
-
             withdrawConfirmBtn.disabled = true;
             withdrawSlider.style.setProperty("--progress", "0%");
             showModal(withdrawSliderModal);
@@ -1633,11 +1604,8 @@
 
         withdrawSlider.addEventListener("input", () => {
           const value = parseFloat(withdrawSlider.value);
-
           withdrawAmountDisplay.textContent = formatCurrency(value);
-
           adjustWithdrawFontSize(withdrawAmountDisplay);
-
           withdrawConfirmBtn.disabled = value <= 0;
           const maxVal = parseFloat(withdrawSlider.max);
           const progressPercent = maxVal > 0 ? (value / maxVal) * 100 : 0;
