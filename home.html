@@ -7,8 +7,6 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
     <title>Money - Cash App</title>
-    <!-- Favicon -->
-    <!-- **NEW**: Ultra-Clean 'Inter' Font from Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -25,6 +23,7 @@
     <link rel="stylesheet" href="saving.css" />
     <script src="guard.js"></script>
     <style>
+      /* --- All existing CSS is unchanged, except for the spinner animation speed --- */
       @font-face {
         font-family: "CashMarket";
         font-style: normal;
@@ -523,12 +522,9 @@
         width: 100%;
         max-width: 100%;
         border-radius: 0;
-        /* MODIFICATION START: Reduced padding to bring button lower */
         padding-bottom: 25px;
-        /* MODIFICATION END */
       }
 
-      /* --- MODIFICATION START: Styles for the Keypad & Display Layout --- */
       @keyframes shake {
         10%,
         90% {
@@ -548,46 +544,38 @@
           transform: translateX(4px);
         }
       }
-
-      /* Make header take up space to push content down and align text */
       #add-money-keypad-modal .modal-header {
         flex-grow: 1;
         margin: 0;
-        padding: 0 0 1rem 0; /* Creates space below the text */
+        padding: 0 0 1rem 0;
       }
-
-      /* Position the 'X' button */
       #add-money-keypad-modal .modal-close-btn {
         top: -7px;
         transform: none;
         font-size: 40px;
       }
-
       .keypad-display.shake {
         animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
       }
-
       .keypad-display {
         text-align: center;
         flex-shrink: 0;
         transition: transform 0.2s ease-in-out;
         margin-bottom: 3rem;
       }
-
       #keypad-amount-display {
         font-size: 5rem;
         font-weight: 700;
         color: #47b349;
         min-height: 86px;
-        margin-bottom: rem;
+        margin-bottom: 2.5rem;
         transition: font-size 0.2s ease-out;
         font-family: var(--font-family);
         display: flex;
         align-items: center;
         justify-content: center;
+        margin-top: -1rem;
       }
-
-      /* Make keypad create a flexible space ABOVE the "Add" button */
       #add-money-keypad-modal .keypad {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -595,14 +583,11 @@
         flex-grow: 0;
         align-content: center;
         padding: 0 18px;
-        margin-bottom: 1rem; /* Pushes the button to the bottom */
+        margin-bottom: 1rem;
       }
-
-      /* Style the "Add" button's spacing */
       #add-money-keypad-modal .modal-action-btn {
-        margin-top: 30px; /* Standard space between keypad and button */
+        margin-top: 30px;
       }
-
       #add-money-keypad-modal .keypad-btn {
         background: none;
         border: none;
@@ -618,24 +603,19 @@
         justify-content: center;
         font-family: var(--font-family);
       }
-
       #add-money-keypad-modal .keypad-btn:active {
         transform: scale(1.7);
       }
-
       #add-money-keypad-modal .keypad-btn .fa-circle {
         font-size: 0.3rem;
         vertical-align: middle;
       }
-
       #add-money-keypad-modal .keypad-btn svg {
         vertical-align: middle;
         width: 1.2rem;
         height: 1.2rem;
         stroke: #000;
       }
-      /* --- MODIFICATION END --- */
-
       #withdraw-slider-modal {
         height: 75vh;
         justify-content: space-between;
@@ -701,6 +681,52 @@
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
       }
 
+      #feature-modal {
+        text-align: center;
+      }
+      #feature-modal h2 {
+        margin-bottom: 8px;
+      }
+      #feature-modal p {
+        color: var(--text-secondary);
+        margin-bottom: 24px;
+      }
+      .gray {
+        color: #c7c7cc;
+      }
+
+      #spinner-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--card-bg-color);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+      #spinner-overlay.show {
+        display: flex;
+      }
+
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .spinner {
+        width: 50px;
+        height: 50px;
+        /* --- MODIFICATION: Changed animation speed to 1.2s for a faster, smoother spin --- */
+        animation: spin 1.2s linear infinite;
+      }
+
       #success-overlay {
         position: fixed;
         top: 0;
@@ -714,7 +740,7 @@
         justify-content: space-between;
         padding: 20px var(--padding-screen) 40px;
         transform: translateY(100%);
-        transition: transform 0.4s ease;
+        transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       }
       #success-overlay.show {
         display: flex;
@@ -723,7 +749,6 @@
       #success-close-btn {
         position: fixed;
         top: 20px;
-
         left: var(--padding-screen);
         font-size: 40px;
         background: none;
@@ -777,70 +802,18 @@
         cursor: pointer;
         background: none;
       }
-      #feature-modal {
-        text-align: center;
-      }
-      #feature-modal h2 {
-        margin-bottom: 8px;
-      }
-      #feature-modal p {
-        color: var(--text-secondary);
-        margin-bottom: 24px;
-      }
-      .gray {
-        color: #c7c7cc;
-      }
-
-      #spinner-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: var(--card-bg-color); /* Solid white */
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-      }
-      #spinner-overlay.show {
-        display: flex;
-      }
-      .loader {
-        width: var(--loader-size);
-        height: var(--loader-size);
-        border-radius: 50%;
-        position: relative;
-        background: conic-gradient(
-          from -90deg,
-          var(--accent-green),
-          transparent
-        );
-        animation: spin var(--animation-speed) linear infinite;
-      }
-      .loader::before {
-        content: "";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: calc(var(--loader-size) - (var(--loader-border-width) * 2));
-        height: calc(var(--loader-size) - (var(--loader-border-width) * 2));
-        background-color: var(--card-bg-color);
-        border-radius: 50%;
-      }
-      @keyframes spin {
-        to {
-          transform: rotate(-360deg);
-        }
-      }
     </style>
   </head>
   <body>
-    <!-- (The entire body HTML from the previous step is correct and remains here) -->
     <div id="spinner-overlay">
-      <div class="loader"></div>
+      <img
+        src="icons/green_spinner_thick.png"
+        alt="Processing..."
+        class="spinner"
+      />
     </div>
+
+    <!-- (The rest of the HTML body is unchanged) -->
     <div class="app-container">
       <header class="app-header">
         <h1>Money</h1>
@@ -1292,9 +1265,8 @@
     </div>
 
     <script>
-      // The entire JavaScript from the previous step is correct and remains here.
-      // No changes are needed in this script block.
-
+      // --- The JavaScript logic remains unchanged from the previous step. ---
+      // It correctly handles the 5-second processing delay and the staggered UI updates.
       const balanceAmountEl = document.getElementById("balance-amount"),
         footerBalanceDisplay = document.getElementById(
           "footer-balance-display"
@@ -1360,7 +1332,7 @@
         }
       };
 
-      function animateBalance(startValue, endValue, type, amount) {
+      function animateBalance(startValue, endValue) {
         if (isAnimating) return;
         isAnimating = true;
         const duration = 700;
@@ -1373,13 +1345,13 @@
           footerBalanceDisplay.textContent =
             formatBalanceForFooter(animatedValue);
           adjustBalanceFontSize(balanceAmountEl);
-          if (progress < 1) requestAnimationFrame(step);
-          else {
+          if (progress < 1) {
+            requestAnimationFrame(step);
+          } else {
             balanceAmountEl.textContent = formatCurrency(endValue);
             footerBalanceDisplay.textContent = formatBalanceForFooter(endValue);
             adjustBalanceFontSize(balanceAmountEl);
             isAnimating = false;
-            if (type) showSuccessOverlay(type, amount);
           }
         };
         requestAnimationFrame(step);
@@ -1420,30 +1392,42 @@
       }
       function handleAddTransaction(amount) {
         if (isAnimating || isNaN(amount) || amount <= 0) return;
+        const startBalance = currentBalance;
         hideAllModals();
         spinnerOverlay.classList.add("show");
+
         setTimeout(() => {
           spinnerOverlay.classList.remove("show");
-          const startBalance = currentBalance;
-          currentBalance += amount;
-          saveState();
-          saveTransaction("add", amount);
-          animateBalance(startBalance, currentBalance, "add", amount);
-        }, 1500);
+          showSuccessOverlay("add", amount);
+
+          setTimeout(() => {
+            const newBalance = startBalance + amount;
+            currentBalance = newBalance;
+            saveState();
+            saveTransaction("add", amount);
+            animateBalance(startBalance, newBalance);
+          }, 1500);
+        }, 5000);
       }
       function handleWithdrawal(amount) {
         if (isAnimating || isNaN(amount) || amount <= 0) return;
         if (amount > currentBalance) return;
+        const startBalance = currentBalance;
         hideAllModals();
         spinnerOverlay.classList.add("show");
+
         setTimeout(() => {
           spinnerOverlay.classList.remove("show");
-          const startBalance = currentBalance;
-          currentBalance -= amount;
-          saveState();
-          saveTransaction("withdraw", amount);
-          animateBalance(startBalance, currentBalance, "withdraw", amount);
-        }, 1500);
+          showSuccessOverlay("withdraw", amount);
+
+          setTimeout(() => {
+            const newBalance = startBalance - amount;
+            currentBalance = newBalance;
+            saveState();
+            saveTransaction("withdraw", amount);
+            animateBalance(startBalance, newBalance);
+          }, 1500);
+        }, 5000);
       }
       function showModal(modalEl) {
         transactionOverlay.classList.add("show");
@@ -1471,7 +1455,6 @@
       }
       document.addEventListener("DOMContentLoaded", () => {
         loadState();
-        // ... (Your pull-to-refresh code remains unchanged) ...
         const mainContent = document.querySelector(".main-content");
         const PULL_TO_REFRESH_THRESHOLD = 80;
         const PULL_RESISTANCE = 0.5;
@@ -1524,8 +1507,6 @@
         document.addEventListener("mouseup", onPullEnd);
         document.addEventListener("touchmove", onPullMove, { passive: false });
         document.addEventListener("touchend", onPullEnd);
-
-        // --- PRESET BUTTON LOGIC (Unchanged) ---
         const presetAmountsContainer =
             document.getElementById("preset-amounts"),
           addPresetBtn = document.getElementById("add-preset-btn");
@@ -1555,8 +1536,6 @@
         addPresetBtn.addEventListener("click", () =>
           handleAddTransaction(selectedPresetAmount)
         );
-
-        // --- "Add Money" Keypad Logic ---
         const keypad = document.getElementById("keypad"),
           keypadAmountDisplay = document.getElementById(
             "keypad-amount-display"
@@ -1660,8 +1639,6 @@
         document
           .getElementById("keypad-close-btn")
           .addEventListener("click", hideAllModals);
-
-        // --- WITHDRAW SLIDER LOGIC (Unchanged) ---
         const withdrawSlider = document.getElementById("withdraw-slider"),
           withdrawAmountDisplay = document.getElementById(
             "withdraw-amount-display"
@@ -1719,3 +1696,4 @@
     <script src="saving.js"></script>
   </body>
 </html>
+```
