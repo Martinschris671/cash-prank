@@ -89,13 +89,6 @@
         flex-direction: column;
         position: relative;
       }
-      .page-body {
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-        overflow: hidden;
-        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      }
       .app-header {
         display: flex;
         justify-content: space-between;
@@ -132,6 +125,8 @@
         padding: 0 var(--padding-screen);
         padding-bottom: calc(var(--footer-height) + 20px);
         scrollbar-width: none;
+        /* The snap-back animation is applied ONLY to the main content area */
+        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       }
       .main-content::-webkit-scrollbar {
         display: none;
@@ -781,139 +776,246 @@
     </div>
 
     <div class="app-container">
-      <div class="page-body">
-        <header class="app-header">
-          <h1>Money</h1>
-          <a href="profile.html" class="profile-icon-link"> </a>
-        </header>
-        <main class="main-content">
-          <section class="card" id="balance-preview-card">
-            <div class="balance-header">
-              <span>Cash balance</span>
-              <a href="profile.html">
-                <svg
-                  class="chevron-icon"
-                  viewBox="0 0 9 15"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M1 1L7.5 7.5L1 14"
-                    stroke="#C7C7CC"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </a>
-            </div>
-            <div class="balance-amount" id="balance-amount"></div>
+      <header class="app-header">
+        <h1>Money</h1>
+        <a href="profile.html" class="profile-icon-link"> </a>
+      </header>
+      <main class="main-content">
+        <section class="card" id="balance-preview-card">
+          <div class="balance-header">
+            <span>Cash balance</span>
             <a href="profile.html">
-              <p class="account-info" id="account-info"></p>
+              <svg
+                class="chevron-icon"
+                viewBox="0 0 9 15"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M1 1L7.5 7.5L1 14"
+                  stroke="#C7C7CC"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
             </a>
-            <div class="balance-actions">
-              <button id="add-money-btn">Add money</button>
-              <button id="withdraw-btn">Withdraw</button>
-            </div>
-          </section>
-
-          <div
-            class="paychecks-link-card"
-            onclick="showFeatureNotImplementedModal()"
-          >
-            <i class="fa-regular fa-circle-check icon"></i>
-            <span class="title">Paychecks</span>
-            <span class="subtitle">Ready for next paycheck</span>
-            <svg
-              class="chevron-icon"
-              viewBox="0 0 9 15"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M1 1L7.5 7.5L1 14"
-                stroke="#C7C7CC"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
           </div>
-
-          <h2 class="section-header">Save & Invest</h2>
-
-          <a
-            href="savings.html"
-            class="savings-list-card"
-            id="savings-card-link"
-          >
-            <div class="details">
-              <span class="title">Savings</span>
-              <span class="balance" id="home-savings-balance">$0.00</span>
-              <span class="subtitle">Up to 4% interest</span>
-            </div>
-            <div class="icon-container">
-              <svg class="progress-ring-svg" viewBox="0 0 120 120">
-                <circle
-                  class="progress-ring-circle"
-                  stroke="#e9ecef"
-                  stroke-width="8"
-                  fill="transparent"
-                  r="56"
-                  cx="60"
-                  cy="60"
-                />
-                <circle
-                  class="progress-ring-circle"
-                  id="home-savings-progress-ring"
-                  stroke="var(--accent-green)"
-                  stroke-width="8"
-                  fill="transparent"
-                  r="56"
-                  cx="60"
-                  cy="60"
-                />
-              </svg>
-              <img src="icons/save.jpg" alt="Savings" class="icon" />
-            </div>
-            <svg
-              class="chevron-icon"
-              viewBox="0 0 9 15"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M1 1L7.5 7.5L1 14"
-                stroke="#C7C7CC"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
+          <div class="balance-amount" id="balance-amount"></div>
+          <a href="profile.html">
+            <p class="account-info" id="account-info"></p>
           </a>
+          <div class="balance-actions">
+            <button id="add-money-btn">Add money</button>
+            <button id="withdraw-btn">Withdraw</button>
+          </div>
+        </section>
 
-          <div
-            class="savings-list-card"
-            onclick="showFeatureNotImplementedModal()"
+        <div
+          class="paychecks-link-card"
+          onclick="showFeatureNotImplementedModal()"
+        >
+          <i class="fa-regular fa-circle-check icon"></i>
+          <span class="title">Paychecks</span>
+          <span class="subtitle">Ready for next paycheck</span>
+          <svg
+            class="chevron-icon"
+            viewBox="0 0 9 15"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <div class="details">
-              <span class="title">Bitcoin</span>
-              <span class="balance">$0.00</span>
-              <span class="subtitle">0.00% today</span>
+            <path
+              d="M1 1L7.5 7.5L1 14"
+              stroke="#C7C7CC"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+
+        <h2 class="section-header">Save & Invest</h2>
+
+        <a href="savings.html" class="savings-list-card" id="savings-card-link">
+          <div class="details">
+            <span class="title">Savings</span>
+            <span class="balance" id="home-savings-balance">$0.00</span>
+            <span class="subtitle">Up to 4% interest</span>
+          </div>
+          <div class="icon-container">
+            <svg class="progress-ring-svg" viewBox="0 0 120 120">
+              <circle
+                class="progress-ring-circle"
+                stroke="#e9ecef"
+                stroke-width="8"
+                fill="transparent"
+                r="56"
+                cx="60"
+                cy="60"
+              />
+              <circle
+                class="progress-ring-circle"
+                id="home-savings-progress-ring"
+                stroke="var(--accent-green)"
+                stroke-width="8"
+                fill="transparent"
+                r="56"
+                cx="60"
+                cy="60"
+              />
+            </svg>
+            <img src="icons/save.jpg" alt="Savings" class="icon" />
+          </div>
+          <svg
+            class="chevron-icon"
+            viewBox="0 0 9 15"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1 1L7.5 7.5L1 14"
+              stroke="#C7C7CC"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </a>
+
+        <div
+          class="savings-list-card"
+          onclick="showFeatureNotImplementedModal()"
+        >
+          <div class="details">
+            <span class="title">Bitcoin</span>
+            <span class="balance">$0.00</span>
+            <span class="subtitle">0.00% today</span>
+          </div>
+          <div class="icon-container">
+            <svg class="progress-ring-svg" viewBox="0 0 120 120">
+              <circle
+                class="progress-ring-circle"
+                stroke="#e9ecef"
+                stroke-width="8"
+                fill="transparent"
+                r="56"
+                cx="60"
+                cy="60"
+              />
+            </svg>
+            <img src="icons/bitcoin.jpg" alt="Bitcoin" class="icon" />
+          </div>
+          <svg
+            class="chevron-icon"
+            viewBox="0 0 9 15"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1 1L7.5 7.5L1 14"
+              stroke="#C7C7CC"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+
+        <div
+          class="savings-list-card"
+          onclick="showFeatureNotImplementedModal()"
+          style="margin-bottom: 0"
+        >
+          <div class="details">
+            <span class="title">Stocks</span>
+            <span class="balance">$0.00</span>
+            <span class="subtitle">0.00% today</span>
+          </div>
+          <div class="icon-container">
+            <svg class="progress-ring-svg" viewBox="0 0 120 120">
+              <circle
+                class="progress-ring-circle"
+                stroke="#e9ecef"
+                stroke-width="8"
+                fill="transparent"
+                r="56"
+                cx="60"
+                cy="60"
+              />
+            </svg>
+            <img src="icons/stocks.jpg" alt="Stocks" class="icon" />
+          </div>
+          <svg
+            class="chevron-icon"
+            viewBox="0 0 9 15"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1 1L7.5 7.5L1 14"
+              stroke="#C7C7CC"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+
+        <h2 class="section-header">Explore</h2>
+        <div class="explore-grid">
+          <div class="explore-card" onclick="showFeatureNotImplementedModal()">
+            <span class="title">Taxes</span>
+            <div class="icon-container purple">
+              <i class="fa-solid fa-landmark"></i>
             </div>
+            <span class="subtitle">Pay $0 to file</span>
+            <svg
+              class="chevron-icon"
+              viewBox="0 0 9 15"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1 1L7.5 7.5L1 14"
+                stroke="#C7C7CC"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+          <div class="explore-card" onclick="showFeatureNotImplementedModal()">
+            <span class="title">Family</span>
+            <div class="icon-container green">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <span class="subtitle">Invite your teen</span>
+            <svg
+              class="chevron-icon"
+              viewBox="0 0 9 15"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1 1L7.5 7.5L1 14"
+                stroke="#C7C7CC"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+        </div>
+
+        <h2 class="section-header">More ways to add money</h2>
+        <div class="list-card more-ways-list">
+          <div class="list-item" onclick="showFeatureNotImplementedModal()">
             <div class="icon-container">
-              <svg class="progress-ring-svg" viewBox="0 0 120 120">
-                <circle
-                  class="progress-ring-circle"
-                  stroke="#e9ecef"
-                  stroke-width="8"
-                  fill="transparent"
-                  r="56"
-                  cx="60"
-                  cy="60"
-                />
-              </svg>
-              <img src="icons/bitcoin.jpg" alt="Bitcoin" class="icon" />
+              <i class="fa-solid fa-money-bill-wave"></i>
+            </div>
+            <div class="details">
+              <span class="title">Deposit paper money</span>
+              <span class="subtitle">Find a nearby retailer</span>
             </div>
             <svg
               class="chevron-icon"
@@ -930,30 +1032,13 @@
               />
             </svg>
           </div>
-
-          <div
-            class="savings-list-card"
-            onclick="showFeatureNotImplementedModal()"
-            style="margin-bottom: 0"
-          >
-            <div class="details">
-              <span class="title">Stocks</span>
-              <span class="balance">$0.00</span>
-              <span class="subtitle">0.00% today</span>
-            </div>
+          <div class="list-item" onclick="showFeatureNotImplementedModal()">
             <div class="icon-container">
-              <svg class="progress-ring-svg" viewBox="0 0 120 120">
-                <circle
-                  class="progress-ring-circle"
-                  stroke="#e9ecef"
-                  stroke-width="8"
-                  fill="transparent"
-                  r="56"
-                  cx="60"
-                  cy="60"
-                />
-              </svg>
-              <img src="icons/stocks.jpg" alt="Stocks" class="icon" />
+              <i class="fa-solid fa-expand"></i>
+            </div>
+            <div class="details">
+              <span class="title">Deposit check</span>
+              <span class="subtitle">Scan with your phone</span>
             </div>
             <svg
               class="chevron-icon"
@@ -970,133 +1055,31 @@
               />
             </svg>
           </div>
-
-          <h2 class="section-header">Explore</h2>
-          <div class="explore-grid">
-            <div
-              class="explore-card"
-              onclick="showFeatureNotImplementedModal()"
+          <div class="list-item" onclick="showFeatureNotImplementedModal()">
+            <div class="icon-container">
+              <i class="fa-solid fa-arrows-rotate"></i>
+            </div>
+            <div class="details">
+              <span class="title">Auto reload</span>
+              <span class="subtitle">Add money automatically</span>
+            </div>
+            <svg
+              class="chevron-icon"
+              viewBox="0 0 9 15"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <span class="title">Taxes</span>
-              <div class="icon-container purple">
-                <i class="fa-solid fa-landmark"></i>
-              </div>
-              <span class="subtitle">Pay $0 to file</span>
-              <svg
-                class="chevron-icon"
-                viewBox="0 0 9 15"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M1 1L7.5 7.5L1 14"
-                  stroke="#C7C7CC"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-            <div
-              class="explore-card"
-              onclick="showFeatureNotImplementedModal()"
-            >
-              <span class="title">Family</span>
-              <div class="icon-container green">
-                <i class="fa-solid fa-users"></i>
-              </div>
-              <span class="subtitle">Invite your teen</span>
-              <svg
-                class="chevron-icon"
-                viewBox="0 0 9 15"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M1 1L7.5 7.5L1 14"
-                  stroke="#C7C7CC"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
+              <path
+                d="M1 1L7.5 7.5L1 14"
+                stroke="#C7C7CC"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </div>
-
-          <h2 class="section-header">More ways to add money</h2>
-          <div class="list-card more-ways-list">
-            <div class="list-item" onclick="showFeatureNotImplementedModal()">
-              <div class="icon-container">
-                <i class="fa-solid fa-money-bill-wave"></i>
-              </div>
-              <div class="details">
-                <span class="title">Deposit paper money</span>
-                <span class="subtitle">Find a nearby retailer</span>
-              </div>
-              <svg
-                class="chevron-icon"
-                viewBox="0 0 9 15"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M1 1L7.5 7.5L1 14"
-                  stroke="#C7C7CC"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-            <div class="list-item" onclick="showFeatureNotImplementedModal()">
-              <div class="icon-container">
-                <i class="fa-solid fa-expand"></i>
-              </div>
-              <div class="details">
-                <span class="title">Deposit check</span>
-                <span class="subtitle">Scan with your phone</span>
-              </div>
-              <svg
-                class="chevron-icon"
-                viewBox="0 0 9 15"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M1 1L7.5 7.5L1 14"
-                  stroke="#C7C7CC"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-            <div class="list-item" onclick="showFeatureNotImplementedModal()">
-              <div class="icon-container">
-                <i class="fa-solid fa-arrows-rotate"></i>
-              </div>
-              <div class="details">
-                <span class="title">Auto reload</span>
-                <span class="subtitle">Add money automatically</span>
-              </div>
-              <svg
-                class="chevron-icon"
-                viewBox="0 0 9 15"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M1 1L7.5 7.5L1 14"
-                  stroke="#C7C7CC"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-        </main>
-      </div>
+        </div>
+      </main>
       <nav class="bottom-nav">
         <a href="#"
           ><button
@@ -1417,9 +1400,8 @@
       document.addEventListener("DOMContentLoaded", () => {
         loadState();
 
-        // --- *** START: ULTRA-PERFECT PULL-TO-REFRESH IMPLEMENTATION *** ---
-        const pageBody = document.querySelector(".page-body");
-        const scrollContainer = document.querySelector(".main-content");
+        // --- *** START: ULTRA-PERFECT PULL-TO-REFRESH (FIXED HEADER) *** ---
+        const mainContent = document.querySelector(".main-content");
 
         const PULL_TO_REFRESH_THRESHOLD = 80;
         const PULL_RESISTANCE = 0.5;
@@ -1435,7 +1417,7 @@
         }
 
         function onPullStart(e) {
-          if (scrollContainer.scrollTop === 0 && !isAnimating) {
+          if (mainContent.scrollTop === 0 && !isAnimating) {
             isDragPotential = true;
             startPullY = getEventY(e);
           }
@@ -1450,7 +1432,7 @@
           // This is the key fix: only start a "pull" after a certain drag distance
           if (!isPulling && deltaY > DRAG_START_THRESHOLD) {
             isPulling = true;
-            pageBody.style.transition = "none"; // Disable transition for direct feedback
+            mainContent.style.transition = "none"; // Disable transition for direct feedback
           }
 
           if (isPulling) {
@@ -1459,27 +1441,27 @@
 
             if (deltaY < 0) deltaY = 0;
             pullDistance = (deltaY - DRAG_START_THRESHOLD) * PULL_RESISTANCE;
-            pageBody.style.transform = `translateY(${pullDistance}px)`;
+            mainContent.style.transform = `translateY(${pullDistance}px)`;
           }
         }
 
         function onPullEnd() {
           if (isPulling) {
-            pageBody.style.transition =
+            mainContent.style.transition =
               "transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
             if (pullDistance >= PULL_TO_REFRESH_THRESHOLD) {
               loadState(); // Refresh the data
             }
-            pageBody.style.transform = "translateY(0)"; // Snap back
+            mainContent.style.transform = "translateY(0)"; // Snap back
           }
           // Reset all state flags regardless
           isDragPotential = false;
           isPulling = false;
         }
 
-        // The listener is on the scroll container, making the drag feel natural
-        scrollContainer.addEventListener("mousedown", onPullStart);
-        scrollContainer.addEventListener("touchstart", onPullStart, {
+        // The listener is on the main content area, making the drag feel natural
+        mainContent.addEventListener("mousedown", onPullStart);
+        mainContent.addEventListener("touchstart", onPullStart, {
           passive: true,
         });
 
@@ -1488,7 +1470,7 @@
         document.addEventListener("mouseup", onPullEnd);
         document.addEventListener("touchmove", onPullMove, { passive: false });
         document.addEventListener("touchend", onPullEnd);
-        // --- *** END: ULTRA-PERFECT PULL-TO-REFRESH IMPLEMENTATION *** ---
+        // --- *** END: ULTRA-PERFECT PULL-TO-REFRESH (FIXED HEADER) *** ---
 
         const presetAmountsContainer =
             document.getElementById("preset-amounts"),
