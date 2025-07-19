@@ -455,7 +455,7 @@
       .modal-grabber {
         width: 40px;
         height: 5px;
-        background-color: #a0a0a0;
+        background-color: #000;
         border-radius: 2.5px;
         margin: 0 auto 20px;
       }
@@ -657,10 +657,11 @@
         transform: translateY(0);
       }
       #success-close-btn {
-        position: absolute;
+        position: fixed;
         top: 20px;
-        right: var(--padding-screen);
-        font-size: 28px;
+
+        left: var(--padding-screen);
+        font-size: 40px;
         background: none;
         border: none;
         cursor: pointer;
@@ -1212,14 +1213,7 @@
         <div class="success-checkmark"><i class="fas fa-check"></i></div>
         <p class="success-message" id="success-message"></p>
       </div>
-      <div class="success-promo-card">
-        <img
-          src="images/bitcoin_asset_explanatory.png"
-          alt="Direct Deposit Promotion"
-        />
-        <p>Get paid up to 2 days faster with direct deposit</p>
-        <button>Get Started</button>
-      </div>
+
       <button class="modal-action-btn" id="success-done-btn">Done</button>
     </div>
 
