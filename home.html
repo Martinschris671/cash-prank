@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="saving.css" />
     <script src="guard.js"></script>
     <style>
-      /* --- All existing CSS is unchanged, except for the spinner animation speed --- */
+      /* --- All existing CSS is unchanged --- */
       @font-face {
         font-family: "CashMarket";
         font-style: normal;
@@ -129,14 +129,12 @@
       .main-content::-webkit-scrollbar {
         display: none;
       }
-
       .card {
         background-color: var(--card-bg-color);
         border-radius: var(--border-radius-card);
         padding: 20px;
         margin-bottom: 12px;
       }
-
       #balance-preview-card {
         margin-bottom: 0;
         border-bottom-left-radius: 0;
@@ -177,7 +175,6 @@
         margin-right: 0px;
         white-space: nowrap;
       }
-
       .balance-header {
         display: flex;
         justify-content: space-between;
@@ -211,7 +208,7 @@
         background-color: var(--button-bg);
         color: var(--button-text);
         border: none;
-        padding: 10px 20px;
+        padding: 11px 20px;
         border-radius: var(--border-radius-button);
         font-size: 15px;
         font-weight: 600;
@@ -723,7 +720,6 @@
       .spinner {
         width: 50px;
         height: 50px;
-        /* --- MODIFICATION: Changed animation speed to 1.2s for a faster, smoother spin --- */
         animation: spin 1.2s linear infinite;
       }
 
@@ -802,6 +798,136 @@
         cursor: pointer;
         background: none;
       }
+      /* --- ADDED: Styles for Perfected Add Money Modal --- */
+      #add-money-perfected-modal {
+        padding: 0.75rem 1.5rem 1.5rem;
+        border-radius: 28px 28px 0 0;
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        /* FIX: Font family will now be inherited from the body for consistency */
+      }
+      #add-money-perfected-modal .perfected-sheet-handle {
+        width: 44px;
+        height: 5px;
+        background-color: #dcdcdc;
+        border-radius: 100px;
+        margin: 0 auto 0.25rem;
+        flex-shrink: 0;
+      }
+      #add-money-perfected-modal .perfected-header h1 {
+        font-size: 1.7rem;
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: -0.4px;
+        color: #000000;
+      }
+      #add-money-perfected-modal .perfected-header p {
+        font-size: 1rem;
+        color: #5f5f5f;
+        margin: 0.25rem 0 0;
+        font-weight: 400;
+      }
+      #add-money-perfected-modal .perfected-preset-amounts {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.85rem;
+      }
+      #add-money-perfected-modal .perfected-preset-btn {
+        background-color: transparent;
+        border: 3px solid #b1afb2;
+        border-radius: 14px;
+        padding: 0.9rem 0;
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #000000;
+        cursor: pointer;
+        transition: border-color 0.2s ease, transform 0.15s ease;
+        -webkit-tap-highlight-color: transparent;
+        font-family: inherit; /* Ensure it uses CashMarket font */
+      }
+      #add-money-perfected-modal .perfected-preset-btn:active {
+        transform: scale(0.96);
+      }
+      #add-money-perfected-modal .perfected-preset-btn.active {
+        border-color: #bbedc8;
+      }
+      #add-money-perfected-modal .perfected-add-btn {
+        width: 100%;
+        background-color: var(--accent-green);
+        color: #ffffff;
+        font-size: 1.1rem;
+        font-weight: 700;
+        padding: 0.8rem 0;
+        border: none;
+        border-radius: 100px;
+        cursor: pointer;
+        transition: filter 0.2s ease, transform 0.15s ease;
+        font-family: inherit;
+      }
+      #add-money-perfected-modal .perfected-add-btn:disabled {
+        background-color: #bbedc8;
+        color: #ffffff;
+        cursor: not-allowed;
+      }
+      #add-money-perfected-modal .perfected-add-btn:hover:not(:disabled) {
+        filter: brightness(1.03);
+      }
+      #add-money-perfected-modal .perfected-add-btn:active:not(:disabled) {
+        transform: scale(0.98);
+        filter: brightness(1);
+      }
+      #add-money-perfected-modal .perfected-divider {
+        border: none;
+        height: 1px;
+        background-color: #f0f0f0;
+        margin-left: -1.5rem;
+        margin-right: -1.5rem;
+      }
+      #add-money-perfected-modal .perfected-deposit-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      #add-money-perfected-modal .perfected-deposit-option {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.25rem 0;
+        text-decoration: none;
+        color: inherit;
+        cursor: pointer;
+      }
+      #add-money-perfected-modal .perfected-deposit-option .icon-container {
+        font-size: 1.1rem;
+        color: #000000;
+        width: 24px;
+        text-align: center;
+      }
+      #add-money-perfected-modal
+        .perfected-deposit-option
+        .text-content
+        .title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin: 0;
+      }
+      #add-money-perfected-modal
+        .perfected-deposit-option
+        .text-content
+        .subtitle {
+        font-size: 0.85rem;
+        color: #5f5f5f;
+        margin: 0.15rem 0 0;
+        font-weight: 400;
+      }
+      #add-money-perfected-modal
+        .perfected-deposit-option
+        .perfected-chevron-icon {
+        color: #c7c7c7;
+        font-size: 0.8rem;
+        margin-left: auto;
+      }
     </style>
   </head>
   <body>
@@ -812,8 +938,6 @@
         class="spinner"
       />
     </div>
-
-    <!-- (The rest of the HTML body is unchanged) -->
     <div class="app-container">
       <header class="app-header">
         <h1>Money</h1>
@@ -849,7 +973,6 @@
             <button id="withdraw-btn">Withdraw</button>
           </div>
         </section>
-
         <div
           class="paychecks-link-card"
           onclick="showFeatureNotImplementedModal()"
@@ -872,9 +995,7 @@
             />
           </svg>
         </div>
-
         <h2 class="section-header">Save & Invest</h2>
-
         <a href="savings.html" class="savings-list-card" id="savings-card-link">
           <div class="details">
             <span class="title">Savings</span>
@@ -920,7 +1041,6 @@
             />
           </svg>
         </a>
-
         <div
           class="savings-list-card"
           onclick="showFeatureNotImplementedModal()"
@@ -959,7 +1079,6 @@
             />
           </svg>
         </div>
-
         <div
           class="savings-list-card"
           onclick="showFeatureNotImplementedModal()"
@@ -999,7 +1118,6 @@
             />
           </svg>
         </div>
-
         <h2 class="section-header">Explore</h2>
         <div class="explore-grid">
           <div class="explore-card" onclick="showFeatureNotImplementedModal()">
@@ -1045,7 +1163,6 @@
             </svg>
           </div>
         </div>
-
         <h2 class="section-header">More ways to add money</h2>
         <div class="list-card more-ways-list">
           <div class="list-item" onclick="showFeatureNotImplementedModal()">
@@ -1171,8 +1288,57 @@
         ></a>
       </nav>
     </div>
-
     <div class="transaction-modal-overlay" id="transaction-modal-overlay">
+      <div class="transaction-modal" id="add-money-perfected-modal">
+        <!-- FIX: 'X' close button removed -->
+        <div class="perfected-sheet-handle"></div>
+        <div class="perfected-header">
+          <h1>Add money</h1>
+          <p>Instantly transfer from a linked bank</p>
+        </div>
+        <div class="perfected-preset-amounts" id="perfected-preset-container">
+          <button class="perfected-preset-btn" data-amount="10">$10</button>
+          <button class="perfected-preset-btn" data-amount="25">$25</button>
+          <button class="perfected-preset-btn" data-amount="50">$50</button>
+          <button class="perfected-preset-btn" data-amount="100">$100</button>
+          <button class="perfected-preset-btn" data-amount="200">$200</button>
+          <button class="perfected-preset-btn" id="perfected-other-btn">
+            •••
+          </button>
+        </div>
+        <button class="perfected-add-btn" id="perfected-add-btn" disabled>
+          Add
+        </button>
+        <hr class="perfected-divider" />
+        <div class="perfected-deposit-list">
+          <a
+            class="perfected-deposit-option"
+            onclick="showFeatureNotImplementedModal()"
+          >
+            <div class="icon-container">
+              <i class="fa-solid fa-money-bill-wave"></i>
+            </div>
+            <div class="text-content">
+              <p class="title">Deposit paper money</p>
+              <p class="subtitle">Find a nearby retailer</p>
+            </div>
+            <i class="fa-solid fa-chevron-right perfected-chevron-icon"></i>
+          </a>
+          <a
+            class="perfected-deposit-option"
+            onclick="showFeatureNotImplementedModal()"
+          >
+            <div class="icon-container">
+              <i class="fa-solid fa-crop-simple"></i>
+            </div>
+            <div class="text-content">
+              <p class="title">Deposit check</p>
+              <p class="subtitle">Scan with your phone</p>
+            </div>
+            <i class="fa-solid fa-chevron-right perfected-chevron-icon"></i>
+          </a>
+        </div>
+      </div>
       <div class="transaction-modal" id="add-cash-presets-modal">
         <div class="modal-grabber"></div>
         <div class="modal-header"><h2>Add Money</h2></div>
@@ -1228,7 +1394,6 @@
           Add
         </button>
       </div>
-
       <div class="transaction-modal" id="withdraw-slider-modal">
         <div class="modal-grabber"></div>
         <div class="modal-header">
@@ -1245,7 +1410,6 @@
           Withdraw
         </button>
       </div>
-
       <div class="transaction-modal" id="feature-modal">
         <div class="modal-grabber"></div>
         <h2>Feature Not Implemented</h2>
@@ -1253,20 +1417,15 @@
         <button class="modal-action-btn" id="feature-modal-ok-btn">OK</button>
       </div>
     </div>
-
     <div id="success-overlay">
       <button id="success-close-btn">×</button>
       <div class="success-content">
         <div class="success-checkmark"><i class="fas fa-check"></i></div>
         <p class="success-message" id="success-message"></p>
       </div>
-
       <button class="modal-action-btn" id="success-done-btn">Done</button>
     </div>
-
     <script>
-      // --- The JavaScript logic remains unchanged from the previous step. ---
-      // It correctly handles the 5-second processing delay and the staggered UI updates.
       const balanceAmountEl = document.getElementById("balance-amount"),
         footerBalanceDisplay = document.getElementById(
           "footer-balance-display"
@@ -1283,7 +1442,6 @@
         accountInfoEl = document.getElementById("account-info"),
         profileIconLink = document.querySelector(".profile-icon-link"),
         spinnerOverlay = document.getElementById("spinner-overlay");
-
       let currentBalance = 28104.77,
         isAnimating = false;
       const localStorageBalanceKey = "cashAppBalance",
@@ -1296,7 +1454,6 @@
         routingNumber: "**894",
         profilePic: "icons/person-circle-svgrepo-com.png",
       };
-
       const formatCurrency = (amount) =>
           `$${Number(amount).toLocaleString("en-US", {
             minimumFractionDigits: 2,
@@ -1317,7 +1474,6 @@
           else if (len > 12) el.style.fontSize = "32px";
           else el.style.fontSize = "";
         };
-
       const adjustWithdrawFontSize = (element) => {
         const container = element.parentElement;
         const maxFontSize = 60;
@@ -1331,7 +1487,6 @@
           element.style.fontSize = `${Math.max(newSize, minFontSize)}px`;
         }
       };
-
       function animateBalance(startValue, endValue) {
         if (isAnimating) return;
         isAnimating = true;
@@ -1363,15 +1518,12 @@
         footerBalanceDisplay.textContent =
           formatBalanceForFooter(currentBalance);
         adjustBalanceFontSize(balanceAmountEl);
-
         const savedProfile = localStorage.getItem(userProfileKey);
         const userProfile = savedProfile
           ? JSON.parse(savedProfile)
           : defaultProfile;
         accountInfoEl.textContent = `Account ${userProfile.accountNumber} Routing ${userProfile.routingNumber}`;
-
         const placeholderImageSrc = "icons/person-circle-svgrepo-com.png";
-
         if (userProfile.profilePic) {
           profileIconLink.innerHTML = `<img src="${userProfile.profilePic}" alt="Profile" class="profile-icon">`;
         } else {
@@ -1395,11 +1547,9 @@
         const startBalance = currentBalance;
         hideAllModals();
         spinnerOverlay.classList.add("show");
-
         setTimeout(() => {
           spinnerOverlay.classList.remove("show");
           showSuccessOverlay("add", amount);
-
           setTimeout(() => {
             const newBalance = startBalance + amount;
             currentBalance = newBalance;
@@ -1415,11 +1565,9 @@
         const startBalance = currentBalance;
         hideAllModals();
         spinnerOverlay.classList.add("show");
-
         setTimeout(() => {
           spinnerOverlay.classList.remove("show");
           showSuccessOverlay("withdraw", amount);
-
           setTimeout(() => {
             const newBalance = startBalance - amount;
             currentBalance = newBalance;
@@ -1507,20 +1655,18 @@
         document.addEventListener("mouseup", onPullEnd);
         document.addEventListener("touchmove", onPullMove, { passive: false });
         document.addEventListener("touchend", onPullEnd);
+        const addMoneyPerfectedModal = document.getElementById(
+          "add-money-perfected-modal"
+        );
+        document
+          .getElementById("add-money-btn")
+          .addEventListener("click", () => {
+            showModal(addMoneyPerfectedModal);
+          });
         const presetAmountsContainer =
             document.getElementById("preset-amounts"),
           addPresetBtn = document.getElementById("add-preset-btn");
         let selectedPresetAmount = 0;
-        document
-          .getElementById("add-money-btn")
-          .addEventListener("click", () => {
-            selectedPresetAmount = 0;
-            presetAmountsContainer
-              .querySelectorAll(".active")
-              .forEach((b) => b.classList.remove("active"));
-            addPresetBtn.disabled = true;
-            showModal(addCashPresetsModal);
-          });
         presetAmountsContainer.addEventListener("click", (e) => {
           const btn = e.target.closest(".preset-btn");
           if (!btn) return;
@@ -1542,10 +1688,8 @@
           ),
           keypadDisplayContainer = document.querySelector(".keypad-display"),
           addKeypadBtn = document.getElementById("add-keypad-btn");
-
         const MAX_KEYPAD_AMOUNT = 99999;
         let keypadValue = "0";
-
         function triggerLimitError() {
           if (navigator.vibrate) {
             navigator.vibrate(150);
@@ -1555,7 +1699,6 @@
             keypadDisplayContainer.classList.remove("shake");
           }, 400);
         }
-
         function adjustKeypadFontSize() {
           const len = keypadAmountDisplay.textContent.length;
           if (len > 13) {
@@ -1566,7 +1709,6 @@
             keypadAmountDisplay.style.fontSize = "5rem";
           }
         }
-
         const updateKeypadDisplay = () => {
           let displayValue;
           if (keypadValue === "0" || keypadValue === "") {
@@ -1583,18 +1725,14 @@
           }
           keypadAmountDisplay.innerHTML = displayValue;
           adjustKeypadFontSize();
-
           const numericValue = parseFloat(keypadValue.replace(/,/g, ""));
           addKeypadBtn.disabled = numericValue <= 0 || isNaN(numericValue);
         };
-
         keypad.addEventListener("click", (e) => {
           const key = e.target.closest(".keypad-btn")?.dataset.key;
           if (!key) return;
-
           const previousValue = keypadValue;
           let rawValue = keypadValue.replace(/,/g, "");
-
           if (key === "<") {
             rawValue = rawValue.length > 1 ? rawValue.slice(0, -1) : "0";
           } else if (key === "." && !rawValue.includes(".")) {
@@ -1613,18 +1751,15 @@
               rawValue += key;
             }
           }
-
           const numericCheck = parseFloat(rawValue);
           if (numericCheck > MAX_KEYPAD_AMOUNT) {
             keypadValue = previousValue;
             triggerLimitError();
             return;
           }
-
           keypadValue = rawValue;
           updateKeypadDisplay();
         });
-
         document
           .getElementById("other-amount-btn")
           .addEventListener("click", () => {
@@ -1632,7 +1767,6 @@
             updateKeypadDisplay();
             showModal(addMoneyKeypadModal);
           });
-
         addKeypadBtn.addEventListener("click", () =>
           handleAddTransaction(parseFloat(keypadValue.replace(/,/g, "")))
         );
@@ -1646,7 +1780,6 @@
           withdrawConfirmBtn = document.getElementById("withdraw-confirm-btn"),
           withdrawAvailableDisplay =
             document.getElementById("withdraw-available");
-
         document
           .getElementById("withdraw-btn")
           .addEventListener("click", () => {
@@ -1661,7 +1794,6 @@
             withdrawSlider.style.setProperty("--progress", "0%");
             showModal(withdrawSliderModal);
           });
-
         withdrawSlider.addEventListener("input", () => {
           const value = parseFloat(withdrawSlider.value);
           withdrawAmountDisplay.textContent = formatCurrency(value);
@@ -1671,11 +1803,9 @@
           const progressPercent = maxVal > 0 ? (value / maxVal) * 100 : 0;
           withdrawSlider.style.setProperty("--progress", `${progressPercent}%`);
         });
-
         withdrawConfirmBtn.addEventListener("click", () =>
           handleWithdrawal(parseFloat(withdrawSlider.value))
         );
-
         transactionOverlay.addEventListener("click", (e) => {
           if (e.target === transactionOverlay) hideAllModals();
         });
@@ -1688,12 +1818,36 @@
         document
           .getElementById("feature-modal-ok-btn")
           .addEventListener("click", hideAllModals);
-
         saveState();
         window.dispatchEvent(new CustomEvent("balanceUpdated"));
+        const perfectedPresetContainer = document.getElementById(
+            "perfected-preset-container"
+          ),
+          perfectedAddBtn = document.getElementById("perfected-add-btn");
+        let selectedPerfectedAmount = 0;
+        perfectedPresetContainer.addEventListener("click", (e) => {
+          const btn = e.target.closest(".perfected-preset-btn");
+          if (!btn) return;
+          if (btn.id === "perfected-other-btn") {
+            keypadValue = "0";
+            updateKeypadDisplay();
+            showModal(addMoneyKeypadModal);
+            return;
+          }
+          perfectedPresetContainer
+            .querySelectorAll(".active")
+            .forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          selectedPerfectedAmount = parseFloat(btn.dataset.amount);
+          perfectedAddBtn.disabled = false;
+        });
+        perfectedAddBtn.addEventListener("click", () => {
+          if (selectedPerfectedAmount > 0) {
+            handleAddTransaction(selectedPerfectedAmount);
+          }
+        });
       });
     </script>
     <script src="saving.js"></script>
   </body>
 </html>
-```
