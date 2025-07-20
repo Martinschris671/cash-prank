@@ -190,7 +190,7 @@
         color: var(--text-secondary);
       }
       .balance-amount {
-        font-size: 36px;
+        font-size: 33px;
         font-weight: 600;
         line-height: 1.2;
         word-break: break-all;
@@ -216,6 +216,7 @@
         font-size: 15px;
         font-weight: 600;
         cursor: pointer;
+        font-family: var(--font-family);
       }
       .section-header {
         font-size: 20px;
@@ -248,13 +249,13 @@
       .list-item .details .title {
         display: block;
         font-size: 16px;
-        font-weight: 500;
+        font-weight: 600;
       }
       .list-item .details .subtitle {
-        display: block;
-        font-size: 14px;
-        color: var(--text-secondary);
-        margin-top: 2px;
+        font-size: 0.85rem;
+        color: #5f5f5f;
+        margin: 0.15rem 0 0;
+        font-weight: 400;
       }
       .chevron-icon {
         width: 6px;
@@ -345,8 +346,9 @@
         font-weight: 700;
       }
       .explore-card .subtitle {
-        font-size: 14px;
-        color: var(--text-secondary);
+        font-size: 0.85rem;
+        color: #5f5f5f;
+        font-weight: 400;
       }
       .explore-card .icon-container {
         width: 52px;
@@ -617,6 +619,7 @@
         stroke: #000;
       }
       #withdraw-slider-modal {
+        border-radius: 40px 40px 0 0;
         height: 75vh;
         justify-content: space-between;
         padding-bottom: 40px;
@@ -862,7 +865,7 @@
       /* --- ADDED: Styles for Perfected Add Money Modal --- */
       #add-money-perfected-modal {
         padding: 0.75rem 1.5rem 1.5rem;
-        border-radius: 28px 28px 0 0;
+        border-radius: 40px 40px 0 0;
         display: flex;
         flex-direction: column;
         gap: 1.25rem;
@@ -1555,7 +1558,6 @@
         addMoneyPerfectedModal = document.getElementById(
           "add-money-perfected-modal"
         ),
-        addCashPresetsModal = document.getElementById("add-cash-presets-modal"),
         addMoneyKeypadModal = document.getElementById("add-money-keypad-modal"),
         withdrawSliderModal = document.getElementById("withdraw-slider-modal"),
         withdrawalActionSheet = document.getElementById(
@@ -1578,6 +1580,7 @@
         routingNumber: "**894",
         profilePic: "icons/person-circle-svgrepo-com.png",
       };
+
       const formatCurrency = (amount) =>
           `$${Number(amount).toLocaleString("en-US", {
             minimumFractionDigits: 2,
@@ -1630,6 +1633,8 @@
         }
         return dayNames[date.getDay()];
       }
+
+      // RESTORED: This function now ONLY animates the balance.
       function animateBalance(startValue, endValue) {
         if (isAnimating) return;
         isAnimating = true;
@@ -1654,6 +1659,7 @@
         };
         requestAnimationFrame(step);
       }
+
       function loadState() {
         const savedBalance = localStorage.getItem(localStorageBalanceKey);
         currentBalance = parseFloat(savedBalance) || 28104.77;
@@ -1685,14 +1691,19 @@
           JSON.stringify(transactions)
         );
       }
+
+      // CORRECTED: Restored the exact timing and sequence for adding money.
       function handleAddTransaction(amount) {
         if (isAnimating || isNaN(amount) || amount <= 0) return;
         const startBalance = currentBalance;
         hideAllModals();
         spinnerOverlay.classList.add("show");
+        // RESTORED: 5-second spinner delay
         setTimeout(() => {
           spinnerOverlay.classList.remove("show");
+          // RESTORED: Show success overlay FIRST
           showSuccessOverlay("add", amount);
+          // RESTORED: Then, after a 1.5-second delay, update the balance
           setTimeout(() => {
             const newBalance = startBalance + amount;
             currentBalance = newBalance;
@@ -1702,34 +1713,48 @@
           }, 1500);
         }, 5000);
       }
-      function handleWithdrawal(amount, type) {
-        if (isAnimating || isNaN(amount) || amount <= 0) return;
 
+      // CORRECTED: This is the function from your reference code, restored.
+      function handleWithdrawal(amount) {
+        if (isAnimating || isNaN(amount) || amount <= 0) return;
+        if (amount > currentBalance) return;
+
+        const startBalance = currentBalance;
+
+        // This function now ONLY does the core work: update balance, save state, and animate.
+        // The spinner and success overlay logic is handled by the new flow controller.
+        currentBalance -= amount;
+        saveState();
+        saveTransaction("withdraw", amount); // THE CRITICAL, RESTORED LINE.
+        animateBalance(startBalance, currentBalance);
+      }
+
+      // NEW: This function controls the new withdrawal UI flow and timing.
+      function startWithdrawalFlow(amount, type) {
         const fee = type === "instant" ? amount * INSTANT_FEE_RATE : 0;
         const totalDeduction = amount + fee;
 
         if (totalDeduction > currentBalance) {
-          alert("Insufficient funds for this transfer and its fee.");
+          alert("Insufficient funds for this withdrawal and its fee.");
           return;
         }
 
-        const startBalance = currentBalance;
         hideAllModals();
         spinnerOverlay.classList.add("show");
 
+        // RESTORED: 5-second spinner delay
         setTimeout(() => {
           spinnerOverlay.classList.remove("show");
-          showSuccessOverlay(type, amount); // type is 'standard' or 'instant'
-
+          // RESTORED: Show success overlay FIRST
+          showSuccessOverlay(type, amount);
+          // RESTORED: Then, after a 1.5-second delay, call your original withdrawal function
           setTimeout(() => {
-            const newBalance = startBalance - totalDeduction;
-            currentBalance = newBalance;
-            saveState();
-            saveTransaction(`withdraw-${type}`, amount);
-            animateBalance(startBalance, newBalance);
+            // It passes the TOTAL amount to be deducted.
+            handleWithdrawal(totalDeduction);
           }, 1500);
         }, 5000);
       }
+
       function showModal(modalEl) {
         transactionOverlay.classList.add("show");
         allModals.forEach((m) => {
@@ -1834,29 +1859,23 @@
         document.addEventListener("touchmove", onPullMove, { passive: false });
         document.addEventListener("touchend", onPullEnd);
 
-        // --- MODIFIED: "Add money" button now opens the perfected modal ---
         document
           .getElementById("add-money-btn")
           .addEventListener("click", () => showModal(addMoneyPerfectedModal));
-
-        // --- ADDED: Logic for the new "Add Money" modal ---
         const perfectedPresetContainer = document.getElementById(
           "perfected-preset-container"
         );
         const perfectedAddBtn = document.getElementById("perfected-add-btn");
         let selectedPerfectedAmount = 0;
-
         perfectedPresetContainer.addEventListener("click", (e) => {
           const btn = e.target.closest(".perfected-preset-btn");
           if (!btn) return;
-
           if (btn.id === "perfected-other-btn") {
-            keypadValue = "0"; // Reset keypad
+            keypadValue = "0";
             updateKeypadDisplay();
             showModal(addMoneyKeypadModal);
             return;
           }
-
           perfectedPresetContainer
             .querySelectorAll(".active")
             .forEach((b) => b.classList.remove("active"));
@@ -1864,14 +1883,11 @@
           selectedPerfectedAmount = parseFloat(btn.dataset.amount);
           perfectedAddBtn.disabled = false;
         });
-
         perfectedAddBtn.addEventListener("click", () => {
           if (selectedPerfectedAmount > 0) {
             handleAddTransaction(selectedPerfectedAmount);
           }
         });
-
-        // --- All old logic below is UNCHANGED ---
         const keypad = document.getElementById("keypad"),
           keypadAmountDisplay = document.getElementById(
             "keypad-amount-display"
@@ -2021,11 +2037,11 @@
         });
 
         standardWithdrawalBtn.addEventListener("click", () => {
-          handleWithdrawal(amountToWithdraw, "standard");
+          startWithdrawalFlow(amountToWithdraw, "standard");
         });
 
         instantWithdrawalBtn.addEventListener("click", () => {
-          handleWithdrawal(amountToWithdraw, "instant");
+          startWithdrawalFlow(amountToWithdraw, "instant");
         });
 
         withdrawalCancelBtn.addEventListener("click", hideAllModals);
@@ -2042,6 +2058,7 @@
         document
           .getElementById("feature-modal-ok-btn")
           .addEventListener("click", hideAllModals);
+
         saveState();
         window.dispatchEvent(new CustomEvent("balanceUpdated"));
       });
