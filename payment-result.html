@@ -84,7 +84,7 @@
         flex-direction: column;
         align-items: flex-start;
         justify-content: flex-start;
-        padding: 40px var(--padding-screen) 0;
+        padding: 0px var(--padding-screen) 0;
       }
       .status-icon {
         width: 54px;
@@ -247,7 +247,7 @@
           iconClass: "success",
           icon: "fa-solid fa-check",
           title: `You sent ${amount} to<br>${contactName}`,
-          details: note ? `<p>${note}</p>` : "", // --- MODIFIED --- Show note if it exists
+
           buttonText: "Done",
         }),
         pending: (amount, cashtag) => ({
