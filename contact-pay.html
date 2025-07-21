@@ -4,9 +4,10 @@
     <meta charset="UTF-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0"
     />
-    <title>Send To - Cash App</title>
+    <title>Cash App Payment</title>
+    <!-- Font Awesome CDN for Icons -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -22,17 +23,13 @@
         src: url(font/CashSans.ttf);
         font-display: swap;
       }
+      /* Main App UI from your Final Code */
       :root {
-        --padding-screen: 18px;
-        --app-bg-color: #ffffff;
-        --app-bg-secondary: #f0f1f2;
+        --accent-green: #00d54b;
         --text-primary: #000000;
         --text-secondary: #6c757d;
-        --border-color-light: #e9ecef;
-        --border-radius-card: 12px;
-        --accent-green: #00d54b;
-        --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
-          sans-serif;
+        --border-color-light: #f0f0f0;
+        --app-bg-secondary: #f9f9f9;
       }
       * {
         margin: 0;
@@ -43,261 +40,341 @@
       html,
       body {
         height: 100%;
-      }
-      body {
-        font-family: var(--font-family);
-        background-color: var(--app-bg-color);
-        color: var(--text-primary);
-        display: flex;
-        flex-direction: column;
         overflow: hidden;
       }
-      a {
-        text-decoration: none;
-        color: inherit;
+      body {
+        font-family: "CashMarket", -apple-system, BlinkMacSystemFont, sans-serif;
+        background-color: #ffffff;
+        color: var(--text-primary);
       }
-      .contact-pay-container {
-        max-width: 450px;
-        width: 100%;
-        height: 100%;
+      .container {
+        max-width: 420px;
         margin: 0 auto;
-        background-color: var(--app-bg-color);
+        height: 100%;
+        background-color: #ffffff;
         display: flex;
         flex-direction: column;
         position: relative;
       }
-      .cp-header {
-        display: grid;
-        grid-template-columns: auto 1fr auto;
-        align-items: center;
-        gap: 16px;
-        padding: 16px var(--padding-screen);
+      .fixed-top-content {
+        background-color: #ffffff;
+        position: relative;
+        z-index: 10;
+        padding: 0 16px;
         flex-shrink: 0;
-        border-bottom: 1px solid var(--border-color-light);
       }
-      .cp-close-btn {
-        font-size: 28px;
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        position: relative;
+        padding-bottom: 0px;
+      }
+      .header::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background-color: var(--border-color-light);
+      }
+      .close-btn {
         background: none;
         border: none;
-        cursor: pointer;
-        color: var(--text-secondary);
-        justify-self: start;
-      }
-      .cp-header-center {
-        text-align: center;
-      }
-      .cp-amount {
-        font-size: 18px;
-        font-weight: 600;
-      }
-      .cp-source {
-        font-size: 14px;
-        color: var(--text-secondary);
-      }
-      .cp-pay-btn {
-        background-color: var(--accent-green);
-        color: white;
-        border: none;
-        border-radius: 20px;
-        padding: 8px 24px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.2s ease, opacity 0.2s ease;
-        justify-self: end;
-      }
-      .cp-pay-btn:disabled {
-        background-color: #a0e6bb;
-        opacity: 0.7;
-        cursor: not-allowed;
-      }
-      .cp-input-fields {
-        padding: 0 var(--padding-screen);
-        flex-shrink: 0;
-      }
-      .input-row {
-        display: flex;
-        align-items: center;
-        padding: 16px 0;
-        border-bottom: 1px solid var(--border-color-light);
-      }
-      .input-row label {
-        font-size: 17px;
-        font-weight: 600;
-        margin-right: 12px;
-      }
-      .input-row input {
-        flex-grow: 1;
-        border: none;
-        outline: none;
-        font-size: 17px;
-        background: transparent;
-      }
-      #to-input-container {
-        position: relative;
-        display: flex;
-        align-items: center;
-        flex-grow: 1;
-      }
-      #to-input-cursor {
-        width: 2px;
-        height: 22px;
-        background-color: var(--accent-green);
-        animation: blink 1s step-end infinite;
-      }
-      @keyframes blink {
-        from,
-        to {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0;
-        }
-      }
-      .send-as-section {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 16px var(--padding-screen);
-        background-color: var(--app-bg-secondary);
-        border-bottom: 1px solid var(--border-color-light);
-        flex-shrink: 0;
-      }
-      .send-as-section .send-as-label {
-        font-size: 16px;
-        font-weight: 500;
-        color: var(--text-secondary);
-        white-space: nowrap;
-      }
-      .send-as-options {
-        display: flex;
-        gap: 8px;
-        overflow-x: auto;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-      }
-      .send-as-options::-webkit-scrollbar {
-        display: none;
-      }
-      .send-as-btn {
-        background-color: #e9e9e9;
         color: var(--text-primary);
+        font-size: 40px;
+        font-weight: 400;
+        cursor: pointer;
+      }
+      .amount {
+        font-size: 17px;
+        font-weight: 600;
+      }
+      .pay-btn {
+        background-color: #f2f2f7;
+        color: #bcbcc0;
         border: none;
-        border-radius: 20px;
-        padding: 8px 16px;
+        padding: 6px 17px;
+        border-radius: 16px;
         font-size: 15px;
         font-weight: 600;
+        cursor: not-allowed;
+        transition: background-color 0.2s, color 0.2s;
+        font-family: "CashMarket", -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+      .pay-btn.active {
+        background-color: var(--accent-green);
+        color: #ffffff;
         cursor: pointer;
+      }
+      .input-group {
         display: flex;
         align-items: center;
-        gap: 4px;
-        transition: all 0.2s ease;
-        flex-shrink: 0;
+        border-bottom: 1px solid var(--border-color-light);
+        padding: 14px 0;
       }
-      .send-as-btn.active {
-        background-color: var(--accent-green);
-        color: white;
+      .input-label {
+        color: var(--text-primary);
+        font-size: 15px;
+        font-weight: 600;
+        min-width: 35px;
       }
-      .send-as-btn .fa-chevron-down {
-        font-size: 10px;
-        margin-left: 2px;
+      .input-field {
+        flex: 1;
+        background: transparent;
+        border: none;
+        color: var(--text-primary);
+        font-size: 15px;
+        padding: 7px 0;
+        outline: none;
       }
-      .contact-list-container {
+      .input-field::placeholder {
+        color: #c7c7cc;
+      }
+      .note-icon img {
+        width: 24px;
+        height: 24px;
+      }
+      .payment-method {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        cursor: pointer;
+      }
+      .payment-left {
+        display: flex;
+        align-items: center;
+        gap: 1px;
+      }
+      .cash-app-icon {
+        padding-left: 0px;
+      }
+      .cash-app-icon img {
+        gap: 0;
+        width: 25px;
+        height: 25px;
+      }
+      .balance-info {
+        color: var(--text-primary);
+        font-size: 14px;
+        font-weight: 580;
+        padding-left: 0.3rem;
+      }
+      .chevron {
+        color: #c7c7cc;
+        font-size: 16px;
+        padding-right: 10px;
+        font-weight: 300;
+      }
+      .suggested-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-top: 7px;
+        margin-bottom: 10px;
+      }
+      .scrollable-content {
         flex-grow: 1;
         overflow-y: auto;
-        background-color: var(--app-bg-secondary);
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-      }
-      .contact-list-container::-webkit-scrollbar {
-        display: none;
-      }
-      .contact-list-header {
-        padding: 12px var(--padding-screen);
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--text-secondary);
-        text-transform: uppercase;
-      }
-      .contact-list {
-        list-style: none;
-        background-color: white;
+        padding: 0 16px;
       }
       .contact-item {
         display: flex;
         align-items: center;
-        padding: 12px var(--padding-screen);
-        border-bottom: 1px solid var(--border-color-light);
+        padding: 15px 0;
         cursor: pointer;
-        opacity: 0;
-        animation: fadeIn 0.5s ease forwards;
-        animation-delay: var(--stagger-delay, 0s);
       }
-      @keyframes fadeIn {
-        to {
-          opacity: 1;
-        }
+      .contact-details {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-grow: 1;
       }
-      .contact-item.hide {
-        display: none;
-      }
-      .contact-item:last-child {
-        border-bottom: none;
-      }
-      .contact-checkbox {
-        width: 24px;
-        height: 24px;
-        border: 2px solid var(--border-color-light);
-        border-radius: 30%;
-        display: grid;
-        place-items: center;
-        margin-right: 12px;
-        transition: all 0.2s ease;
-      }
-      .contact-item.selected .contact-checkbox {
-        background-color: var(--accent-green);
-        border-color: var(--accent-green);
-      }
-      .contact-checkbox i {
-        color: white;
-        font-size: 14px;
-        transform: scale(0);
-        transition: transform 0.2s ease;
-      }
-      .contact-item.selected .contact-checkbox i {
-        transform: scale(1);
-      }
-      .contact-avatar {
-        width: 44px;
-        height: 44px;
+      .avatar {
+        width: 48px;
+        height: 48px;
         border-radius: 50%;
-        margin-right: 12px;
+        background-size: cover;
+        background-position: center;
+        background-color: #e5e5ea;
         display: flex;
         align-items: center;
         justify-content: center;
+        color: #fff;
         font-size: 20px;
-        font-weight: 600;
-        color: white;
-        object-fit: cover;
+        font-weight: 500;
+        cursor: pointer;
       }
-      .contact-details {
-        flex-grow: 1;
+      .contact-info {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
       }
       .contact-name {
         font-size: 16px;
         font-weight: 600;
       }
-      .contact-cashtag {
+      .contact-handle {
+        color: var(--text-secondary);
         font-size: 14px;
-        color: var(--text-secondary);
-        margin-top: 2px;
+        font-weight: 400;
       }
-      .contact-icon {
-        font-size: 18px;
-        color: var(--text-secondary);
+      .checkbox {
+        width: 24px;
+        height: 24px;
+        border: 2px solid #e0e0e0;
+        border-radius: 30%;
+        display: grid;
+        place-items: center;
+        margin-left: 12px;
+        transition: all 0.2s ease;
+      }
+      .contact-item.selected .checkbox {
+        background-color: var(--accent-green);
+        border-color: var(--accent-green);
+      }
+      .checkbox i {
+        color: white;
+        font-size: 14px;
+        transform: scale(0);
+        transition: transform 0.2s ease;
+      }
+      .contact-item.selected .checkbox i {
+        transform: scale(1);
+      }
+      .payment-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4);
+        display: none;
+        align-items: flex-end;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .payment-overlay.active {
+        display: flex;
+        opacity: 1;
+      }
+      .payment-modal {
+        background: var(--app-bg-secondary);
+        border-radius: 20px 20px 0 0;
+        width: 100%;
+        padding: 8px 16px 24px 16px;
+        transform: translateY(100%);
+        transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      }
+      .payment-overlay.active .payment-modal {
+        transform: translateY(0);
+      }
+      .modal-handle {
+        width: 40px;
+        height: 5px;
+        background: #d1d1d6;
+        border-radius: 2.5px;
+        margin: 0 auto 16px;
+      }
+      .payment-modal-header {
+        text-align: center;
+        margin-bottom: 12px;
+      }
+      .payment-modal-title {
+        color: var(--text-primary);
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .payment-option {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 0;
+        border-bottom: 1px solid #e5e5ea;
         cursor: pointer;
-        padding: 8px;
+      }
+      .payment-option:last-of-type {
+        border-bottom: none;
+      }
+      .payment-option-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .payment-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .payment-icon.cash {
+        background-color: var(--accent-green);
+        border: 1px solid #e5e5ea;
+      }
+      .payment-icon.cash img,
+      .payment-icon.visa img {
+        width: 30px;
+        height: 30px;
+      }
+      .payment-icon.visa {
+        background-color: #ffffff;
+        border: 1px solid #e5e5ea;
+      }
+      .payment-option-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .payment-option-title {
+        color: var(--text-primary);
+        font-size: 16px;
+        font-weight: 400;
+      }
+      .payment-option-subtitle {
+        color: var(--text-secondary);
+        font-size: 14px;
+      }
+      .radio-button {
+        width: 22px;
+        height: 22px;
+        border: 2px solid #c7c7cc;
+        border-radius: 50%;
+        position: relative;
+      }
+      .radio-button.selected {
+        border-color: var(--accent-green);
+        background: var(--accent-green);
+      }
+      .radio-button.selected::after {
+        content: "✓";
+        color: #fff;
+        font-size: 14px;
+        font-weight: bold;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      .continue-btn {
+        background: #ffffff;
+        color: var(--text-primary);
+        border: 1px solid #d1d1d6;
+        padding: 16px;
+        border-radius: 30px;
+        font-size: 18px;
+        font-weight: 600;
+        width: 100%;
+        cursor: pointer;
+        margin-top: 24px;
+        transition: background-color 0.2s;
+      }
+      .continue-btn:active {
+        background-color: #e5e5ea;
       }
       .edit-overlay {
         position: fixed;
@@ -317,8 +394,8 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: var(--padding-screen);
-        border-bottom: 1px solid var(--border-color-light);
+        padding: 16px;
+        border-bottom: 1px solid #e9ecef;
       }
       .edit-close-btn,
       .edit-done-btn {
@@ -327,6 +404,7 @@
         background: none;
         border: none;
         cursor: pointer;
+        font-family: inherit;
       }
       .edit-done-btn {
         color: var(--accent-green);
@@ -334,15 +412,18 @@
       .edit-done-btn:disabled {
         color: #a0e6bb;
       }
+
+      /* [FIX] Edit Content perfectly placed and clean */
       .edit-content {
-        padding: 24px var(--padding-screen);
+        padding: 32px 16px; /* Increased top padding */
       }
       .edit-avatar {
         width: 100px;
         height: 100px;
         border-radius: 50%;
-        object-fit: cover;
-        background-color: var(--border-color-light);
+        background-size: cover;
+        background-position: center;
+        background-color: #e9ecef;
         display: block;
         margin: 0 auto 24px;
         cursor: pointer;
@@ -355,19 +436,21 @@
       #edit-pic-input {
         display: none;
       }
-      .input-group {
-        margin-bottom: 20px;
+      .edit-content .input-group {
+        margin-bottom: 24px; /* Consistent margin */
+        border-bottom: none;
+        padding: 0;
       }
-      .input-group label {
+      .edit-content .input-group label {
         display: block;
         font-size: 14px;
         color: var(--text-secondary);
         margin-bottom: 8px;
       }
-      .input-group input {
+      .edit-content .input-group input {
         width: 100%;
         padding: 12px;
-        border: 1px solid var(--border-color-light);
+        border: 1px solid #e9ecef;
         border-radius: 8px;
         font-size: 16px;
         font-family: inherit;
@@ -399,7 +482,9 @@
       .color-swatch.active i {
         transform: scale(1);
       }
-      .modal-overlay {
+
+      /* Alert and Loading Styles */
+      .alert-modal-overlay {
         position: fixed;
         top: 0;
         left: 0;
@@ -413,14 +498,14 @@
         opacity: 0;
         transition: opacity 0.3s ease;
       }
-      .modal-overlay.show {
+      .alert-modal-overlay.show {
         display: flex;
         opacity: 1;
       }
-      .modal-content {
+      .alert-modal-content {
         background-color: white;
         width: 100%;
-        max-width: 450px;
+        max-width: 420px;
         border-top-left-radius: 20px;
         border-top-right-radius: 20px;
         padding: 12px 18px 30px;
@@ -429,17 +514,15 @@
         transform: translateY(100%);
         transition: transform 0.3s ease;
       }
-      .modal-overlay.show .modal-content {
+      .alert-modal-overlay.show .alert-modal-content {
         transform: translateY(0);
       }
-      #alert-modal {
-        text-align: center;
-      }
-      #alert-modal p {
+      #alert-message {
         font-size: 16px;
         color: var(--text-primary);
         margin: 20px 0;
         font-weight: 500;
+        text-align: center;
       }
       .modal-action-btn {
         width: 100%;
@@ -453,24 +536,23 @@
         cursor: pointer;
         margin-top: auto;
       }
-
-      /* --- Styles for the image spinner implementation --- */
       #loading-overlay {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: var(
-          --app-bg-color
-        ); /* Uses the app's background color */
-        display: none; /* Hidden by default */
+        background-color: #ffffff;
+        display: none;
         justify-content: center;
         align-items: center;
         z-index: 9999;
       }
-
-      /* The Keyframes for the Rotation */
+      .spinner {
+        width: 50px;
+        height: 50px;
+        animation: spin 1.2s linear infinite;
+      }
       @keyframes spin {
         from {
           transform: rotate(0deg);
@@ -479,75 +561,95 @@
           transform: rotate(360deg);
         }
       }
-
-      /* The Spinner Image Styling */
-      .spinner {
-        width: 50px;
-        height: 50px;
-        /* --- MODIFIED --- Restored the original, ultra-smooth animation settings */
-        animation: spin 1.2s linear infinite;
-      }
     </style>
   </head>
   <body>
-    <!-- The loading overlay still contains the image spinner -->
-    <div id="loading-overlay">
-      <!-- Make sure this image path is correct -->
-      <img
-        src="icons/green_spinner_thick.png"
-        alt="Loading..."
-        class="spinner"
-      />
-    </div>
-
-    <div class="contact-pay-container">
-      <header class="cp-header">
-        <a href="pay.html"><button class="cp-close-btn">×</button></a>
-        <a href="home.html">
-          <div class="cp-header-center">
-            <h2 class="cp-amount" id="cp-amount">$0.00</h2>
-            <span class="cp-source" id="cp-source"
-              >Cash Balance $0.00 <i class="fa-solid fa-chevron-down fa-xs"></i
-            ></span></div
-        ></a>
-        <button class="cp-pay-btn" id="cp-pay-btn" disabled>Pay</button>
-      </header>
-      <div class="cp-input-fields">
-        <div class="input-row">
-          <label for="to-input">To</label>
-          <div id="to-input-container">
-            <span id="to-input-cursor"></span
-            ><input
+    <div class="container">
+      <div class="fixed-top-content">
+        <header class="header">
+          <a href="pay.html"><button class="close-btn">×</button></a>
+          <div class="amount" id="amount">$547</div>
+          <button class="pay-btn" id="payBtn">Pay</button>
+        </header>
+        <div class="form-section">
+          <div class="input-group">
+            <label for="toInput" class="input-label">To</label>
+            <input
               type="text"
-              id="to-input"
+              id="toInput"
+              class="input-field"
               placeholder="Name, $Cashtag, Phone, Email"
             />
           </div>
+          <div class="input-group">
+            <label for="forInput" class="input-label">For</label>
+            <input
+              type="text"
+              id="forInput"
+              class="input-field"
+              placeholder="Note (required)"
+            />
+            <div class="note-icon">
+              <img src="icons/stars_17753644.png" alt="Note" />
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="payment-method" id="paymentMethod">
+              <div class="payment-left">
+                <span class="input-label">Use</span>
+                <div id="mainPaymentIcon" class="cash-app-icon">
+                  <img src="icons/Cash_App-Logo.wine.png" alt="Cash App" />
+                </div>
+                <div id="mainPaymentInfo" class="balance-info">
+                  Cash balance: $53,936.23
+                </div>
+              </div>
+              <div class="chevron"><i class="fas fa-chevron-down"></i></div>
+            </div>
+          </div>
         </div>
-        <div class="input-row">
-          <label for="for-input">For</label
-          ><input type="text" id="for-input" placeholder="Add a note" />
-        </div>
+        <h2 class="suggested-title">Suggested</h2>
       </div>
-      <div class="send-as-section" id="send-as-section">
-        <span class="send-as-label">Send as</span>
-        <div class="send-as-options">
-          <button class="send-as-btn active" data-type="cash">Cash</button>
-          <button class="send-as-btn" data-type="giftcard">
-            Gift Card <i class="fa-solid fa-chevron-down"></i>
-          </button>
-          <button class="send-as-btn" data-type="stock">
-            Stock <i class="fa-solid fa-chevron-down"></i>
-          </button>
+      <div class="scrollable-content"><div id="contactList"></div></div>
+    </div>
+    <div class="payment-overlay" id="paymentOverlay">
+      <div class="payment-modal">
+        <div class="modal-handle"></div>
+        <div class="payment-modal-header">
+          <div class="payment-modal-title">Select a payment method</div>
         </div>
-      </div>
-      <div class="contact-list-container">
-        <div class="contact-list-header">Suggested</div>
-        <ul class="contact-list" id="contact-list"></ul>
+        <div class="payment-option" id="cashOption">
+          <div class="payment-option-left">
+            <div class="payment-icon cash">
+              <img src="icons/Cash_App-Logo.wine.png" alt="Cash Icon" />
+            </div>
+            <div class="payment-option-info">
+              <div class="payment-option-title">Cash balance</div>
+              <div
+                class="payment-option-subtitle"
+                id="modal-balance-subtitle"
+              ></div>
+            </div>
+          </div>
+          <div class="radio-button"></div>
+        </div>
+        <div class="payment-option" id="visaOption">
+          <div class="payment-option-left">
+            <div class="payment-icon visa">
+              <img
+                src="icons/mastercard-2-logo-svgrepo-com.png"
+                alt="Card Icon"
+              />
+            </div>
+            <div class="payment-option-info">
+              <div class="payment-option-title">Debit card •••• 4042</div>
+            </div>
+          </div>
+          <div class="radio-button"></div>
+        </div>
+        <button class="continue-btn" id="continueBtn">Continue</button>
       </div>
     </div>
-
-    <!-- Edit Contact Overlay -->
     <div class="edit-overlay" id="edit-contact-overlay">
       <header class="edit-header">
         <button class="edit-close-btn" id="edit-close-btn">Close</button>
@@ -571,407 +673,438 @@
         </div>
       </main>
     </div>
-
-    <div class="modal-overlay" id="alert-modal-overlay">
-      <div class="modal-content" id="alert-modal">
+    <div class="alert-modal-overlay" id="alert-modal-overlay">
+      <div class="alert-modal-content">
         <p id="alert-message"></p>
         <button class="modal-action-btn" id="alert-ok-btn">OK</button>
       </div>
     </div>
+    <div id="loading-overlay">
+      <img
+        src="icons/green_spinner_thick.png"
+        alt="Loading..."
+        class="spinner"
+      />
+    </div>
 
     <script>
-      // NO CHANGES WERE MADE TO THE JAVASCRIPT
-      const contactListEl = document.getElementById("contact-list"),
-        toInput = document.getElementById("to-input"),
-        forInput = document.getElementById("for-input"),
-        payBtn = document.getElementById("cp-pay-btn"),
-        amountDisplay = document.getElementById("cp-amount"),
-        sourceDisplay = document.getElementById("cp-source"),
-        toInputCursor = document.getElementById("to-input-cursor"),
-        editOverlay = document.getElementById("edit-contact-overlay"),
-        editAvatar = document.getElementById("edit-avatar"),
-        editPicInput = document.getElementById("edit-pic-input"),
-        editName = document.getElementById("edit-name"),
-        editCashtag = document.getElementById("edit-cashtag"),
-        colorPalette = document.getElementById("color-palette"),
-        editDoneBtn = document.getElementById("edit-done-btn"),
-        editCloseBtn = document.getElementById("edit-close-btn"),
-        sendAsSection = document.getElementById("send-as-section"),
-        alertModalOverlay = document.getElementById("alert-modal-overlay"),
-        alertMessage = document.getElementById("alert-message"),
-        alertOkBtn = document.getElementById("alert-ok-btn"),
-        loadingOverlay = document.getElementById("loading-overlay");
-
-      const contactStorageKey = "cashAppContacts",
-        balanceStorageKey = "cashAppBalance",
-        paymentAmountKey = "paymentAmount",
-        pendingRecipientDataKey = "pendingRecipientData",
-        pendingPaymentMessageKey = "pendingPaymentMessage";
-
-      let selectedContactId = null,
-        contacts = [],
-        editingContact = null;
-      const availableColors = [
-        "#8A2BE2",
-        "#FF7F50",
-        "#1E90FF",
-        "#20B2AA",
-        "#FF4500",
-        "#DA70D6",
-      ];
-      const defaultContacts = [
-        {
-          id: 1,
-          name: "Jay Z",
-          cashtag: "$sc",
-          avatar: "images/jayz.jpeg",
-          color: "#666",
-        },
-        { id: 2, name: "Diego", cashtag: "$dm", avatar: "", color: "#8A2BE2" },
-        {
-          id: 3,
-          name: "Sandy G.",
-          cashtag: "$sandy",
-          avatar: "",
-          color: "#FF7F50",
-        },
-        {
-          id: 4,
-          name: "Diego Martinez",
-          cashtag: "$dm",
-          avatar: "images/oy.jpeg",
-          color: "#8A2BE2",
-        },
-        {
-          id: 5,
-          name: "Jennifer",
-          cashtag: "$Jennifer",
-          avatar: "images/jessica.jpeg",
-          color: "#1E90FF",
-        },
-        {
-          id: 6,
-          name: "Alice Green",
-          cashtag: "$aliceg",
-          avatar: "",
-          color: "#20B2AA",
-        },
-        {
-          id: 7,
-          name: "John Appleseed",
-          cashtag: "$johnny",
-          avatar: "images/johnny.jpeg",
-          color: "#666",
-        },
-        {
-          id: 8,
-          name: "Maria Garcia",
-          cashtag: "$mgarcia",
-          avatar: "images/gi.jpeg",
-          color: "#FF69B4",
-        },
-        {
-          id: 9,
-          name: "David Smith",
-          cashtag: "$dsmith",
-          avatar: "images/john.jpeg",
-          color: "#1E90FF",
-        },
-        {
-          id: 10,
-          name: "Tech Innovations Inc.",
-          cashtag: "$techinc",
-          avatar: "",
-          color: "#20B2AA",
-        },
-        {
-          id: 11,
-          name: "Emily Jones",
-          cashtag: "$emilyj",
-          avatar: "images/emily.jpeg",
-          color: "#FF7F50",
-        },
-        {
-          id: 12,
-          name: "Carlos Rodriguez",
-          cashtag: "$carlosr",
-          avatar: "",
-          color: "#8A2BE2",
-        },
-        {
-          id: 13,
-          name: "Local Coffee Shop",
-          cashtag: "$cornercup",
-          avatar: "images/coffe.png",
-          color: "#DAA520",
-        },
-        {
-          id: 14,
-          name: "punchmadedomo",
-          cashtag: "$denaro",
-          avatar: "images/demo.jpg",
-          color: "#DAA520",
-        },
-      ];
-      const formatCurrency = (amount, decimals = 2) =>
-        `$${Number(amount).toLocaleString("en-US", {
-          minimumFractionDigits: decimals,
-          maximumFractionDigits: decimals,
-        })}`;
-      const getContacts = () => {
-        const s = localStorage.getItem(contactStorageKey);
-        if (!s) {
-          localStorage.setItem(
-            contactStorageKey,
-            JSON.stringify(defaultContacts)
+      document.addEventListener("DOMContentLoaded", function () {
+        const payBtn = document.getElementById("payBtn"),
+          toInput = document.getElementById("toInput"),
+          forInput = document.getElementById("forInput"),
+          amountDisplay = document.getElementById("amount"),
+          contactListEl = document.getElementById("contactList"),
+          mainPaymentIcon = document.getElementById("mainPaymentIcon"),
+          mainPaymentInfo = document.getElementById("mainPaymentInfo"),
+          paymentMethodRow = document.getElementById("paymentMethod"),
+          paymentOverlay = document.getElementById("paymentOverlay"),
+          continueBtn = document.getElementById("continueBtn"),
+          modalBalanceSubtitle = document.getElementById(
+            "modal-balance-subtitle"
+          ),
+          editOverlay = document.getElementById("edit-contact-overlay"),
+          editAvatar = document.getElementById("edit-avatar"),
+          editPicInput = document.getElementById("edit-pic-input"),
+          editName = document.getElementById("edit-name"),
+          editCashtag = document.getElementById("edit-cashtag"),
+          colorPalette = document.getElementById("color-palette"),
+          editDoneBtn = document.getElementById("edit-done-btn"),
+          editCloseBtn = document.getElementById("edit-close-btn"),
+          alertModalOverlay = document.getElementById("alert-modal-overlay"),
+          alertMessage = document.getElementById("alert-message"),
+          alertOkBtn = document.getElementById("alert-ok-btn"),
+          loadingOverlay = document.getElementById("loading-overlay");
+        const contactStorageKey = "cashAppContacts",
+          balanceStorageKey = "cashAppBalance",
+          paymentAmountKey = "paymentAmount",
+          pendingRecipientDataKey = "pendingRecipientData",
+          pendingPaymentMessageKey = "pendingPaymentMessage";
+        let contacts = [],
+          selectedContact = null,
+          editingContact = null,
+          activePaymentMethod = "cash";
+        const availableColors = [
+          "#8A2BE2",
+          "#FF7F50",
+          "#1E90FF",
+          "#20B2AA",
+          "#FF4500",
+          "#DA70D6",
+        ];
+        const defaultContacts = [
+          {
+            id: 1,
+            name: "Jay Z",
+            cashtag: "$sc",
+            avatar: "images/jayz.jpeg",
+            color: "#666",
+          },
+          {
+            id: 2,
+            name: "Diego",
+            cashtag: "$dm",
+            avatar: "",
+            color: "#8A2BE2",
+          },
+          {
+            id: 3,
+            name: "Sandy G.",
+            cashtag: "$sandy",
+            avatar: "",
+            color: "#FF7F50",
+          },
+          {
+            id: 4,
+            name: "Diego Martinez",
+            cashtag: "$dm",
+            avatar: "images/oy.jpeg",
+            color: "#8A2BE2",
+          },
+          {
+            id: 5,
+            name: "Jennifer",
+            cashtag: "$Jennifer",
+            avatar: "images/jessica.jpeg",
+            color: "#1E90FF",
+          },
+          {
+            id: 6,
+            name: "Alice Green",
+            cashtag: "$aliceg",
+            avatar: "",
+            color: "#20B2AA",
+          },
+          {
+            id: 7,
+            name: "John Appleseed",
+            cashtag: "$johnny",
+            avatar: "images/johnny.jpeg",
+            color: "#666",
+          },
+          {
+            id: 8,
+            name: "Maria Garcia",
+            cashtag: "$mgarcia",
+            avatar: "images/gi.jpeg",
+            color: "#FF69B4",
+          },
+          {
+            id: 9,
+            name: "David Smith",
+            cashtag: "$dsmith",
+            avatar: "images/john.jpeg",
+            color: "#1E90FF",
+          },
+          {
+            id: 10,
+            name: "Tech Innovations Inc.",
+            cashtag: "$techinc",
+            avatar: "",
+            color: "#20B2AA",
+          },
+          {
+            id: 11,
+            name: "Emily Jones",
+            cashtag: "$emilyj",
+            avatar: "images/emily.jpeg",
+            color: "#FF7F50",
+          },
+          {
+            id: 12,
+            name: "Carlos Rodriguez",
+            cashtag: "$carlosr",
+            avatar: "",
+            color: "#8A2BE2",
+          },
+          {
+            id: 13,
+            name: "Local Coffee Shop",
+            cashtag: "$cornercup",
+            avatar: "images/coffe.png",
+            color: "#DAA520",
+          },
+          {
+            id: 14,
+            name: "punchmadedomo",
+            cashtag: "$denaro",
+            avatar: "images/demo.jpg",
+            color: "#DAA520",
+          },
+        ];
+        const formatCurrency = (amount) =>
+          `$${Number(amount).toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}`;
+        const getContacts = () => {
+          const stored = localStorage.getItem(contactStorageKey);
+          if (!stored) {
+            localStorage.setItem(
+              contactStorageKey,
+              JSON.stringify(defaultContacts)
+            );
+            return defaultContacts;
+          }
+          return JSON.parse(stored);
+        };
+        const saveContacts = () =>
+          localStorage.setItem(contactStorageKey, JSON.stringify(contacts));
+        function renderContacts() {
+          contactListEl.innerHTML = contacts
+            .map((contact) => {
+              const avatarContent = contact.avatar
+                ? `<img src="${contact.avatar}" class="avatar" alt="${contact.name}" data-edit-id="${contact.id}">`
+                : `<div class="avatar" style="background-color:${
+                    contact.color
+                  };" data-edit-id="${contact.id}">${
+                    contact.initial || contact.name.charAt(0)
+                  }</div>`;
+              return `<div class="contact-item" data-id="${
+                contact.id
+              }" data-name="${contact.name.toLowerCase()}" data-cashtag="${contact.cashtag.toLowerCase()}"><div class="contact-details">${avatarContent}<div class="contact-info"><div class="contact-name">${
+                contact.name
+              }</div><div class="contact-handle">${
+                contact.cashtag
+              }</div></div></div><div class="checkbox"><i class="fa-solid fa-check"></i></div></div>`;
+            })
+            .join("");
+        }
+        function handleContactSelection(targetItem) {
+          const id = targetItem.dataset.id;
+          const isSelected = targetItem.classList.contains("selected");
+          document
+            .querySelectorAll(".contact-item.selected")
+            .forEach((i) => i.classList.remove("selected"));
+          if (!isSelected) {
+            targetItem.classList.add("selected");
+            selectedContact = contacts.find((c) => c.id == id);
+            toInput.value = selectedContact.name;
+          } else {
+            selectedContact = null;
+            toInput.value = "";
+          }
+          updatePayButtonState();
+        }
+        const filterContactsOnInput = () => {
+          const query = toInput.value.toLowerCase();
+          document.querySelectorAll(".contact-item").forEach((item) => {
+            const name = item.dataset.name;
+            const cashtag = item.dataset.cashtag;
+            item.style.display =
+              name.includes(query) || cashtag.includes(query) ? "flex" : "none";
+          });
+        };
+        function updatePayButtonState() {
+          const isRecipientValid =
+            selectedContact || toInput.value.trim().length > 0;
+          const isNoteValid = forInput.value.trim().length > 0;
+          payBtn.classList.toggle("active", isRecipientValid && isNoteValid);
+        }
+        function openEditModal(id) {
+          editingContact = { ...contacts.find((c) => c.id == id) };
+          if (!editingContact) return;
+          editName.value = editingContact.name;
+          editCashtag.value = editingContact.cashtag;
+          updateEditAvatar();
+          populateColorPalette();
+          editDoneBtn.disabled = true;
+          editOverlay.classList.add("show");
+        }
+        const closeEditModal = () => editOverlay.classList.remove("show");
+        function updateEditAvatar() {
+          if (editingContact.avatar) {
+            editAvatar.style.backgroundImage = `url(${editingContact.avatar})`;
+            editAvatar.innerHTML = "";
+          } else {
+            editAvatar.style.backgroundImage = "none";
+            editAvatar.style.backgroundColor = editingContact.color;
+            editAvatar.innerHTML =
+              editingContact.initial || editingContact.name.charAt(0);
+          }
+        }
+        function populateColorPalette() {
+          colorPalette.innerHTML = availableColors
+            .map(
+              (c) =>
+                `<div class="color-swatch ${
+                  c === editingContact.color ? "active" : ""
+                }" style="background-color:${c};" data-color="${c}"><i class="fa-solid fa-check"></i></div>`
+            )
+            .join("");
+        }
+        function handleSaveChanges() {
+          const index = contacts.findIndex((c) => c.id === editingContact.id);
+          if (index > -1) {
+            contacts[index] = editingContact;
+            saveContacts();
+            renderContacts();
+            if (selectedContact && selectedContact.id === editingContact.id) {
+              document
+                .querySelector(`.contact-item[data-id="${editingContact.id}"]`)
+                .classList.add("selected");
+            }
+          }
+          closeEditModal();
+        }
+        function openPaymentModal() {
+          updatePaymentModalUI(activePaymentMethod);
+          paymentOverlay.style.display = "flex";
+          setTimeout(() => paymentOverlay.classList.add("active"), 10);
+        }
+        function closePaymentModal() {
+          paymentOverlay.classList.remove("active");
+          setTimeout(() => (paymentOverlay.style.display = "none"), 300);
+        }
+        function handlePaymentOptionSelection(e) {
+          updatePaymentModalUI(
+            e.currentTarget.id === "cashOption" ? "cash" : "visa"
           );
-          return defaultContacts;
         }
-        return JSON.parse(s);
-      };
-      const saveContacts = () => {
-        localStorage.setItem(contactStorageKey, JSON.stringify(contacts));
-      };
-      function renderContacts() {
-        contactListEl.innerHTML = "";
-        contacts.forEach((contact, i) => {
-          const li = document.createElement("li");
-          li.className = "contact-item";
-          li.dataset.id = contact.id;
-          li.dataset.name = contact.name.toLowerCase();
-          li.dataset.cashtag = contact.cashtag.toLowerCase();
-          li.style.setProperty("--stagger-delay", `${i * 30}ms`);
-          const avatar = contact.avatar
-            ? `<img src="${contact.avatar}" alt="${contact.name}" class="contact-avatar">`
-            : `<div class="contact-avatar" style="background-color:${
-                contact.color
-              };">${contact.name.charAt(0)}</div>`;
-          li.innerHTML = `<div class="contact-checkbox"><i class="fa-solid fa-check"></i></div>${avatar}<div class="contact-details"><span class="contact-name">${contact.name}</span><span class="contact-cashtag">${contact.cashtag}</span></div><i class="fa-solid fa-user contact-icon" data-edit-id="${contact.id}"></i>`;
-          contactListEl.appendChild(li);
-        });
-      }
-      const filterContacts = () => {
-        const q = toInput.value.toLowerCase();
-        document.querySelectorAll(".contact-item").forEach((i) => {
-          const n = i.dataset.name,
-            c = i.dataset.cashtag;
-          i.classList.toggle("hide", !(n.includes(q) || c.includes(q)));
-        });
-      };
-      function validatePayButton() {
-        const isRecipientSelected = !!selectedContactId;
-        const isRecipientTyped = toInput.value.trim().length > 0;
-        payBtn.disabled = !(isRecipientSelected || isRecipientTyped);
-      }
-      function handleContactSelection(targetItem) {
-        const id = targetItem.dataset.id,
-          isSelected = targetItem.classList.contains("selected");
-        document
-          .querySelectorAll(".contact-item.selected")
-          .forEach((i) => i.classList.remove("selected"));
-        if (!isSelected) {
-          targetItem.classList.add("selected");
-          selectedContactId = id;
-          const c = contacts.find((c) => c.id == id);
-          toInput.value = c.name;
-          toInputCursor.style.display = "none";
-        } else {
-          selectedContactId = null;
-          toInput.value = "";
-          toInputCursor.style.display = "block";
+        function updatePaymentModalUI(selection) {
+          document
+            .getElementById("cashOption")
+            .querySelector(".radio-button")
+            .classList.toggle("selected", selection === "cash");
+          document
+            .getElementById("visaOption")
+            .querySelector(".radio-button")
+            .classList.toggle("selected", selection === "visa");
         }
-        filterContacts();
-        validatePayButton();
-      }
-      function openEditModal(id) {
-        editingContact = { ...contacts.find((c) => c.id == id) };
-        if (!editingContact) return;
-        editName.value = editingContact.name;
-        editCashtag.value = editingContact.cashtag;
-        updateEditAvatar();
-        populateColorPalette();
-        editDoneBtn.disabled = true;
-        editOverlay.classList.add("show");
-      }
-      const closeEditModal = () => {
-        editOverlay.classList.remove("show");
-        editingContact = null;
-      };
-      function updateEditAvatar() {
-        if (editingContact.avatar) {
-          editAvatar.style.backgroundImage = `url(${editingContact.avatar})`;
-          editAvatar.innerHTML = "";
-        } else {
-          editAvatar.style.backgroundImage = "none";
-          editAvatar.style.backgroundColor = editingContact.color;
-          editAvatar.innerHTML = editingContact.name.charAt(0);
+        function updateMainPaymentDisplay(method) {
+          if (method === "cash") {
+            mainPaymentIcon.innerHTML = `<img src="icons/Cash_App-Logo.wine.png" alt="Cash App" />`;
+            mainPaymentInfo.textContent = `Cash balance: ${formatCurrency(
+              localStorage.getItem(balanceStorageKey) || 0
+            )}`;
+          } else if (method === "visa") {
+            mainPaymentIcon.innerHTML = `<img src="icons/mastercard-2-logo-svgrepo-com.png" alt="Card" />`;
+            mainPaymentInfo.textContent = "Debit card •••• 4042";
+          }
         }
-      }
-      function populateColorPalette() {
-        colorPalette.innerHTML = "";
-        availableColors.forEach((c) => {
-          const s = document.createElement("div");
-          s.className = "color-swatch";
-          s.style.backgroundColor = c;
-          s.dataset.color = c;
-          if (c === editingContact.color) s.classList.add("active");
-          s.innerHTML = '<i class="fa-solid fa-check"></i>';
-          colorPalette.appendChild(s);
-        });
-      }
-      function handleSaveChanges() {
-        const i = contacts.findIndex((c) => c.id === editingContact.id);
-        if (i > -1) {
-          contacts[i] = editingContact;
-          saveContacts();
-          renderContacts();
-          if (selectedContactId == editingContact.id)
-            document
-              .querySelector(`.contact-item[data-id="${editingContact.id}"]`)
-              .classList.add("selected");
-        }
-        closeEditModal();
-      }
-      function showAlert(message) {
-        alertMessage.textContent = message;
-        alertModalOverlay.classList.add("show");
-      }
-      function hideAlert() {
-        alertModalOverlay.classList.remove("show");
-      }
-
-      function handlePayment() {
-        const paymentAmount = parseFloat(
-          localStorage.getItem(paymentAmountKey) || "0"
-        );
-        const cashBalance = parseFloat(
-          localStorage.getItem(balanceStorageKey) || "0"
-        );
-
-        if (paymentAmount > cashBalance) {
-          showAlert("Insufficient funds");
-          return;
-        }
-
-        let recipientData;
-
-        if (selectedContactId) {
-          recipientData = contacts.find((c) => c.id == selectedContactId);
-        } else {
-          const typedName = toInput.value.trim();
-          recipientData = {
-            id: `temp-${Date.now()}`,
-            name: typedName,
-            cashtag:
-              "$" +
-              typedName
+        function handlePayment() {
+          if (!payBtn.classList.contains("active")) return;
+          const paymentAmount = parseFloat(
+            localStorage.getItem(paymentAmountKey) || "547"
+          );
+          const cashBalance = parseFloat(
+            localStorage.getItem(balanceStorageKey) || "53936.23"
+          );
+          if (paymentAmount > cashBalance) {
+            showAlert("Insufficient funds");
+            return;
+          }
+          let recipientData = selectedContact;
+          if (!recipientData) {
+            const typedName = toInput.value.trim();
+            recipientData = {
+              id: `temp-${Date.now()}`,
+              name: typedName,
+              cashtag: `$${typedName
                 .toLowerCase()
                 .replace(/\s+/g, "")
-                .replace(/[^a-z0-9]/g, ""),
-            avatar: "",
-            color: "#6c757d",
-          };
+                .replace(/[^a-z0-9]/g, "")}`,
+              avatar: "",
+              color: "#6c757d",
+            };
+          }
+          localStorage.setItem(
+            pendingRecipientDataKey,
+            JSON.stringify(recipientData)
+          );
+          localStorage.setItem(pendingPaymentMessageKey, forInput.value.trim());
+          loadingOverlay.style.display = "flex";
+          setTimeout(() => {
+            window.location.href = "payment-result.html";
+          }, 3000);
         }
-
-        localStorage.setItem(
-          pendingRecipientDataKey,
-          JSON.stringify(recipientData)
-        );
-        localStorage.setItem(pendingPaymentMessageKey, forInput.value.trim());
-
-        loadingOverlay.style.display = "flex";
-
-        // This setTimeout is for demonstration; it simulates a network request.
-        // The *visual* spinning speed is controlled by the CSS animation duration.
-        setTimeout(() => {
-          window.location.href = "payment-result.html";
-        }, 5000); // The page will still wait 5 seconds before redirecting.
-      }
-
-      document.addEventListener("DOMContentLoaded", () => {
-        const paymentAmountRaw = localStorage.getItem(paymentAmountKey);
-        if (!paymentAmountRaw || parseFloat(paymentAmountRaw) <= 0) {
-          window.location.href = "pay.html";
-          return;
+        function showAlert(message) {
+          alertMessage.textContent = message;
+          alertModalOverlay.classList.add("show");
         }
-        const cashBalance = parseFloat(
-          localStorage.getItem(balanceStorageKey) || "11536549.00"
-        );
-        amountDisplay.textContent = formatCurrency(
-          parseFloat(paymentAmountRaw)
-        );
-        sourceDisplay.innerHTML = `Cash Balance ${formatCurrency(
+        const paymentAmount =
+          localStorage.getItem(paymentAmountKey) || "547.00";
+        const cashBalance =
+          localStorage.getItem(balanceStorageKey) || "53936.23";
+        localStorage.setItem(paymentAmountKey, paymentAmount);
+        localStorage.setItem(balanceStorageKey, cashBalance);
+        amountDisplay.textContent = formatCurrency(paymentAmount);
+        mainPaymentInfo.textContent = `Cash balance: ${formatCurrency(
           cashBalance
-        )} <i class="fa-solid fa-chevron-down fa-xs"></i>`;
+        )}`;
+        modalBalanceSubtitle.textContent = formatCurrency(cashBalance);
         contacts = getContacts();
         renderContacts();
-        contactListEl.addEventListener("click", (e) => {
-          if (e.target.closest(".contact-icon")) {
-            openEditModal(e.target.closest(".contact-icon").dataset.editId);
-          } else {
-            const item = e.target.closest(".contact-item");
-            if (item) handleContactSelection(item);
-          }
-        });
         toInput.addEventListener("input", () => {
-          toInputCursor.style.display = "none";
-          if (selectedContactId) {
+          if (selectedContact) {
             document
               .querySelector(".contact-item.selected")
               ?.classList.remove("selected");
-            selectedContactId = null;
+            selectedContact = null;
           }
-          filterContacts();
-          validatePayButton();
+          filterContactsOnInput();
+          updatePayButtonState();
         });
-        toInput.addEventListener("focus", () => {
-          if (!selectedContactId) toInputCursor.style.display = "block";
+        forInput.addEventListener("input", updatePayButtonState);
+        contactListEl.addEventListener("click", (e) => {
+          const avatar = e.target.closest(".avatar");
+          const item = e.target.closest(".contact-item");
+          if (avatar) {
+            openEditModal(avatar.dataset.editId);
+          } else if (item) {
+            handleContactSelection(item);
+          }
         });
-        toInput.addEventListener("blur", () => {
-          if (toInput.value.length === 0) toInputCursor.style.display = "block";
-          else toInputCursor.style.display = "none";
-        });
+        editCloseBtn.addEventListener("click", closeEditModal);
+        editDoneBtn.addEventListener("click", handleSaveChanges);
         editAvatar.addEventListener("click", () => editPicInput.click());
         editPicInput.addEventListener("change", (e) => {
-          const f = e.target.files[0];
-          if (!f) return;
-          const r = new FileReader();
-          r.onload = (re) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = (re) => {
             editingContact.avatar = re.target.result;
             updateEditAvatar();
             editDoneBtn.disabled = false;
           };
-          r.readAsDataURL(f);
+          reader.readAsDataURL(file);
         });
-        [editName, editCashtag].forEach((i) =>
-          i.addEventListener("input", () => {
-            editingContact[i.id.split("-")[1]] = i.value;
+        [editName, editCashtag].forEach((input) =>
+          input.addEventListener("input", () => {
+            editingContact[input.id.split("-")[1]] = input.value;
             editDoneBtn.disabled = false;
           })
         );
         colorPalette.addEventListener("click", (e) => {
-          const s = e.target.closest(".color-swatch");
-          if (!s) return;
-          editingContact.color = s.dataset.color;
+          const swatch = e.target.closest(".color-swatch");
+          if (!swatch) return;
+          editingContact.color = swatch.dataset.color;
           editingContact.avatar = "";
           updateEditAvatar();
           populateColorPalette();
           editDoneBtn.disabled = false;
         });
-        editCloseBtn.addEventListener("click", closeEditModal);
-        editDoneBtn.addEventListener("click", handleSaveChanges);
-        sendAsSection.addEventListener("click", (e) => {
-          const btn = e.target.closest(".send-as-btn");
-          if (!btn) return;
-          sendAsSection
-            .querySelectorAll(".active")
-            .forEach((b) => b.classList.remove("active"));
-          btn.classList.add("active");
+        paymentMethodRow.addEventListener("click", openPaymentModal);
+        paymentOverlay.addEventListener("click", (e) => {
+          if (e.target === paymentOverlay) closePaymentModal();
         });
-
+        continueBtn.addEventListener("click", () => {
+          const isCashSelected = document
+            .getElementById("cashOption")
+            .querySelector(".radio-button")
+            .classList.contains("selected");
+          activePaymentMethod = isCashSelected ? "cash" : "visa";
+          updateMainPaymentDisplay(activePaymentMethod);
+          closePaymentModal();
+        });
+        document
+          .querySelectorAll(".payment-modal .payment-option")
+          .forEach((option) =>
+            option.addEventListener("click", handlePaymentOptionSelection)
+          );
         payBtn.addEventListener("click", handlePayment);
-
-        alertOkBtn.addEventListener("click", hideAlert);
+        alertOkBtn.addEventListener("click", () =>
+          alertModalOverlay.classList.remove("show")
+        );
       });
     </script>
   </body>
