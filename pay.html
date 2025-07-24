@@ -99,8 +99,8 @@
       }
       .profile-icon-link {
         display: block;
-        width: 36px;
-        height: 36px;
+        width: 30px; /* REVERTED: Back to original size */
+        height: 30px; /* REVERTED: Back to original size */
       }
       .profile-icon {
         font-size: 16px;
@@ -275,7 +275,6 @@
 
       <main class="pay-main">
         <div class="amount-display" id="amount-display">
-          <!-- GAVE THIS AN ID FOR EASIER SELECTION -->
           <h1 class="amount-text" id="amount-text">$0</h1>
         </div>
 
@@ -382,10 +381,10 @@
       const payBtn = document.getElementById("pay-btn");
       const profileIconLink = document.querySelector(".profile-icon-link");
 
-      // --- NEW: Elements and Constants for new features ---
-      const amountDisplay = document.getElementById("amount-display"); // The container to shake
-      const MAX_AMOUNT = 99999;
-      // --- END OF NEW ELEMENTS ---
+      // --- MODIFIED: Elements and Constants for new features ---
+      const amountDisplay = document.getElementById("amount-display");
+      const MAX_AMOUNT = 99999.99; // Updated to include cents
+      // --- END OF MODIFICATIONS ---
 
       const userProfileKey = "cashAppUserProfile";
       const defaultProfile = { profilePic: "" };
@@ -396,9 +395,7 @@
         if (amountValue === "0") {
           amountText.innerHTML = "$0";
         } else {
-          // Keep your existing formatting logic
           const parts = amountValue.split(".");
-          // Remove commas before parsing to prevent issues with toLocaleString
           const integerPartString = parts[0].replace(/,/g, "");
           const integerPart =
             parseFloat(integerPartString).toLocaleString("en-US");
@@ -408,7 +405,6 @@
               : `$${integerPart}`;
         }
 
-        // Keep your existing font-sizing logic
         const parent = amountText.parentElement;
         const maxTextWidth = parent.clientWidth * 0.9;
         amountText.style.fontSize = "";
@@ -431,56 +427,65 @@
         payBtn.disabled = !isEnabled;
       }
 
-      // --- NEW: Helper function for the error effect ---
       function triggerLimitError() {
-        // 1. Vibrate smoothly
         if (navigator.vibrate) {
-          // A single 150ms pulse is noticeable but not overly aggressive.
           navigator.vibrate(150);
         }
-
-        // 2. Shake the display
         amountDisplay.classList.add("shake");
-
-        // 3. Remove the shake class after the animation so it can run again
         setTimeout(() => {
           amountDisplay.classList.remove("shake");
-        }, 400); // This duration should match the animation time in CSS
+        }, 400);
       }
-      // --- END OF NEW HELPER ---
 
+      // --- MODIFIED: Rewritten function for cleaner and more robust logic ---
       function handleKeyPress(key) {
-        const previousAmount = amountValue; // Store state before making changes
+        // Rule 1: Handle invalid actions on the "0" state.
+        if (
+          (key === "<" && amountValue === "0") ||
+          (key === "0" && amountValue === "0")
+        ) {
+          triggerLimitError();
+          return;
+        }
 
-        // Keep your existing key handling logic
+        // Rule 2: Prevent adding a third decimal digit.
+        const decimalPart = amountValue.split(".")[1];
+        if (decimalPart && decimalPart.length >= 2 && key !== "<") {
+          triggerLimitError();
+          return;
+        }
+
+        const previousAmount = amountValue;
+        let potentialAmount = amountValue;
+
+        // Build the potential new amount string based on the key pressed.
         if (key === "<") {
-          amountValue = amountValue.length > 1 ? amountValue.slice(0, -1) : "0";
+          potentialAmount =
+            potentialAmount.length > 1 ? potentialAmount.slice(0, -1) : "0";
         } else if (key === ".") {
-          if (!amountValue.includes(".")) {
-            amountValue += ".";
+          if (!potentialAmount.includes(".")) {
+            potentialAmount += ".";
           }
         } else {
-          const decimalPart = amountValue.split(".")[1];
-          if (decimalPart && decimalPart.length >= 2) return;
-
-          if (amountValue === "0" && key !== ".") {
-            amountValue = key;
+          // Is a digit '0'-'9'
+          if (potentialAmount === "0") {
+            potentialAmount = key;
           } else {
-            amountValue += key;
+            potentialAmount += key;
           }
         }
 
-        // --- NEW: Validation Check ---
-        const numericValue = parseFloat(amountValue);
-        if (numericValue > MAX_AMOUNT) {
-          amountValue = previousAmount; // Revert to the last valid amount
-          triggerLimitError(); // Trigger the effects
-          return; // Stop here, don't update the display
+        // Rule 3: Validate the potential new amount against the maximum.
+        if (parseFloat(potentialAmount) > MAX_AMOUNT) {
+          triggerLimitError();
+          return; // Do not update amountValue, effectively rejecting the input.
         }
-        // --- END OF VALIDATION CHECK ---
 
-        updateDisplay(); // This only runs if the amount is valid
+        // If all rules pass, commit the new amount and update the screen.
+        amountValue = potentialAmount;
+        updateDisplay();
       }
+      // --- END OF MODIFICATIONS ---
 
       function loadProfileIcon() {
         const savedProfile = localStorage.getItem(userProfileKey);
