@@ -21,7 +21,6 @@
       referrerpolicy="no-referrer"
     />
     <link rel="stylesheet" href="saving.css" />
-    <!-- 1. LOTTIE ANIMATION LIBRARY ADDED -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
     <script src="guard.js"></script>
     <style>
@@ -454,6 +453,14 @@
       .transaction-modal-overlay.show .transaction-modal {
         transform: translateY(0);
       }
+      /* ADDED: Styles for the new slide-down animation */
+      .transaction-modal-overlay.closing {
+        opacity: 0;
+      }
+      .transaction-modal-overlay.closing .transaction-modal,
+      .transaction-modal-overlay.closing .action-sheet-content {
+        transform: translateY(100%);
+      }
       .modal-grabber {
         width: 40px;
         height: 5px;
@@ -700,7 +707,6 @@
         color: #c7c7cc;
       }
 
-      /* --- 3. UPDATED SPINNER CSS --- */
       #spinner-overlay {
         position: fixed;
         top: 0;
@@ -716,12 +722,11 @@
       #spinner-overlay.show {
         display: flex;
       }
-      /* New container for the Lottie animation */
+
       #lottie-spinner-container {
         width: 50px;
         height: 50px;
       }
-      /* This rule scales the animation itself to fit perfectly */
       #lottie-spinner-container > * {
         transform: scale(0.4);
       }
@@ -788,7 +793,7 @@
         justify-content: center;
         padding: 10px;
         opacity: 0;
-        transition: opacity 0.3s ease;
+        transition: opacity 0.3s ease, transform 0.3s ease;
       }
       .action-sheet-container.show {
         display: flex;
@@ -805,6 +810,7 @@
         transform: translateY(100%);
         animation: slideUpActionSheet 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)
           forwards;
+        transition: transform 0.3s ease;
       }
       @keyframes slideUpActionSheet {
         from {
@@ -859,14 +865,12 @@
         font-weight: 600;
       }
 
-      /* --- ADDED: Styles for Perfected Add Money Modal --- */
       #add-money-perfected-modal {
         padding: 0.75rem 1.5rem 1.5rem;
         border-radius: 40px 40px 0 0;
         display: flex;
         flex-direction: column;
         gap: 1.25rem;
-        /* FIX: Font family will now be inherited from the body for consistency */
       }
       #add-money-perfected-modal .perfected-sheet-handle {
         width: 44px;
@@ -905,7 +909,7 @@
         cursor: pointer;
         transition: border-color 0.2s ease, transform 0.15s ease;
         -webkit-tap-highlight-color: transparent;
-        font-family: inherit; /* Ensure it uses CashMarket font */
+        font-family: inherit;
       }
       #add-money-perfected-modal .perfected-preset-btn:active {
         transform: scale(0.96);
@@ -1001,7 +1005,6 @@
     </style>
   </head>
   <body>
-    <!-- 2. UPGRADED SPINNER HTML -->
     <div id="spinner-overlay">
       <div id="lottie-spinner-container"></div>
     </div>
@@ -1357,7 +1360,6 @@
     </div>
 
     <div class="transaction-modal-overlay" id="transaction-modal-overlay">
-      <!-- ADDED: The new "Add Money" overlay -->
       <div class="transaction-modal" id="add-money-perfected-modal">
         <div class="perfected-sheet-handle"></div>
         <div class="perfected-header">
@@ -1408,7 +1410,6 @@
         </div>
       </div>
 
-      <!-- The new withdrawal action sheet -->
       <div class="action-sheet-container" id="withdrawal-action-sheet">
         <div class="action-sheet-content">
           <div class="action-sheet-prompt">
@@ -1442,7 +1443,6 @@
         </div>
       </div>
 
-      <!-- Existing modals (unchanged) -->
       <div class="transaction-modal" id="add-cash-presets-modal">
         <div class="modal-grabber"></div>
         <div class="modal-header"><h2>Add Money</h2></div>
@@ -1524,7 +1524,6 @@
       </div>
     </div>
 
-    <!-- The original, single success overlay from your app code -->
     <div id="success-overlay">
       <button id="success-close-btn">×</button>
       <div class="success-content">
@@ -1537,7 +1536,7 @@
     </div>
 
     <script>
-      const INSTANT_FEE_RATE = 0.013; // 1.3% fee
+      const INSTANT_FEE_RATE = 0.013;
 
       const balanceAmountEl = document.getElementById("balance-amount"),
         footerBalanceDisplay = document.getElementById(
@@ -1575,7 +1574,6 @@
         profilePic: "icons/person-circle-svgrepo-com.png",
       };
 
-      // --- 4. LOTTIE SPINNER SETUP ---
       const lottieSpinnerContainer = document.getElementById(
         "lottie-spinner-container"
       );
@@ -1585,14 +1583,20 @@
         container: lottieSpinnerContainer,
         renderer: "svg",
         loop: true,
-        autoplay: false, // We control when it plays
-        path: "/loader_lm.json",
+        autoplay: false,
+        path: "loader_lm.json",
       });
 
       const formatCurrency = (amount) =>
           `$${Number(amount).toLocaleString("en-US", {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
+          })}`,
+        // ADDED: New function to format without decimals
+        formatCurrencyWhole = (amount) =>
+          `$${Number(amount).toLocaleString("en-US", {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
           })}`,
         formatBalanceForFooter = (amount) =>
           amount >= 1e9
@@ -1704,10 +1708,10 @@
         const startBalance = currentBalance;
         hideAllModals();
         spinnerOverlay.classList.add("show");
-        loadingSpinnerAnimation.play(); // Play the Lottie animation
+        loadingSpinnerAnimation.play();
         setTimeout(() => {
           spinnerOverlay.classList.remove("show");
-          loadingSpinnerAnimation.stop(); // Stop the Lottie animation
+          loadingSpinnerAnimation.stop();
           showSuccessOverlay("add", amount);
           setTimeout(() => {
             const newBalance = startBalance + amount;
@@ -1740,11 +1744,11 @@
 
         hideAllModals();
         spinnerOverlay.classList.add("show");
-        loadingSpinnerAnimation.play(); // Play the Lottie animation
+        loadingSpinnerAnimation.play();
 
         setTimeout(() => {
           spinnerOverlay.classList.remove("show");
-          loadingSpinnerAnimation.stop(); // Stop the Lottie animation
+          loadingSpinnerAnimation.stop();
           showSuccessOverlay(type, amount);
           setTimeout(() => {
             handleWithdrawal(totalDeduction);
@@ -1764,10 +1768,15 @@
         });
         document.body.classList.add("modal-open");
       }
+      // MODIFIED: Function updated for slide-down animation
       function hideAllModals() {
-        transactionOverlay.classList.remove("show");
-        allModals.forEach((m) => m.classList.remove("show"));
-        document.body.classList.remove("modal-open");
+        transactionOverlay.classList.add("closing"); // Trigger the closing animation
+        setTimeout(() => {
+          transactionOverlay.classList.remove("show");
+          transactionOverlay.classList.remove("closing"); // Clean up
+          allModals.forEach((m) => m.classList.remove("show"));
+          document.body.classList.remove("modal-open");
+        }, 300); // This duration must match the CSS transition duration
       }
       function showSuccessOverlay(type, amount) {
         const successIconEl = document.getElementById("success-icon");
@@ -1999,23 +2008,26 @@
           );
         let amountToWithdraw = 0;
 
+        // MODIFIED: This function now starts the withdrawal at the max value.
         document
           .getElementById("withdraw-btn")
           .addEventListener("click", () => {
             withdrawSlider.max = currentBalance;
-            withdrawSlider.value = 0;
+            withdrawSlider.value = currentBalance; // Starts at max
             withdrawAvailableDisplay.textContent = `${formatCurrency(
               currentBalance
             )} available`;
-            withdrawAmountDisplay.textContent = formatCurrency(0);
+            withdrawAmountDisplay.textContent =
+              formatCurrencyWhole(currentBalance); // Use new whole number formatter
             adjustWithdrawFontSize(withdrawAmountDisplay);
-            withdrawConfirmBtn.disabled = true;
-            withdrawSlider.style.setProperty("--progress", "0%");
+            withdrawConfirmBtn.disabled = currentBalance <= 0; // Enable button if balance > 0
+            withdrawSlider.style.setProperty("--progress", "100%"); // Set progress bar to full
             showModal(withdrawSliderModal);
           });
+        // MODIFIED: This listener now uses the whole number formatter.
         withdrawSlider.addEventListener("input", () => {
           const value = parseFloat(withdrawSlider.value);
-          withdrawAmountDisplay.textContent = formatCurrency(value);
+          withdrawAmountDisplay.textContent = formatCurrencyWhole(value); // Use new whole number formatter
           adjustWithdrawFontSize(withdrawAmountDisplay);
           withdrawConfirmBtn.disabled = value <= 0;
           const maxVal = parseFloat(withdrawSlider.max);
