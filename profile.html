@@ -20,7 +20,7 @@
       @font-face {
         font-family: "CashMarket";
         font-style: normal;
-        src: url(font/CashSans.ttf);
+        src: url(font/CashSans-Regular.otf);
         font-display: swap;
       }
       :root {
@@ -105,7 +105,6 @@
         height: 100px;
         padding: 5px;
         border-radius: 50%;
-        border: 2px dashed var(--accent-green);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -115,7 +114,6 @@
         height: 100%;
         border-radius: 50%;
         object-fit: cover;
-        background-color: var(--border-color-light);
       }
       .profile-name {
         font-size: 24px;
@@ -467,7 +465,7 @@
         if (userProfile.profilePic) {
           mainProfilePic.src = userProfile.profilePic;
         } else {
-          mainProfilePic.src = "images/pi2_camera_button_disabled.png"; // Transparent pixel
+          mainProfilePic.src = "icons/addphoto_Normal.png"; // Transparent pixel
         }
       }
 
@@ -477,7 +475,7 @@
         editAccountNumber.value = userProfile.accountNumber;
         editRoutingNumber.value = userProfile.routingNumber;
         editProfilePic.src =
-          userProfile.profilePic || "images/pi2_camera_button_disabled.png";
+          userProfile.profilePic || "icons/addphoto_Normal.png";
 
         editDoneBtn.disabled = true;
         personalEditOverlay.classList.add("show");
