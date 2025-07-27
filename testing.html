@@ -2,1053 +2,684 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0"
-    />
-    <title>Cash App Payment</title>
-    <!-- Font Awesome CDN for Icons -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ultra Advanced Lottie Viewer</title>
+
+    <!-- Lottie-Web Player from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+
     <style>
-      @font-face {
-        font-family: "CashMarket";
-        font-style: normal;
-        src: url(font/CashSans.ttf);
-        font-display: swap;
-      }
-      /* Main App UI from your Final Code */
+      /* --- 1. Global Styles & Theming --- */
       :root {
-        --accent-green: #00d54b;
-        --text-primary: #000000;
-        --text-secondary: #6c757d;
-        --border-color-light: #f0f0f0;
-        --app-bg-secondary: #f9f9f9;
+        --bg-color: #1a1a1d;
+        --panel-color: #2c2c34;
+        --text-color: #e1e1e6;
+        --primary-color: #4a90e2;
+        --primary-hover-color: #63a4ff;
+        --border-color: #40404a;
+        --input-bg: #101012;
+        --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
       }
+
       * {
+        box-sizing: border-box;
         margin: 0;
         padding: 0;
-        box-sizing: border-box;
-        -webkit-tap-highlight-color: transparent;
       }
+
       html,
       body {
         height: 100%;
         overflow: hidden;
+        font-family: var(--font-family);
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-size: 14px;
       }
-      body {
-        font-family: "CashMarket", -apple-system, BlinkMacSystemFont, sans-serif;
-        background-color: #ffffff;
-        color: var(--text-primary);
+
+      /* --- 2. Main Layout --- */
+      .app-container {
+        display: flex;
+        height: 100vh;
       }
-      .container {
-        max-width: 420px;
-        margin: 0 auto;
+
+      .viewer-main {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
         height: 100%;
-        background-color: #ffffff;
-        display: flex;
-        flex-direction: column;
-        position: relative;
       }
-      .fixed-top-content {
-        background-color: #ffffff;
-        position: relative;
-        z-index: 10;
-        padding: 0 16px;
+
+      .controls-sidebar {
+        width: 320px;
         flex-shrink: 0;
-      }
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 12px 0;
-        position: relative;
-        padding-bottom: 0px;
-      }
-      .header::after {
-        content: "";
-        position: absolute;
-        bottom: -1px;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background-color: var(--border-color-light);
-      }
-      .close-btn {
-        background: none;
-        border: none;
-        color: var(--text-primary);
-        font-size: 40px;
-        font-weight: 400;
-        cursor: pointer;
-      }
-      .amount {
-        font-size: 17px;
-        font-weight: 600;
-      }
-      .pay-btn {
-        background-color: #f2f2f7;
-        color: #bcbcc0;
-        border: none;
-        padding: 6px 17px;
-        border-radius: 16px;
-        font-size: 15px;
-        font-weight: 600;
-        cursor: not-allowed;
-        transition: background-color 0.2s, color 0.2s;
-        font-family: "CashMarket", -apple-system, BlinkMacSystemFont, sans-serif;
-      }
-      .pay-btn.active {
-        background-color: var(--accent-green);
-        color: #ffffff;
-        cursor: pointer;
-      }
-      .input-group {
-        display: flex;
-        align-items: center;
-        border-bottom: 1px solid var(--border-color-light);
-        padding: 14px 0;
-      }
-      .input-label {
-        color: var(--text-primary);
-        font-size: 15px;
-        font-weight: 600;
-        min-width: 35px;
-      }
-      .input-field {
-        flex: 1;
-        background: transparent;
-        border: none;
-        color: var(--text-primary);
-        font-size: 15px;
-        padding: 7px 0;
-        outline: none;
-      }
-      .input-field::placeholder {
-        color: #c7c7cc;
-      }
-      .note-icon img {
-        width: 24px;
-        height: 24px;
-      }
-      .payment-method {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        cursor: pointer;
-      }
-      .payment-left {
-        display: flex;
-        align-items: center;
-        gap: 1px;
-      }
-      .cash-app-icon {
-        padding-left: 0px;
-      }
-      .cash-app-icon img {
-        gap: 0;
-        width: 25px;
-        height: 25px;
-      }
-      .balance-info {
-        color: var(--text-primary);
-        font-size: 14px;
-        font-weight: 580;
-        padding-left: 0.3rem;
-      }
-      .chevron {
-        color: #c7c7cc;
-        font-size: 16px;
-        padding-right: 10px;
-        font-weight: 300;
-      }
-      .suggested-title {
-        font-size: 20px;
-        font-weight: 700;
-        margin-top: 7px;
-        margin-bottom: 10px;
-      }
-      .scrollable-content {
-        flex-grow: 1;
-        overflow-y: auto;
-        padding: 0 16px;
-      }
-      .contact-item {
-        display: flex;
-        align-items: center;
-        padding: 15px 0;
-        cursor: pointer;
-      }
-      .contact-details {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        flex-grow: 1;
-      }
-      .avatar {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        background-size: cover;
-        background-position: center;
-        background-color: #e5e5ea;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        font-size: 20px;
-        font-weight: 500;
-        cursor: pointer;
-      }
-      .contact-info {
+        background-color: var(--panel-color);
+        border-left: 1px solid var(--border-color);
+        padding: 20px;
         display: flex;
         flex-direction: column;
-        gap: 1px;
+        overflow-y: auto;
       }
-      .contact-name {
-        font-size: 16px;
-        font-weight: 600;
+
+      /* --- 3. Viewer Area & Dropzone --- */
+      #lottie-container {
+        flex-grow: 1;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background-color 0.3s ease;
       }
-      .contact-handle {
-        color: var(--text-secondary);
-        font-size: 14px;
-        font-weight: 400;
+
+      #lottie-canvas {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
       }
-      .checkbox {
-        width: 24px;
-        height: 24px;
-        border: 2px solid #e0e0e0;
-        border-radius: 30%;
-        display: grid;
-        place-items: center;
-        margin-left: 12px;
-        transition: all 0.2s ease;
-      }
-      .contact-item.selected .checkbox {
-        background-color: var(--accent-green);
-        border-color: var(--accent-green);
-      }
-      .checkbox i {
-        color: white;
-        font-size: 14px;
-        transform: scale(0);
-        transition: transform 0.2s ease;
-      }
-      .contact-item.selected .checkbox i {
-        transform: scale(1);
-      }
-      .payment-overlay {
-        position: fixed;
+
+      .dropzone-overlay {
+        position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0, 0, 0, 0.4);
-        display: none;
-        align-items: flex-end;
-        z-index: 1000;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-      .payment-overlay.active {
+        background-color: rgba(74, 144, 226, 0.2);
+        border: 3px dashed var(--primary-color);
         display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--primary-color);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+        z-index: 10;
+      }
+
+      #lottie-container.drag-over .dropzone-overlay {
         opacity: 1;
       }
-      .payment-modal {
-        background: var(--app-bg-secondary);
-        border-radius: 20px 20px 0 0;
-        width: 100%;
-        padding: 8px 16px 24px 16px;
-        transform: translateY(100%);
-        transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-      }
-      .payment-overlay.active .payment-modal {
-        transform: translateY(0);
-      }
-      .modal-handle {
-        width: 40px;
-        height: 5px;
-        background: #d1d1d6;
-        border-radius: 2.5px;
-        margin: 0 auto 16px;
-      }
-      .payment-modal-header {
+
+      .placeholder-text {
         text-align: center;
+        max-width: 400px;
+        color: #777;
+        font-size: 1.2em;
+        line-height: 1.6;
+      }
+      .placeholder-text h2 {
+        color: var(--text-color);
+        margin-bottom: 10px;
+      }
+
+      /* --- 4. Sidebar Controls Styling --- */
+      .control-group {
+        margin-bottom: 25px;
+      }
+
+      .control-group h3 {
+        font-size: 1em;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #999;
+        margin-bottom: 12px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      /* Input & Buttons */
+      .input-group {
+        display: flex;
+        margin-bottom: 10px;
+      }
+      .url-input {
+        flex-grow: 1;
+        padding: 10px;
+        background-color: var(--input-bg);
+        border: 1px solid var(--border-color);
+        border-right: none;
+        color: var(--text-color);
+        border-radius: 4px 0 0 4px;
+        outline: none;
+        transition: border-color 0.2s ease;
+      }
+      .url-input:focus {
+        border-color: var(--primary-color);
+      }
+
+      .btn {
+        padding: 10px 15px;
+        border: none;
+        background-color: var(--primary-color);
+        color: white;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background-color 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .btn:hover {
+        background-color: var(--primary-hover-color);
+      }
+      .btn.load-btn {
+        border-radius: 0 4px 4px 0;
+      }
+      .btn.file-btn {
+        width: 100%;
+        border-radius: 4px;
+      }
+
+      .file-input {
+        display: none;
+      }
+
+      .playback-controls {
+        display: grid;
+        grid-template-columns: repeat(
+          3,
+          1fr
+        ); /* MODIFIED: Changed from 2 to 3 columns for loop button */
+        gap: 10px;
+        margin-bottom: 15px;
+      }
+
+      .playback-controls .btn {
+        border-radius: 4px;
+        height: 40px;
+      }
+
+      .playback-controls .btn svg {
+        width: 20px;
+        height: 20px;
+        fill: white;
+      }
+
+      /* Sliders */
+      .slider-group {
+        display: flex;
+        align-items: center;
         margin-bottom: 12px;
       }
-      .payment-modal-title {
-        color: var(--text-primary);
-        font-size: 16px;
-        font-weight: 600;
+      .slider-group label {
+        flex-basis: 70px;
+        flex-shrink: 0;
+        font-size: 0.9em;
       }
-      .payment-option {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 16px 0;
-        border-bottom: 1px solid #e5e5ea;
+      .slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 6px;
+        background: var(--input-bg);
+        outline: none;
+        border-radius: 3px;
         cursor: pointer;
       }
-      .payment-option:last-of-type {
-        border-bottom: none;
-      }
-      .payment-option-left {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-      }
-      .payment-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .payment-icon.cash {
-        background-color: var(--accent-green);
-        border: 1px solid #e5e5ea;
-      }
-      .payment-icon.cash img,
-      .payment-icon.visa img {
-        width: 30px;
-        height: 30px;
-      }
-      .payment-icon.visa {
-        background-color: #ffffff;
-        border: 1px solid #e5e5ea;
-      }
-      .payment-option-info {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-      }
-      .payment-option-title {
-        color: var(--text-primary);
-        font-size: 16px;
-        font-weight: 400;
-      }
-      .payment-option-subtitle {
-        color: var(--text-secondary);
-        font-size: 14px;
-      }
-      .radio-button {
-        width: 22px;
-        height: 22px;
-        border: 2px solid #c7c7cc;
+      .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        background: var(--primary-color);
+        cursor: pointer;
         border-radius: 50%;
-        position: relative;
+        transition: background-color 0.2s ease;
       }
-      .radio-button.selected {
-        border-color: var(--accent-green);
-        background: var(--accent-green);
-      }
-      .radio-button.selected::after {
-        content: "✓";
-        color: #fff;
-        font-size: 14px;
-        font-weight: bold;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-      }
-      .continue-btn {
-        background: #ffffff;
-        color: var(--text-primary);
-        border: 1px solid #d1d1d6;
-        padding: 16px;
-        border-radius: 30px;
-        font-size: 18px;
-        font-weight: 600;
-        width: 100%;
+      .slider::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+        background: var(--primary-color);
         cursor: pointer;
-        margin-top: 24px;
-        transition: background-color 0.2s;
-      }
-      .continue-btn:active {
-        background-color: #e5e5ea;
-      }
-      .edit-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: white;
-        z-index: 4000;
-        transform: translateX(100%);
-        transition: transform 0.35s ease-in-out;
-      }
-      .edit-overlay.show {
-        transform: translateX(0);
-      }
-      .edit-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 16px;
-        border-bottom: 1px solid #e9ecef;
-      }
-      .edit-close-btn,
-      .edit-done-btn {
-        font-size: 17px;
-        font-weight: 600;
-        background: none;
+        border-radius: 50%;
         border: none;
-        cursor: pointer;
-        font-family: inherit;
-      }
-      .edit-done-btn {
-        color: var(--accent-green);
-      }
-      .edit-done-btn:disabled {
-        color: #a0e6bb;
+        transition: background-color 0.2s ease;
       }
 
-      /* [FIX] Edit Content perfectly placed and clean */
-      .edit-content {
-        padding: 32px 16px; /* Increased top padding */
+      .slider-group span {
+        margin-left: 10px;
+        min-width: 40px;
+        text-align: right;
+        font-family: "SF Mono", "Fira Code", monospace;
       }
-      .edit-avatar {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        background-size: cover;
-        background-position: center;
-        background-color: #e9ecef;
-        display: block;
-        margin: 0 auto 24px;
-        cursor: pointer;
+
+      /* Toggle & Color Picker */
+      .misc-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .toggle-group {
         display: flex;
         align-items: center;
-        justify-content: center;
-        font-size: 40px;
-        color: white;
+        gap: 10px;
       }
-      #edit-pic-input {
-        display: none;
+      .color-picker {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        width: 40px;
+        height: 40px;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
       }
-      .edit-content .input-group {
-        margin-bottom: 24px; /* Consistent margin */
-        border-bottom: none;
+      .color-picker::-webkit-color-swatch-wrapper {
         padding: 0;
       }
-      .edit-content .input-group label {
-        display: block;
-        font-size: 14px;
-        color: var(--text-secondary);
-        margin-bottom: 8px;
+      .color-picker::-webkit-color-swatch {
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
       }
-      .edit-content .input-group input {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid #e9ecef;
-        border-radius: 8px;
-        font-size: 16px;
-        font-family: inherit;
-      }
-      .color-palette {
-        display: flex;
-        gap: 12px;
-        justify-content: center;
-        margin-top: 24px;
-      }
-      .color-swatch {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        cursor: pointer;
-        border: 2px solid transparent;
-        display: grid;
-        place-items: center;
-        color: white;
-        transition: border-color 0.2s;
-      }
-      .color-swatch.active {
-        border-color: var(--text-primary);
-      }
-      .color-swatch i {
-        transform: scale(0);
-        transition: transform 0.2s ease;
-      }
-      .color-swatch.active i {
-        transform: scale(1);
+      .color-picker::-moz-color-swatch {
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
       }
 
-      /* Alert and Loading Styles */
-      .alert-modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.4);
-        display: none;
-        justify-content: center;
-        align-items: flex-end;
-        z-index: 5000;
-        opacity: 0;
-        transition: opacity 0.3s ease;
+      /* Information Panel */
+      #info-panel {
+        font-family: "SF Mono", "Fira Code", monospace;
+        font-size: 0.9em;
+        line-height: 1.8;
       }
-      .alert-modal-overlay.show {
+      #info-panel div {
         display: flex;
-        opacity: 1;
+        justify-content: space-between;
       }
-      .alert-modal-content {
-        background-color: white;
-        width: 100%;
-        max-width: 420px;
-        border-top-left-radius: 20px;
-        border-top-right-radius: 20px;
-        padding: 12px 18px 30px;
-        display: flex;
-        flex-direction: column;
-        transform: translateY(100%);
-        transition: transform 0.3s ease;
+      #info-panel span:first-child {
+        color: #999;
       }
-      .alert-modal-overlay.show .alert-modal-content {
-        transform: translateY(0);
+
+      /* Utility Classes */
+      #controls-wrapper.disabled {
+        opacity: 0.4;
+        pointer-events: none;
       }
-      #alert-message {
-        font-size: 16px;
-        color: var(--text-primary);
-        margin: 20px 0;
-        font-weight: 500;
-        text-align: center;
-      }
-      .modal-action-btn {
-        width: 100%;
-        padding: 14px;
-        border: none;
-        background-color: var(--accent-green);
-        color: white;
-        font-size: 18px;
-        font-weight: 600;
-        border-radius: 28px;
-        cursor: pointer;
-        margin-top: auto;
-      }
-      #loading-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: #ffffff;
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-      }
-      .spinner {
-        width: 50px;
-        height: 50px;
-        animation: spin 1.2s linear infinite;
-      }
-      @keyframes spin {
-        from {
-          transform: rotate(0deg);
+
+      /* --- 5. Responsive Design --- */
+      @media (max-width: 768px) {
+        .app-container {
+          flex-direction: column;
         }
-        to {
-          transform: rotate(360deg);
+        .controls-sidebar {
+          width: 100%;
+          height: 45vh;
+          max-height: 50vh;
+          border-left: none;
+          border-top: 1px solid var(--border-color);
+          padding: 15px;
         }
       }
     </style>
   </head>
   <body>
-    <div class="container">
-      <div class="fixed-top-content">
-        <header class="header">
-          <a href="pay.html"><button class="close-btn">×</button></a>
-          <div class="amount" id="amount">$547</div>
-          <button class="pay-btn" id="payBtn">Pay</button>
-        </header>
-        <div class="form-section">
-          <div class="input-group">
-            <label for="toInput" class="input-label">To</label>
-            <input
-              type="text"
-              id="toInput"
-              class="input-field"
-              placeholder="Name, $Cashtag, Phone, Email"
-            />
+    <div class="app-container">
+      <!-- Main Viewer and Drop Zone -->
+      <main class="viewer-main">
+        <div id="lottie-container">
+          <div id="lottie-canvas"></div>
+          <div class="dropzone-overlay">Drop .json file</div>
+          <div class="placeholder-text" id="placeholder">
+            <h2>Advanced Lottie Viewer</h2>
+            <p>
+              Drag & drop a Lottie <strong>.json</strong> file anywhere, or use
+              the controls on the right to load an animation.
+            </p>
           </div>
-          <div class="input-group">
-            <label for="forInput" class="input-label">For</label>
-            <input
-              type="text"
-              id="forInput"
-              class="input-field"
-              placeholder="Note (required)"
-            />
-            <div class="note-icon">
-              <img src="icons/stars_17753644.png" alt="Note" />
-            </div>
-          </div>
-          <div class="input-group">
-            <div class="payment-method" id="paymentMethod">
-              <div class="payment-left">
-                <span class="input-label">Use</span>
-                <div id="mainPaymentIcon" class="cash-app-icon">
-                  <img src="icons/Cash_App-Logo.wine.png" alt="Cash App" />
-                </div>
-                <div id="mainPaymentInfo" class="balance-info">
-                  Cash balance: $53,936.23
-                </div>
-              </div>
-              <div class="chevron"><i class="fas fa-chevron-down"></i></div>
-            </div>
-          </div>
-        </div>
-        <h2 class="suggested-title">Suggested</h2>
-      </div>
-      <div class="scrollable-content"><div id="contactList"></div></div>
-    </div>
-    <div class="payment-overlay" id="paymentOverlay">
-      <div class="payment-modal">
-        <div class="modal-handle"></div>
-        <div class="payment-modal-header">
-          <div class="payment-modal-title">Select a payment method</div>
-        </div>
-        <div class="payment-option" id="cashOption">
-          <div class="payment-option-left">
-            <div class="payment-icon cash">
-              <img src="icons/Cash_App-Logo.wine.png" alt="Cash Icon" />
-            </div>
-            <div class="payment-option-info">
-              <div class="payment-option-title">Cash balance</div>
-              <div
-                class="payment-option-subtitle"
-                id="modal-balance-subtitle"
-              ></div>
-            </div>
-          </div>
-          <div class="radio-button"></div>
-        </div>
-        <div class="payment-option" id="visaOption">
-          <div class="payment-option-left">
-            <div class="payment-icon visa">
-              <img
-                src="icons/mastercard-2-logo-svgrepo-com.png"
-                alt="Card Icon"
-              />
-            </div>
-            <div class="payment-option-info">
-              <div class="payment-option-title">Debit card •••• 4042</div>
-            </div>
-          </div>
-          <div class="radio-button"></div>
-        </div>
-        <button class="continue-btn" id="continueBtn">Continue</button>
-      </div>
-    </div>
-    <div class="edit-overlay" id="edit-contact-overlay">
-      <header class="edit-header">
-        <button class="edit-close-btn" id="edit-close-btn">Close</button>
-        <h2>Edit Contact</h2>
-        <button class="edit-done-btn" id="edit-done-btn" disabled>Done</button>
-      </header>
-      <main class="edit-content">
-        <div class="edit-avatar" id="edit-avatar"></div>
-        <input type="file" id="edit-pic-input" accept="image/*" />
-        <div class="input-group">
-          <label for="edit-name">Name</label
-          ><input type="text" id="edit-name" />
-        </div>
-        <div class="input-group">
-          <label for="edit-cashtag">Cashtag</label
-          ><input type="text" id="edit-cashtag" />
-        </div>
-        <div class="input-group">
-          <label>Theme Color</label>
-          <div class="color-palette" id="color-palette"></div>
         </div>
       </main>
-    </div>
-    <div class="alert-modal-overlay" id="alert-modal-overlay">
-      <div class="alert-modal-content">
-        <p id="alert-message"></p>
-        <button class="modal-action-btn" id="alert-ok-btn">OK</button>
-      </div>
-    </div>
-    <div id="loading-overlay">
-      <img
-        src="icons/green_spinner_thick.png"
-        alt="Loading..."
-        class="spinner"
-      />
+
+      <!-- Sidebar with All Controls -->
+      <aside class="controls-sidebar">
+        <div class="control-group">
+          <h3>Load Animation</h3>
+          <div class="input-group">
+            <input
+              type="text"
+              id="url-input"
+              class="url-input"
+              placeholder="Enter Lottie JSON URL..."
+            />
+            <button id="load-url-btn" class="btn load-btn">Load</button>
+          </div>
+          <button id="load-file-btn" class="btn file-btn">
+            Load From File
+          </button>
+          <input
+            type="file"
+            id="file-input"
+            class="file-input"
+            accept=".json"
+          />
+        </div>
+
+        <div id="controls-wrapper" class="disabled">
+          <div class="control-group">
+            <h3>Playback</h3>
+            <div class="playback-controls">
+              <button id="play-pause-btn" class="btn">
+                <!-- Play SVG Icon -->
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+              </button>
+              <button id="stop-btn" class="btn">
+                <!-- Stop SVG Icon -->
+                <svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"></path></svg>
+              </button>
+              <!-- NEW: Loop Button -->
+              <button id="loop-btn" class="btn">
+                <!-- Loop SVG Icon -->
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+
+            <div class="slider-group">
+              <label for="progress-slider">Frame</label>
+              <input
+                type="range"
+                id="progress-slider"
+                class="slider"
+                min="0"
+                max="100"
+                value="0"
+              />
+              <span id="frame-counter">0 / 0</span>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <h3>Settings</h3>
+            <div class="slider-group">
+              <label for="speed-slider">Speed</label>
+              <input
+                type="range"
+                id="speed-slider"
+                class="slider"
+                min="0.25"
+                max="3"
+                step="0.25"
+                value="1"
+              />
+              <span id="speed-indicator">1.00x</span>
+            </div>
+            <div class="misc-controls">
+              <div class="toggle-group">
+                <label for="bg-color-picker">BG Color</label>
+                <input
+                  type="color"
+                  id="bg-color-picker"
+                  class="color-picker"
+                  value="#1a1a1d"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <h3>Information</h3>
+            <div id="info-panel">
+              <div>
+                <span>Dimensions:</span><span id="info-dimensions">-</span>
+              </div>
+              <div>
+                <span>Frame Rate:</span><span id="info-framerate">-</span>
+              </div>
+              <div>
+                <span>Total Frames:</span><span id="info-totalframes">-</span>
+              </div>
+              <div><span>Duration:</span><span id="info-duration">-</span></div>
+            </div>
+          </div>
+        </div>
+      </aside>
     </div>
 
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const payBtn = document.getElementById("payBtn"),
-          toInput = document.getElementById("toInput"),
-          forInput = document.getElementById("forInput"),
-          amountDisplay = document.getElementById("amount"),
-          contactListEl = document.getElementById("contactList"),
-          mainPaymentIcon = document.getElementById("mainPaymentIcon"),
-          mainPaymentInfo = document.getElementById("mainPaymentInfo"),
-          paymentMethodRow = document.getElementById("paymentMethod"),
-          paymentOverlay = document.getElementById("paymentOverlay"),
-          continueBtn = document.getElementById("continueBtn"),
-          modalBalanceSubtitle = document.getElementById(
-            "modal-balance-subtitle"
-          ),
-          editOverlay = document.getElementById("edit-contact-overlay"),
-          editAvatar = document.getElementById("edit-avatar"),
-          editPicInput = document.getElementById("edit-pic-input"),
-          editName = document.getElementById("edit-name"),
-          editCashtag = document.getElementById("edit-cashtag"),
-          colorPalette = document.getElementById("color-palette"),
-          editDoneBtn = document.getElementById("edit-done-btn"),
-          editCloseBtn = document.getElementById("edit-close-btn"),
-          alertModalOverlay = document.getElementById("alert-modal-overlay"),
-          alertMessage = document.getElementById("alert-message"),
-          alertOkBtn = document.getElementById("alert-ok-btn"),
-          loadingOverlay = document.getElementById("loading-overlay");
-        const contactStorageKey = "cashAppContacts",
-          balanceStorageKey = "cashAppBalance",
-          paymentAmountKey = "paymentAmount",
-          pendingRecipientDataKey = "pendingRecipientData",
-          pendingPaymentMessageKey = "pendingPaymentMessage";
-        let contacts = [],
-          selectedContact = null,
-          editingContact = null,
-          activePaymentMethod = "cash";
-        const availableColors = [
-          "#8A2BE2",
-          "#FF7F50",
-          "#1E90FF",
-          "#20B2AA",
-          "#FF4500",
-          "#DA70D6",
-        ];
-        const defaultContacts = [
-          {
-            id: 1,
-            name: "John Seaman",
-            cashtag: "$john",
-            avatar: "https://i.imgur.com/3YQ5YfG.png",
-            color: "#666",
-          },
-          {
-            id: 2,
-            name: "Elenis Colpetzer",
-            cashtag: "$elaelaborate",
-            avatar: "https://i.imgur.com/sC5IarI.png",
-            color: "#8A2BE2",
-          },
-          {
-            id: 3,
-            name: "Kathleen Gerth",
-            cashtag: "$kathiasmith",
-            avatar: "https://i.imgur.com/KqYw1U5.png",
-            color: "#FF7F50",
-          },
-          {
-            id: 4,
-            name: "John Butler",
-            cashtag: "$johnny32",
-            avatar: "https://i.imgur.com/J4Dm8aU.png",
-            color: "#1E90FF",
-          },
-          {
-            id: 5,
-            name: "unknown",
-            cashtag: "$cxshoutkyy",
-            avatar: "https://i.imgur.com/b5qgL3S.png",
-            color: "#20B2AA",
-          },
-          {
-            id: 6,
-            name: "Sho UE Lutfiddinova",
-            cashtag: "$sholutfiddinova",
-            avatar: "",
-            initial: "S",
-            color: "#1877F2",
-          },
-        ];
-        const formatCurrency = (amount) =>
-          `$${Number(amount).toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}`;
-        const getContacts = () => {
-          const stored = localStorage.getItem(contactStorageKey);
-          if (!stored) {
-            localStorage.setItem(
-              contactStorageKey,
-              JSON.stringify(defaultContacts)
-            );
-            return defaultContacts;
+      document.addEventListener("DOMContentLoaded", () => {
+        // --- 1. DOM Element References ---
+        const lottieContainer = document.getElementById("lottie-container");
+        const lottieCanvas = document.getElementById("lottie-canvas");
+        const controlsWrapper = document.getElementById("controls-wrapper");
+        const placeholder = document.getElementById("placeholder");
+
+        // Load controls
+        const urlInput = document.getElementById("url-input");
+        const loadUrlBtn = document.getElementById("load-url-btn");
+        const loadFileBtn = document.getElementById("load-file-btn");
+        const fileInput = document.getElementById("file-input");
+
+        // Playback controls
+        const playPauseBtn = document.getElementById("play-pause-btn");
+        const stopBtn = document.getElementById("stop-btn");
+        const loopBtn = document.getElementById("loop-btn"); // NEW
+        const progressSlider = document.getElementById("progress-slider");
+
+        // Settings controls
+        const speedSlider = document.getElementById("speed-slider");
+        const bgColorPicker = document.getElementById("bg-color-picker");
+
+        // Indicators & Info
+        const frameCounter = document.getElementById("frame-counter");
+        const speedIndicator = document.getElementById("speed-indicator");
+        const infoDimensions = document.getElementById("info-dimensions");
+        const infoFramerate = document.getElementById("info-framerate");
+        const infoTotalFrames = document.getElementById("info-totalframes");
+        const infoDuration = document.getElementById("info-duration");
+
+        // SVG Icons
+        const playIcon =
+          '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>';
+        const pauseIcon =
+          '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>';
+
+        // --- 2. State Management ---
+        let anim = null;
+        let isPlaying = false;
+        let isLooping = false; // NEW
+
+        // --- 3. Core Lottie Loading Function ---
+        const loadAnimation = (animationData) => {
+          if (anim) {
+            anim.destroy();
+            anim = null;
           }
-          return JSON.parse(stored);
-        };
-        const saveContacts = () =>
-          localStorage.setItem(contactStorageKey, JSON.stringify(contacts));
-        function renderContacts() {
-          contactListEl.innerHTML = contacts
-            .map((contact) => {
-              const avatarContent = contact.avatar
-                ? `<img src="${contact.avatar}" class="avatar" alt="${contact.name}" data-edit-id="${contact.id}">`
-                : `<div class="avatar" style="background-color:${
-                    contact.color
-                  };" data-edit-id="${contact.id}">${
-                    contact.initial || contact.name.charAt(0)
-                  }</div>`;
-              return `<div class="contact-item" data-id="${
-                contact.id
-              }" data-name="${contact.name.toLowerCase()}" data-cashtag="${contact.cashtag.toLowerCase()}"><div class="contact-details">${avatarContent}<div class="contact-info"><div class="contact-name">${
-                contact.name
-              }</div><div class="contact-handle">${
-                contact.cashtag
-              }</div></div></div><div class="checkbox"><i class="fa-solid fa-check"></i></div></div>`;
-            })
-            .join("");
-        }
-        function handleContactSelection(targetItem) {
-          const id = targetItem.dataset.id;
-          const isSelected = targetItem.classList.contains("selected");
-          document
-            .querySelectorAll(".contact-item.selected")
-            .forEach((i) => i.classList.remove("selected"));
-          if (!isSelected) {
-            targetItem.classList.add("selected");
-            selectedContact = contacts.find((c) => c.id == id);
-            toInput.value = selectedContact.name;
-          } else {
-            selectedContact = null;
-            toInput.value = "";
-          }
-          updatePayButtonState();
-        }
-        const filterContactsOnInput = () => {
-          const query = toInput.value.toLowerCase();
-          document.querySelectorAll(".contact-item").forEach((item) => {
-            const name = item.dataset.name;
-            const cashtag = item.dataset.cashtag;
-            item.style.display =
-              name.includes(query) || cashtag.includes(query) ? "flex" : "none";
-          });
-        };
-        function updatePayButtonState() {
-          const isRecipientValid =
-            selectedContact || toInput.value.trim().length > 0;
-          const isNoteValid = forInput.value.trim().length > 0;
-          payBtn.classList.toggle("active", isRecipientValid && isNoteValid);
-        }
-        function openEditModal(id) {
-          editingContact = { ...contacts.find((c) => c.id == id) };
-          if (!editingContact) return;
-          editName.value = editingContact.name;
-          editCashtag.value = editingContact.cashtag;
-          updateEditAvatar();
-          populateColorPalette();
-          editDoneBtn.disabled = true;
-          editOverlay.classList.add("show");
-        }
-        const closeEditModal = () => editOverlay.classList.remove("show");
-        function updateEditAvatar() {
-          if (editingContact.avatar) {
-            editAvatar.style.backgroundImage = `url(${editingContact.avatar})`;
-            editAvatar.innerHTML = "";
-          } else {
-            editAvatar.style.backgroundImage = "none";
-            editAvatar.style.backgroundColor = editingContact.color;
-            editAvatar.innerHTML =
-              editingContact.initial || editingContact.name.charAt(0);
-          }
-        }
-        function populateColorPalette() {
-          colorPalette.innerHTML = availableColors
-            .map(
-              (c) =>
-                `<div class="color-swatch ${
-                  c === editingContact.color ? "active" : ""
-                }" style="background-color:${c};" data-color="${c}"><i class="fa-solid fa-check"></i></div>`
-            )
-            .join("");
-        }
-        function handleSaveChanges() {
-          const index = contacts.findIndex((c) => c.id === editingContact.id);
-          if (index > -1) {
-            contacts[index] = editingContact;
-            saveContacts();
-            renderContacts();
-            if (selectedContact && selectedContact.id === editingContact.id) {
-              document
-                .querySelector(`.contact-item[data-id="${editingContact.id}"]`)
-                .classList.add("selected");
-            }
-          }
-          closeEditModal();
-        }
-        function openPaymentModal() {
-          updatePaymentModalUI(activePaymentMethod);
-          paymentOverlay.style.display = "flex";
-          setTimeout(() => paymentOverlay.classList.add("active"), 10);
-        }
-        function closePaymentModal() {
-          paymentOverlay.classList.remove("active");
-          setTimeout(() => (paymentOverlay.style.display = "none"), 300);
-        }
-        function handlePaymentOptionSelection(e) {
-          updatePaymentModalUI(
-            e.currentTarget.id === "cashOption" ? "cash" : "visa"
-          );
-        }
-        function updatePaymentModalUI(selection) {
-          document
-            .getElementById("cashOption")
-            .querySelector(".radio-button")
-            .classList.toggle("selected", selection === "cash");
-          document
-            .getElementById("visaOption")
-            .querySelector(".radio-button")
-            .classList.toggle("selected", selection === "visa");
-        }
-        function updateMainPaymentDisplay(method) {
-          if (method === "cash") {
-            mainPaymentIcon.innerHTML = `<img src="icons/Cash_App-Logo.wine.png" alt="Cash App" />`;
-            mainPaymentInfo.textContent = `Cash balance: ${formatCurrency(
-              localStorage.getItem(balanceStorageKey) || 0
-            )}`;
-          } else if (method === "visa") {
-            mainPaymentIcon.innerHTML = `<img src="icons/mastercard-2-logo-svgrepo-com.png" alt="Card" />`;
-            mainPaymentInfo.textContent = "Debit card •••• 4042";
-          }
-        }
-        function handlePayment() {
-          if (!payBtn.classList.contains("active")) return;
-          const paymentAmount = parseFloat(
-            localStorage.getItem(paymentAmountKey) || "547"
-          );
-          const cashBalance = parseFloat(
-            localStorage.getItem(balanceStorageKey) || "53936.23"
-          );
-          if (paymentAmount > cashBalance) {
-            showAlert("Insufficient funds");
-            return;
-          }
-          let recipientData = selectedContact;
-          if (!recipientData) {
-            const typedName = toInput.value.trim();
-            recipientData = {
-              id: `temp-${Date.now()}`,
-              name: typedName,
-              cashtag: `$${typedName
-                .toLowerCase()
-                .replace(/\s+/g, "")
-                .replace(/[^a-z0-9]/g, "")}`,
-              avatar: "",
-              color: "#6c757d",
+
+          // Reset UI
+          lottieCanvas.innerHTML = "";
+          placeholder.style.display = "none";
+          controlsWrapper.classList.remove("disabled");
+          resetControls();
+
+          try {
+            const animParams = {
+              container: lottieCanvas,
+              renderer: "svg",
+              loop: isLooping, // MODIFIED: respects the loop state
+              autoplay: true,
+              ...animationData,
             };
+
+            anim = lottie.loadAnimation(animParams);
+
+            // --- 4. Lottie Event Listeners ---
+            anim.addEventListener("DOMLoaded", () => {
+              updateInfoPanel();
+              progressSlider.max = anim.totalFrames - 1;
+              playPauseBtn.innerHTML = pauseIcon;
+              isPlaying = true;
+            });
+
+            anim.addEventListener("enterFrame", () => {
+              progressSlider.value = Math.floor(anim.currentFrame);
+              updateFrameCounter();
+            });
+
+            anim.addEventListener("complete", () => {
+              // MODIFIED: Only stop if not looping
+              if (!isLooping) {
+                playPauseBtn.innerHTML = playIcon;
+                isPlaying = false;
+              }
+            });
+
+            anim.addEventListener("data_failed", () => {
+              handleLoadError("Lottie data failed to load.");
+            });
+
+            anim.addEventListener("error", (e) => {
+              handleLoadError("An error occurred in the Lottie player.");
+              console.error("Lottie error:", e);
+            });
+          } catch (error) {
+            handleLoadError("Invalid JSON file.");
+            console.error(error);
           }
-          localStorage.setItem(
-            pendingRecipientDataKey,
-            JSON.stringify(recipientData)
-          );
-          localStorage.setItem(pendingPaymentMessageKey, forInput.value.trim());
-          loadingOverlay.style.display = "flex";
-          setTimeout(() => {
-            window.location.href = "payment-result.html";
-          }, 3000);
-        }
-        function showAlert(message) {
-          alertMessage.textContent = message;
-          alertModalOverlay.classList.add("show");
-        }
-        const paymentAmount =
-          localStorage.getItem(paymentAmountKey) || "547.00";
-        const cashBalance =
-          localStorage.getItem(balanceStorageKey) || "53936.23";
-        localStorage.setItem(paymentAmountKey, paymentAmount);
-        localStorage.setItem(balanceStorageKey, cashBalance);
-        amountDisplay.textContent = formatCurrency(paymentAmount);
-        mainPaymentInfo.textContent = `Cash balance: ${formatCurrency(
-          cashBalance
-        )}`;
-        modalBalanceSubtitle.textContent = formatCurrency(cashBalance);
-        contacts = getContacts();
-        renderContacts();
-        toInput.addEventListener("input", () => {
-          if (selectedContact) {
-            document
-              .querySelector(".contact-item.selected")
-              ?.classList.remove("selected");
-            selectedContact = null;
+        };
+
+        const handleLoadError = (message) => {
+          placeholder.style.display = "flex";
+          placeholder.innerHTML = `<h2 style="color: #e25c5c;">Error</h2><p>${message}</p>`;
+          controlsWrapper.classList.add("disabled");
+          if (anim) anim.destroy();
+        };
+
+        // --- 5. UI Control Event Handlers ---
+
+        // Loaders
+        loadUrlBtn.addEventListener("click", () => {
+          const url = urlInput.value.trim();
+          if (url) {
+            loadAnimation({ path: url });
           }
-          filterContactsOnInput();
-          updatePayButtonState();
         });
-        forInput.addEventListener("input", updatePayButtonState);
-        contactListEl.addEventListener("click", (e) => {
-          const avatar = e.target.closest(".avatar");
-          const item = e.target.closest(".contact-item");
-          if (avatar) {
-            openEditModal(avatar.dataset.editId);
-          } else if (item) {
-            handleContactSelection(item);
-          }
+
+        urlInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") loadUrlBtn.click();
         });
-        editCloseBtn.addEventListener("click", closeEditModal);
-        editDoneBtn.addEventListener("click", handleSaveChanges);
-        editAvatar.addEventListener("click", () => editPicInput.click());
-        editPicInput.addEventListener("change", (e) => {
+
+        loadFileBtn.addEventListener("click", () => fileInput.click());
+        fileInput.addEventListener("change", (e) => {
           const file = e.target.files[0];
           if (!file) return;
+
           const reader = new FileReader();
-          reader.onload = (re) => {
-            editingContact.avatar = re.target.result;
-            updateEditAvatar();
-            editDoneBtn.disabled = false;
+          reader.onload = (event) => {
+            try {
+              const jsonData = JSON.parse(event.target.result);
+              loadAnimation({ animationData: jsonData });
+            } catch (err) {
+              handleLoadError("Could not parse the JSON file.");
+              console.error(err);
+            }
           };
-          reader.readAsDataURL(file);
+          reader.readAsText(file);
+          fileInput.value = ""; // Reset for same-file re-upload
         });
-        [editName, editCashtag].forEach((input) =>
-          input.addEventListener("input", () => {
-            editingContact[input.id.split("-")[1]] = input.value;
-            editDoneBtn.disabled = false;
-          })
-        );
-        colorPalette.addEventListener("click", (e) => {
-          const swatch = e.target.closest(".color-swatch");
-          if (!swatch) return;
-          editingContact.color = swatch.dataset.color;
-          editingContact.avatar = "";
-          updateEditAvatar();
-          populateColorPalette();
-          editDoneBtn.disabled = false;
+
+        // Drag & Drop
+        lottieContainer.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          lottieContainer.classList.add("drag-over");
         });
-        paymentMethodRow.addEventListener("click", openPaymentModal);
-        paymentOverlay.addEventListener("click", (e) => {
-          if (e.target === paymentOverlay) closePaymentModal();
+        lottieContainer.addEventListener("dragleave", () => {
+          lottieContainer.classList.remove("drag-over");
         });
-        continueBtn.addEventListener("click", () => {
-          const isCashSelected = document
-            .getElementById("cashOption")
-            .querySelector(".radio-button")
-            .classList.contains("selected");
-          activePaymentMethod = isCashSelected ? "cash" : "visa";
-          updateMainPaymentDisplay(activePaymentMethod);
-          closePaymentModal();
+        lottieContainer.addEventListener("drop", (e) => {
+          e.preventDefault();
+          lottieContainer.classList.remove("drag-over");
+          const file = e.dataTransfer.files[0];
+          if (file && file.type === "application/json") {
+            fileInput.files = e.dataTransfer.files;
+            const changeEvent = new Event("change");
+            fileInput.dispatchEvent(changeEvent);
+          } else {
+            handleLoadError("Please drop a valid .json file.");
+          }
         });
-        document
-          .querySelectorAll(".payment-modal .payment-option")
-          .forEach((option) =>
-            option.addEventListener("click", handlePaymentOptionSelection)
-          );
-        payBtn.addEventListener("click", handlePayment);
-        alertOkBtn.addEventListener("click", () =>
-          alertModalOverlay.classList.remove("show")
-        );
+
+        // Playback
+        playPauseBtn.addEventListener("click", () => {
+          if (!anim) return;
+          if (isPlaying) {
+            anim.pause();
+            playPauseBtn.innerHTML = playIcon;
+          } else {
+            anim.play();
+            playPauseBtn.innerHTML = pauseIcon;
+          }
+          isPlaying = !isPlaying;
+        });
+
+        stopBtn.addEventListener("click", () => {
+          if (!anim) return;
+          anim.stop();
+          playPauseBtn.innerHTML = playIcon;
+          isPlaying = false;
+        });
+
+        // NEW: Loop button event listener
+        loopBtn.addEventListener("click", () => {
+          if (!anim) return;
+          isLooping = !isLooping;
+          anim.setLoop(isLooping);
+          // Provide visual feedback by changing the button color
+          loopBtn.style.backgroundColor = isLooping
+            ? "var(--primary-hover-color)"
+            : "var(--primary-color)";
+        });
+
+        progressSlider.addEventListener("input", () => {
+          if (!anim) return;
+          anim.goToAndStop(progressSlider.value, true);
+          updateFrameCounter();
+          isPlaying = false;
+          playPauseBtn.innerHTML = playIcon;
+        });
+
+        // Settings
+        speedSlider.addEventListener("input", () => {
+          if (!anim) return;
+          anim.setSpeed(speedSlider.value);
+          speedIndicator.textContent = `${parseFloat(speedSlider.value).toFixed(
+            2
+          )}x`;
+        });
+
+        bgColorPicker.addEventListener("input", () => {
+          lottieContainer.style.backgroundColor = bgColorPicker.value;
+        });
+
+        // --- 6. Helper Functions ---
+        const updateInfoPanel = () => {
+          if (!anim) return;
+          const { w, h } = anim.animationData;
+          infoDimensions.textContent = `${w} x ${h} px`;
+          infoFramerate.textContent = `${Math.round(anim.frameRate)} FPS`;
+          infoTotalFrames.textContent = anim.totalFrames;
+          const duration = anim.totalFrames / anim.frameRate;
+          infoDuration.textContent = `${duration.toFixed(2)}s`;
+        };
+
+        const updateFrameCounter = () => {
+          if (!anim) return;
+          frameCounter.textContent = `${Math.floor(anim.currentFrame)} / ${
+            anim.totalFrames - 1
+          }`;
+        };
+
+        const resetControls = () => {
+          progressSlider.value = 0;
+          speedSlider.value = 1;
+          speedIndicator.textContent = "1.00x";
+          isLooping = false; // MODIFIED: Reset loop state
+          loopBtn.style.backgroundColor = "var(--primary-color)"; // MODIFIED: Reset loop button color
+          isPlaying = true;
+        };
       });
     </script>
   </body>
