@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Working Lottie Animation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+    <style>
+      body {
+        font-family: sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+        background-color: #f0f0f0;
+      }
+      #animation-container {
+        width: 400px;
+        height: 400px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>My Lottie Animation</h1>
+    <div id="animation-container"></div>
+
+    <script>
+      var animation = bodymovin.loadAnimation({
+        container: document.getElementById("animation-container"),
+        renderer: "svg",
+        loop: true,
+        autoplay: true,
+        // This example uses a direct URL to a Lottie animation
+        path: "loader_lm.json",
+      });
+    </script>
+  </body>
+</html>

@@ -95,7 +95,8 @@
         flex-shrink: 0;
       }
       .header-icon {
-        font-size: 26px;
+        width: 24px; /* REVERTED: Back to original size */
+        height: 24px; /* REVERTED: Back to original size */
       }
       .profile-icon-link {
         display: block;
@@ -269,7 +270,11 @@
   <body>
     <div class="pay-app-container">
       <header class="pay-header">
-        <i class="fa-solid fa-qrcode header-icon"></i>
+        <img
+          class="header-icon"
+          src="icons/navigationScanQr_Normal_Normal@3x_1_monochrome-white (1).png"
+          alt=""
+        />
         <a href="profile.html" class="profile-icon-link"></a>
       </header>
 

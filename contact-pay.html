@@ -314,7 +314,7 @@
         justify-content: center;
       }
       .payment-icon.cash {
-        background-color: var(--accent-green);
+        background-color: #ffffff;
         border: 1px solid #e5e5ea;
       }
       .payment-icon.cash img,
@@ -640,10 +640,7 @@
         <div class="payment-option" id="visaOption">
           <div class="payment-option-left">
             <div class="payment-icon visa">
-              <img
-                src="icons/mastercard-2-logo-svgrepo-com.png"
-                alt="Card Icon"
-              />
+              <img src="icons/l_visa_Normal.png" alt="Card Icon" />
             </div>
             <div class="payment-option-info">
               <div class="payment-option-title">Debit card •••• 4042</div>
@@ -981,7 +978,7 @@
               localStorage.getItem(balanceStorageKey) || 0
             )}`;
           } else if (method === "visa") {
-            mainPaymentIcon.innerHTML = `<img src="icons/mastercard-2-logo-svgrepo-com.png" alt="Card" />`;
+            mainPaymentIcon.innerHTML = `<img src="icons/l_visa_Normal.png" alt="Card" />`;
             mainPaymentInfo.textContent = "Debit card •••• 4042";
           }
         }
