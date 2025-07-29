@@ -7,51 +7,51 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
     <title>Profile - Cash App</title>
-    <!-- Favicon -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
     <script src="guard.js"></script>
+
+    <!-- Final Polished Styles -->
     <style>
+      :root {
+        --primary-text: #000000;
+        --secondary-text: #6c6c6c;
+        --background-main: #ffffff;
+        --background-alt: #f0f1f2;
+        --background-hover: #f5f5f5;
+        --divider-color: #e5e5e5;
+        /* NEW: Darker color for preserved SVGs */
+        --chevron-color: #8e8e93;
+        --green-accent: #00d54b;
+        --ripple-color: rgba(0, 0, 0, 0.1);
+        --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
+          sans-serif;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+
       @font-face {
         font-family: "CashMarket";
         font-style: normal;
         src: url(font/CashSans-Regular.otf);
         font-display: swap;
       }
-      :root {
-        --padding-screen: 20px;
-        --app-bg-color: #ffffff;
-        --text-primary: #000000;
-        --text-secondary: #6c757d;
-        --accent-green: #00d54b;
-        --border-color-light: #e9ecef;
-        --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
-        --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
-          sans-serif;
+
+      html {
+        scroll-behavior: smooth;
       }
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        -webkit-tap-highlight-color: transparent;
-      }
-      html,
+
       body {
-        height: 100%;
-      }
-      body {
+        background-color: var(--background-main);
         font-family: var(--font-family);
-        background-color: var(--app-bg-color);
-        color: var(--text-primary);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
+        margin: 0;
+        color: var(--primary-text);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overflow-x: hidden;
       }
       body.modal-open {
         overflow: hidden;
@@ -61,125 +61,156 @@
         color: inherit;
       }
 
-      .profile-app-container {
-        max-width: 450px;
+      .header {
+        position: fixed;
+        top: 0;
+        left: 0;
         width: 100%;
-        height: 100%;
-        margin: 0 auto;
-        background-color: var(--app-bg-color);
-        display: flex;
-        flex-direction: column;
-        position: relative;
-      }
-      .profile-header {
+        height: 60px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: var(--padding-screen);
-        flex-shrink: 0;
+        padding: 0 12px;
+        background-color: var(--background-main);
+        z-index: 1000;
       }
-      .header-icon {
-        font-size: 24px;
-        color: var(--text-primary);
+      .header-icons {
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
-
-      /* --- **FIXED** Scrollable Content Area --- */
-      .profile-main-content {
-        padding: 0 var(--padding-screen);
-        text-align: center;
-        flex-grow: 1; /* Allows this area to take up remaining space */
-        overflow-y: auto; /* Enables vertical scrolling if content overflows */
-        padding-bottom: 40px; /* Adds space at the bottom of the scroll */
-      }
-      .profile-main-content::-webkit-scrollbar {
-        display: none;
-      } /* Hide scrollbar for aesthetics */
-      .profile-main-content {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-      }
-
-      .profile-pic-wrapper {
-        margin: 20px auto 16px;
-        width: 100px;
-        height: 100px;
-        padding: 5px;
+      .header-icon-button {
+        position: relative;
+        overflow: hidden;
+        background: none;
+        border: none;
+        padding: 8px;
         border-radius: 50%;
+        cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
+        transition: background-color 0.2s ease-in-out;
       }
-      .profile-pic {
+
+      .page-content {
+        padding-top: 60px;
         width: 100%;
-        height: 100%;
+        max-width: 680px;
+        margin: 0 auto;
+        padding-bottom: 40px;
+      }
+
+      .profile-info {
+        padding: 10px 20px 40px;
+      }
+      .profile-picture-container {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 16px;
+        cursor: pointer;
+      }
+      .profile-picture {
+        width: 70px;
+        height: 70px;
         border-radius: 50%;
         object-fit: cover;
+        display: block;
+      }
+      .camera-icon {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 28px;
+        height: 28px;
+        background-color: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
       .profile-name {
         font-size: 24px;
-        font-weight: 600;
+        font-weight: 700;
+        margin: 0;
       }
-      .profile-cashtag {
-        font-size: 18px;
-        color: var(--text-secondary);
-        margin-top: 4px;
-        margin-bottom: 24px;
-      }
-      .invite-btn {
-        width: 100%;
-        padding: 16px;
-        background-color: var(--accent-green);
-        color: white;
-        border: none;
-        border-radius: 28px;
-        font-size: 18px;
-        font-weight: 600;
+      .cashtag {
+        display: inline-flex;
+        align-items: center;
+        background-color: var(--background-alt);
+        padding: 4px 10px;
+        border-radius: 14px;
+        margin-top: 8px;
+        font-size: 15px;
+        font-weight: 500;
         cursor: pointer;
-        margin-bottom: 30px;
       }
 
-      .settings-list {
-        list-style: none;
-        text-align: left;
-      }
-      .settings-item {
-        border-bottom: 1px solid var(--border-color-light);
-      }
-      .settings-item:last-child {
-        border-bottom: none;
-      }
-
-      .settings-item a {
+      .list-item {
+        position: relative;
+        overflow: hidden;
         display: flex;
         align-items: center;
-        padding: 18px 0;
+        text-decoration: none;
+        color: inherit;
+        padding: 12px 20px;
+        cursor: pointer;
+        transition: background-color 0.2s ease-in-out;
       }
-      .settings-icon {
-        font-size: 18px;
-        width: 30px;
-        text-align: center;
+      .list-item:hover,
+      .header-icon-button:hover,
+      .edit-header-button:hover {
+        background-color: var(--background-hover);
+      }
+      .list-item-icon-bg {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         margin-right: 16px;
-        color: var(--text-primary);
+        flex-shrink: 0;
       }
-      .settings-label {
-        font-size: 16px;
-        font-weight: 500;
+      .list-item-icon-bg.gray {
+        background-color: var(--background-alt);
+      }
+      .list-item-icon-bg.green {
+        background-color: var(--green-accent);
+      }
+      .list-item-text-container {
         flex-grow: 1;
       }
-      .notification-dot {
-        width: 8px;
-        height: 8px;
-        background-color: red;
-        border-radius: 50%;
-        margin-right: 12px;
+      .list-item-title {
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .list-item-subtitle {
+        font-size: 14px;
+        color: var(--secondary-text);
+        margin-top: 2px;
       }
 
-      .settings-chevron-svg {
-        width: 9px;
-        height: 15px;
+      .divider {
+        height: 1px;
+        background-color: var(--divider-color);
+        margin: 16px 20px;
+        border: none;
+      }
+      .settings-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0 0 8px;
+        padding: 0 20px;
+      }
+      .settings-item-text {
+        flex-grow: 1;
+        margin-left: 16px;
+        font-size: 16px;
+        font-weight: 500;
       }
 
-      /* Personal Edit Overlay */
       .personal-edit-overlay {
         position: fixed;
         top: 0;
@@ -190,6 +221,8 @@
         z-index: 4000;
         transform: translateX(100%);
         transition: transform 0.35s ease-in-out;
+        display: flex;
+        flex-direction: column;
       }
       .personal-edit-overlay.show {
         transform: translateX(0);
@@ -198,14 +231,28 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: var(--padding-screen);
-        border-bottom: 1px solid var(--border-color-light);
+        padding: 0 12px;
+        height: 60px;
+        border-bottom: 1px solid var(--divider-color);
+        flex-shrink: 0;
       }
-      .edit-back-btn {
-        font-size: 20px;
+      .edit-header-button {
+        position: relative;
+        overflow: hidden;
         background: none;
         border: none;
         cursor: pointer;
+        font-family: inherit;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        border-radius: 8px;
+        transition: background-color 0.2s ease-in-out;
+      }
+      .edit-back-btn {
+        font-size: 20px;
       }
       .edit-title {
         font-size: 18px;
@@ -213,183 +260,371 @@
       }
       .edit-done-btn {
         font-size: 17px;
-        font-weight: 600;
-        color: var(--accent-green);
-        background: none;
-        border: none;
-        cursor: pointer;
+        color: var(--green-accent);
       }
       .edit-done-btn:disabled {
         color: #a0e6bb;
+        cursor: not-allowed;
       }
       .edit-content {
-        padding: 24px var(--padding-screen);
+        padding: 32px 20px;
+        overflow-y: auto;
+        flex-grow: 1;
+        text-align: center;
       }
       .edit-profile-pic {
         width: 100px;
         height: 100px;
         border-radius: 50%;
         object-fit: cover;
-
         display: block;
-        margin: 0 auto 24px;
+        margin: 0 auto 12px;
+      }
+      .change-photo-link {
+        display: inline-block;
+        color: var(--green-accent);
+        font-weight: 600;
+        font-size: 16px;
         cursor: pointer;
+        margin-bottom: 40px;
       }
       #edit-pic-input {
         display: none;
       }
       .input-group {
-        margin-bottom: 20px;
+        margin-bottom: 24px;
+        text-align: left;
       }
       .input-group label {
         display: block;
-        font-size: 14px;
-        color: var(--text-secondary);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--secondary-text);
         margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
       .input-group input {
         width: 100%;
-        padding: 12px;
-        border: 1px solid var(--border-color-light);
+        padding: 18px 16px;
+        border: 1.5px solid var(--divider-color);
         border-radius: 8px;
         font-size: 16px;
         font-family: inherit;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+      .input-group input:focus {
+        border-color: var(--green-accent);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 213, 75, 0.2);
+      }
+
+      /* Image-based Icon Sizing */
+      .icon-img {
+        display: block;
+      }
+      .icon-img-lg {
+        width: 20px;
+        height: 20px;
+      }
+      .icon-img-md {
+        width: 22px;
+        height: 22px;
+      }
+      .icon-img-sm {
+        width: 24px;
+        height: 24px;
+      }
+      .icon-img-xs {
+        width: 25px;
+        height: 25px;
+      }
+      .icon-camera-img {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* Preserved SVG Icon Styling */
+      .cashtag-chevron,
+      .chevron {
+        stroke: var(--chevron-color);
+      }
+
+      .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background-color: var(--ripple-color);
+        transform: scale(0);
+        animation: ripple-animation 600ms linear;
+        pointer-events: none;
+      }
+      @keyframes ripple-animation {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="profile-app-container">
-      <header class="profile-header">
-        <i class="fa-solid fa-qrcode header-icon"></i>
-        <a href="home.html"><i class="fa-solid fa-xmark header-icon"></i></a>
-      </header>
-      <main class="profile-main-content">
-        <div class="profile-pic-wrapper">
+    <header class="header">
+      <a href="home.html" class="header-icon-button" aria-label="Close">
+        <img
+          src="icon/new_close_Normal_monochrome-black.png"
+          alt="Close"
+          class="icon-img-lg"
+        />
+      </a>
+      <div class="header-icons">
+        <button class="header-icon-button" aria-label="QR Code">
+          <img
+            src="icon/navigationScanQr_Normal_Normal@2x_1_monochrome-black.png"
+            alt="QR Code"
+            class="icon-img-md"
+          />
+        </button>
+        <button class="header-icon-button" aria-label="Upload">
+          <img
+            src="icon/navigationShareIos_Normal_Normal@2x_monochrome-black.png"
+            alt="Upload"
+            class="icon-img-md"
+          />
+        </button>
+      </div>
+    </header>
+
+    <div class="page-content">
+      <section class="profile-info">
+        <div
+          class="profile-picture-container"
+          id="main-profile-picture-container"
+        >
           <img
             src=""
             alt="Profile Picture"
-            class="profile-pic"
+            class="profile-picture"
             id="main-profile-pic"
           />
+          <div class="camera-icon">
+            <img
+              src="icon/cameraFill24_Normal_Normal@3x_monochrome-black.png"
+              alt="Change Photo"
+              class="icon-camera-img"
+            />
+          </div>
         </div>
-        <h2 class="profile-name" id="main-profile-name"></h2>
-        <p class="profile-cashtag" id="main-cashtag"></p>
-        <button class="invite-btn">Invite Friends, Get $15</button>
+        <h1 class="profile-name" id="main-profile-name"></h1>
+        <div class="cashtag" id="main-cashtag-container">
+          <span id="main-cashtag"></span>
+          <svg
+            class="cashtag-chevron"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            style="margin-left: 4px"
+          >
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+      </section>
 
-        <ul class="settings-list">
-          <li class="settings-item">
-            <a href="#" id="personal-btn">
-              <i class="settings-icon fa-solid fa-user"></i>
-              <span class="settings-label">Personal</span>
-              <span class="notification-dot"></span>
-              <svg
-                class="settings-chevron-svg"
-                viewBox="0 0 9 15"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M1 1L7.5 7.5L1 14"
-                  stroke="#C7C7CC"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </a>
-          </li>
-          <li class="settings-item">
-            <a href="#">
-              <i class="settings-icon fa-solid fa-shield-halved"></i>
-              <span class="settings-label">Privacy & Security</span>
-              <svg
-                class="settings-chevron-svg"
-                viewBox="0 0 9 15"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M1 1L7.5 7.5L1 14"
-                  stroke="#C7C7CC"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </a>
-          </li>
-          <li class="settings-item">
-            <a href="#">
-              <i class="settings-icon fa-solid fa-bell"></i>
-              <span class="settings-label">Notifications</span>
-              <svg
-                class="settings-chevron-svg"
-                viewBox="0 0 9 15"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M1 1L7.5 7.5L1 14"
-                  stroke="#C7C7CC"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </a>
-          </li>
-          <li class="settings-item">
-            <a href="#">
-              <i class="settings-icon fa-solid fa-file-lines"></i>
-              <span class="settings-label">Documents</span>
-              <svg
-                class="settings-chevron-svg"
-                viewBox="0 0 9 15"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M1 1L7.5 7.5L1 14"
-                  stroke="#C7C7CC"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </a>
-          </li>
-          <li class="settings-item">
-            <a href="support.html">
-              <i class="settings-icon fa-solid fa-circle-question"></i>
-              <span class="settings-label">Support</span>
-              <svg
-                class="settings-chevron-svg"
-                viewBox="0 0 9 15"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M1 1L7.5 7.5L1 14"
-                  stroke="#C7C7CC"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </a>
-          </li>
-        </ul>
+      <!-- ACTION LINKS -->
+      <a href="#" class="list-item" id="personal-btn">
+        <div class="list-item-icon-bg gray">
+          <img
+            src="icon/edit24_Normal_Normal@3x_custom-tint.png"
+            alt=""
+            class="icon-img-xs"
+          />
+        </div>
+        <div class="list-item-text-container">
+          <div class="list-item-title">Edit profile</div>
+          <div class="list-item-subtitle">Update your profile info</div>
+        </div>
+        <svg
+          class="chevron"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          style="width: 20px; height: 20px"
+        >
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+      <a href="#" class="list-item">
+        <div class="list-item-icon-bg green">
+          <img
+            src="icon/add32_Normal_Normal@3x_monochrome-black.png"
+            alt=""
+            class="icon-img-xs"
+            style="filter: brightness(0) invert(1)"
+          />
+        </div>
+        <div class="list-item-text-container">
+          <div class="list-item-title">Invite friends</div>
+          <div class="list-item-subtitle">Get $15</div>
+        </div>
+        <svg
+          class="chevron"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          style="width: 20px; height: 20px"
+        >
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+
+      <hr class="divider" />
+
+      <main>
+        <h2 class="settings-title">Account & settings</h2>
+        <nav>
+          <a href="#" class="list-item">
+            <img
+              src="icon/person_Normal.png"
+              alt=""
+              class="icon-img-sm"
+              style="margin-left: -2px"
+            />
+            <span class="settings-item-text">Personal</span>
+            <svg
+              class="chevron"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="width: 20px; height: 20px"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="list-item">
+            <img
+              src="icon/bank_Normal.png"
+              alt=""
+              class="icon-img-sm"
+              style="margin-left: -2px"
+            />
+            <span class="settings-item-text">Linked banks</span>
+            <svg
+              class="chevron"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="width: 20px; height: 20px"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="list-item">
+            <img src="icon/shield_Normal.png" alt="" class="icon-img-sm" />
+            <span class="settings-item-text">Security & privacy</span>
+            <svg
+              class="chevron"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="width: 20px; height: 20px"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="list-item">
+            <img
+              src="icon/fav_Normal_monochrome-black.png"
+              alt=""
+              class="icon-img-sm"
+            />
+            <span class="settings-item-text">Favorites</span>
+            <svg
+              class="chevron"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="width: 20px; height: 20px"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="list-item">
+            <img
+              src="icon/family24_Normal_Normal@3x_monochrome-black.png"
+              alt=""
+              class="icon-img-sm"
+            />
+            <span class="settings-item-text">Family</span>
+            <svg
+              class="chevron"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="width: 20px; height: 20px"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+          <a href="support.html" class="list-item">
+            <img
+              src="icon/navigationHelp_Normal_Normal@3x_monochrome-black.png"
+              alt=""
+              class="icon-img-sm"
+            />
+            <span class="settings-item-text">Support</span>
+            <svg
+              class="chevron"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="width: 20px; height: 20px"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </nav>
       </main>
     </div>
 
-    <!-- Personal Edit Overlay -->
     <div class="personal-edit-overlay" id="personal-edit-overlay">
       <header class="edit-header">
-        <button class="edit-back-btn" id="edit-back-btn">
-          <i class="fa-solid fa-chevron-left"></i>
+        <button
+          class="edit-header-button edit-back-btn"
+          id="edit-back-btn"
+          aria-label="Back"
+        >
+          <img
+            src="icon/back_Normal@2x_monochrome-black.png"
+            alt="Back"
+            class="icon-img-md"
+          />
         </button>
         <h2 class="edit-title">Personal</h2>
-        <button class="edit-done-btn" id="edit-done-btn" disabled>Done</button>
+        <button
+          class="edit-header-button edit-done-btn"
+          id="edit-done-btn"
+          disabled
+        >
+          Done
+        </button>
       </header>
       <main class="edit-content">
         <img
@@ -398,13 +633,14 @@
           class="edit-profile-pic"
           id="edit-profile-pic"
         />
+        <span class="change-photo-link">Change Photo</span>
         <input type="file" id="edit-pic-input" accept="image/*" />
         <div class="input-group">
           <label for="edit-full-name">Full Name</label>
           <input type="text" id="edit-full-name" />
         </div>
         <div class="input-group">
-          <label for="edit-cashtag">Cashtag</label>
+          <label for="edit-cashtag">$Cashtag</label>
           <input type="text" id="edit-cashtag" />
         </div>
         <div class="input-group">
@@ -419,17 +655,41 @@
     </div>
 
     <script>
+      // RIPPLE EFFECT SCRIPT
+      document
+        .querySelectorAll(
+          ".header-icon-button, .list-item, .edit-header-button, #main-profile-picture-container, #main-cashtag-container"
+        )
+        .forEach((element) => {
+          element.addEventListener("mousedown", function (e) {
+            const rect = this.getBoundingClientRect();
+            const ripple = document.createElement("span");
+            ripple.className = "ripple";
+            ripple.style.height = ripple.style.width =
+              Math.max(rect.width, rect.height) + "px";
+            this.appendChild(ripple);
+            const top = e.clientY - rect.top - ripple.offsetHeight / 2;
+            const left = e.clientX - rect.left - ripple.offsetWidth / 2;
+            ripple.style.top = top + "px";
+            ripple.style.left = left + "px";
+            setTimeout(() => {
+              ripple.remove();
+            }, 600);
+          });
+        });
+
+      // FUNCTIONAL SCRIPT
       const userProfileKey = "cashAppUserProfile";
       const defaultProfile = {
         fullName: "Jane Doe",
         cashtag: "waldoapp",
-        accountNumber: "****3186",
-        routingNumber: "****715",
-        profilePic: "",
+        accountNumber: "••••3186",
+        routingNumber: "••••0715",
+        // Default profile picture now points to a local file
+        profilePic: "icon/addphoto_Normal.png",
       };
       let userProfile = {};
 
-      // DOM Elements
       const mainProfilePic = document.getElementById("main-profile-pic");
       const mainProfileName = document.getElementById("main-profile-name");
       const mainCashtag = document.getElementById("main-cashtag");
@@ -445,6 +705,13 @@
       const editCashtag = document.getElementById("edit-cashtag");
       const editAccountNumber = document.getElementById("edit-account-number");
       const editRoutingNumber = document.getElementById("edit-routing-number");
+      const changePhotoLink = document.querySelector(".change-photo-link");
+      const mainProfilePicContainer = document.getElementById(
+        "main-profile-picture-container"
+      );
+      const mainCashtagContainer = document.getElementById(
+        "main-cashtag-container"
+      );
 
       function saveProfile() {
         localStorage.setItem(userProfileKey, JSON.stringify(userProfile));
@@ -462,11 +729,8 @@
       function updateMainUI() {
         mainProfileName.textContent = userProfile.fullName;
         mainCashtag.textContent = `$${userProfile.cashtag}`;
-        if (userProfile.profilePic) {
-          mainProfilePic.src = userProfile.profilePic;
-        } else {
-          mainProfilePic.src = "icons/addphoto_Normal.png"; // Transparent pixel
-        }
+        mainProfilePic.src =
+          userProfile.profilePic || "icon/addphoto_Normal.png";
       }
 
       function openEditOverlay() {
@@ -475,8 +739,7 @@
         editAccountNumber.value = userProfile.accountNumber;
         editRoutingNumber.value = userProfile.routingNumber;
         editProfilePic.src =
-          userProfile.profilePic || "icons/addphoto_Normal.png";
-
+          userProfile.profilePic || "icon/addphoto_Normal.png";
         editDoneBtn.disabled = true;
         personalEditOverlay.classList.add("show");
         document.body.classList.add("modal-open");
@@ -492,17 +755,24 @@
         userProfile.cashtag = editCashtag.value;
         userProfile.accountNumber = editAccountNumber.value;
         userProfile.routingNumber = editRoutingNumber.value;
-
         saveProfile();
         updateMainUI();
         closeEditOverlay();
       }
 
-      // Event Listeners
       personalBtn.addEventListener("click", (e) => {
         e.preventDefault();
         openEditOverlay();
       });
+      mainProfilePicContainer.addEventListener("click", (e) => {
+        e.preventDefault();
+        openEditOverlay();
+      });
+      mainCashtagContainer.addEventListener("click", (e) => {
+        e.preventDefault();
+        openEditOverlay();
+      });
+
       editBackBtn.addEventListener("click", closeEditOverlay);
       editDoneBtn.addEventListener("click", handleSaveChanges);
 
@@ -514,7 +784,7 @@
         }
       );
 
-      editProfilePic.addEventListener("click", () => {
+      changePhotoLink.addEventListener("click", () => {
         editPicInput.click();
       });
       editPicInput.addEventListener("change", (event) => {
