@@ -18,7 +18,7 @@
         --background-alt: #f0f1f2;
         --background-hover: #f5f5f5;
         --divider-color: #e5e5e5;
-        --chevron-color: #c7c7cc;
+        --chevron-color: #8e8e93;
         --green-accent: #00d54b;
         --ripple-color: rgba(0, 0, 0, 0.1);
         --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
@@ -60,7 +60,6 @@
         color: inherit;
       }
 
-      /* --- FIXED HEADER --- */
       .header {
         position: fixed;
         top: 0;
@@ -93,7 +92,6 @@
         transition: background-color 0.2s ease-in-out;
       }
 
-      /* --- SCROLLABLE MAIN CONTENT --- */
       .page-content {
         padding-top: 60px;
         width: 100%;
@@ -102,7 +100,6 @@
         padding-bottom: 40px;
       }
 
-      /* Profile Info Section */
       .profile-info {
         padding: 24px 20px 40px;
       }
@@ -111,13 +108,29 @@
         display: inline-block;
         margin-bottom: 16px;
         cursor: pointer;
-      }
-      .profile-picture {
         width: 90px;
         height: 90px;
+      }
+      .profile-picture {
+        width: 100%;
+        height: 100%;
         border-radius: 50%;
         object-fit: cover;
         display: block;
+      }
+      /* NEW: Styling for Initials Div */
+      .profile-initials {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-color: var(--background-alt);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        font-weight: 600;
+        color: var(--primary-text);
+        text-transform: uppercase;
       }
       .camera-icon {
         position: absolute;
@@ -149,7 +162,6 @@
         cursor: pointer;
       }
 
-      /* Universal List Item Styling */
       .list-item {
         position: relative;
         overflow: hidden;
@@ -214,7 +226,6 @@
         font-weight: 500;
       }
 
-      /* --- ULTRA-CLEAN Personal Edit Overlay --- */
       .personal-edit-overlay {
         position: fixed;
         top: 0;
@@ -231,7 +242,6 @@
       .personal-edit-overlay.show {
         transform: translateX(0);
       }
-
       .edit-header {
         display: flex;
         justify-content: space-between;
@@ -271,20 +281,37 @@
         color: #a0e6bb;
         cursor: not-allowed;
       }
-
       .edit-content {
         padding: 32px 20px;
         overflow-y: auto;
         flex-grow: 1;
         text-align: center;
       }
-      .edit-profile-pic {
+      .edit-profile-pic-container {
+        position: relative;
         width: 100px;
         height: 100px;
+        margin: 0 auto 12px;
+      }
+      .edit-profile-pic {
+        width: 100%;
+        height: 100%;
         border-radius: 50%;
         object-fit: cover;
         display: block;
-        margin: 0 auto 12px;
+      }
+      .edit-profile-initials {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: var(--background-alt);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        font-weight: 600;
+        color: var(--primary-text);
+        text-transform: uppercase;
       }
       .change-photo-link {
         display: inline-block;
@@ -297,7 +324,6 @@
       #edit-pic-input {
         display: none;
       }
-
       .input-group {
         margin-bottom: 24px;
         text-align: left;
@@ -326,35 +352,34 @@
         box-shadow: 0 0 0 3px rgba(0, 213, 75, 0.2);
       }
 
-      /* SVG & RIPPLE STYLES */
-      .icon {
-        stroke-width: 2;
-        color: var(--primary-text);
+      /* Image-based Icon Sizing */
+      .icon-img {
+        display: block;
       }
-      .icon-lg {
+      .icon-img-lg {
         width: 28px;
         height: 28px;
-        stroke-width: 2.5;
       }
-      .icon-md {
+      .icon-img-md {
         width: 26px;
         height: 26px;
       }
-      .icon-sm {
+      .icon-img-sm {
         width: 24px;
         height: 24px;
       }
-      .icon-xs {
+      .icon-img-xs {
         width: 20px;
         height: 20px;
       }
-      .icon-camera {
+      .icon-camera-img {
         width: 16px;
         height: 16px;
       }
+
+      .cashtag-chevron,
       .chevron {
         stroke: var(--chevron-color);
-        stroke-width: 3;
       }
       .ripple {
         position: absolute;
@@ -370,55 +395,22 @@
           opacity: 0;
         }
       }
+      .hide {
+        display: none !important;
+      }
     </style>
   </head>
   <body>
     <header class="header">
       <a href="home.html" class="header-icon-button" aria-label="Close">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="icon icon-lg"
-        >
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
+        <img src="icon/close.svg" alt="Close" class="icon-img-lg" />
       </a>
       <div class="header-icons">
         <button class="header-icon-button" aria-label="QR Code">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="icon icon-md"
-          >
-            <rect x="3" y="3" width="7" height="7"></rect>
-            <rect x="14" y="3" width="7" height="7"></rect>
-            <rect x="14" y="14" width="7" height="7"></rect>
-            <rect x="3" y="14" width="7" height="7"></rect>
-          </svg>
+          <img src="icon/qr-code.svg" alt="QR Code" class="icon-img-md" />
         </button>
         <button class="header-icon-button" aria-label="Upload">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="icon icon-md"
-          >
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="17 8 12 3 7 8"></polyline>
-            <line x1="12" y1="3" x2="12" y2="15"></line>
-          </svg>
+          <img src="icon/upload.svg" alt="Upload" class="icon-img-md" />
         </button>
       </div>
     </header>
@@ -432,37 +424,27 @@
           <img
             src=""
             alt="Profile Picture"
-            class="profile-picture"
+            class="profile-picture hide"
             id="main-profile-pic"
           />
+          <div class="profile-initials hide" id="main-profile-initials"></div>
           <div class="camera-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="icon icon-camera"
-            >
-              <path
-                d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"
-              ></path>
-              <circle cx="12" cy="13" r="4"></circle>
-            </svg>
+            <img
+              src="icon/camera.svg"
+              alt="Change Photo"
+              class="icon-camera-img"
+            />
           </div>
         </div>
         <h1 class="profile-name" id="main-profile-name"></h1>
         <div class="cashtag" id="main-cashtag-container">
           <span id="main-cashtag"></span>
           <svg
-            xmlns="http://www.w3.org/2000/svg"
+            class="cashtag-chevron"
             width="16"
             height="16"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="currentColor"
             stroke-width="2.5"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -474,68 +456,47 @@
       </section>
 
       <!-- ACTION LINKS -->
-      <a href="#" class="list-item" id="personal-btn">
+      <a href="#" class="list-item edit-profile-trigger">
         <div class="list-item-icon-bg gray">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="icon icon-xs"
-          >
-            <path
-              d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
-            ></path>
-            <path
-              d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
-            ></path>
-          </svg>
+          <img src="icon/edit.svg" alt="" class="icon-img-xs" />
         </div>
         <div class="list-item-text-container">
           <div class="list-item-title">Edit profile</div>
           <div class="list-item-subtitle">Update your profile info</div>
         </div>
         <svg
-          xmlns="http://www.w3.org/2000/svg"
+          class="chevron"
           viewBox="0 0 24 24"
           fill="none"
+          stroke-width="3"
           stroke-linecap="round"
           stroke-linejoin="round"
-          class="icon icon-xs chevron"
+          style="width: 20px; height: 20px"
         >
           <polyline points="9 18 15 12 9 6"></polyline>
         </svg>
       </a>
       <a href="#" class="list-item">
         <div class="list-item-icon-bg green">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#ffffff"
-            stroke-width="3"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="icon icon-xs"
-          >
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
+          <img
+            src="icon/add.svg"
+            alt=""
+            class="icon-img-xs"
+            style="filter: brightness(0) invert(1)"
+          />
         </div>
         <div class="list-item-text-container">
           <div class="list-item-title">Invite friends</div>
           <div class="list-item-subtitle">Get $15</div>
         </div>
         <svg
-          xmlns="http://www.w3.org/2000/svg"
+          class="chevron"
           viewBox="0 0 24 24"
           fill="none"
+          stroke-width="3"
           stroke-linecap="round"
           stroke-linejoin="round"
-          class="icon icon-xs chevron"
+          style="width: 20px; height: 20px"
         >
           <polyline points="9 18 15 12 9 6"></polyline>
         </svg>
@@ -546,135 +507,148 @@
       <main>
         <h2 class="settings-title">Account & settings</h2>
         <nav>
-          <a href="#" class="list-item">
+          <!-- The "Personal" link now also triggers the edit overlay -->
+          <a href="#" class="list-item edit-profile-trigger">
+            <img
+              src="icon/personal.svg"
+              alt=""
+              class="icon-img-sm"
+              style="margin-left: -2px"
+            />
+            <span class="settings-item-text">Personal</span>
             <svg
-              xmlns="http://www.w3.org/2000/svg"
+              class="chevron"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="currentColor"
-              stroke-width="2"
+              stroke-width="3"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="icon icon-sm"
+              style="width: 20px; height: 20px"
             >
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
+          </a>
+          <a href="#" class="list-item">
+            <img
+              src="icon/bank.svg"
+              alt=""
+              class="icon-img-sm"
+              style="margin-left: -2px"
+            />
             <span class="settings-item-text">Linked banks</span>
             <svg
-              xmlns="http://www.w3.org/2000/svg"
+              class="chevron"
               viewBox="0 0 24 24"
               fill="none"
+              stroke-width="3"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="icon icon-xs chevron"
+              style="width: 20px; height: 20px"
             >
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
           </a>
           <a href="#" class="list-item">
+            <img src="icon/linked-apps.svg" alt="" class="icon-img-sm" />
+            <span class="settings-item-text">Linked apps & businesses</span>
             <svg
-              xmlns="http://www.w3.org/2000/svg"
+              class="chevron"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="currentColor"
-              stroke-width="2"
+              stroke-width="3"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="icon icon-sm"
+              style="width: 20px; height: 20px"
             >
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
+          </a>
+          <a href="#" class="list-item">
+            <img src="icon/shield.svg" alt="" class="icon-img-sm" />
             <span class="settings-item-text">Security & privacy</span>
             <svg
-              xmlns="http://www.w3.org/2000/svg"
+              class="chevron"
               viewBox="0 0 24 24"
               fill="none"
+              stroke-width="3"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="icon icon-xs chevron"
+              style="width: 20px; height: 20px"
             >
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
           </a>
           <a href="#" class="list-item">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="icon icon-sm"
-            >
-              <polygon
-                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-              ></polygon>
-            </svg>
+            <img src="icon/star.svg" alt="" class="icon-img-sm" />
             <span class="settings-item-text">Favorites</span>
             <svg
-              xmlns="http://www.w3.org/2000/svg"
+              class="chevron"
               viewBox="0 0 24 24"
               fill="none"
+              stroke-width="3"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="icon icon-xs chevron"
+              style="width: 20px; height: 20px"
             >
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
           </a>
           <a href="#" class="list-item">
+            <img src="icon/limits.svg" alt="" class="icon-img-sm" />
+            <span class="settings-item-text">Limits</span>
             <svg
-              xmlns="http://www.w3.org/2000/svg"
+              class="chevron"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="currentColor"
-              stroke-width="2"
+              stroke-width="3"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="icon icon-sm"
+              style="width: 20px; height: 20px"
             >
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-              <circle cx="9" cy="7" r="4"></circle>
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
-            <span class="settings-item-text">Family</span>
+          </a>
+          <a href="#" class="list-item">
+            <img src="icon/notifications.svg" alt="" class="icon-img-sm" />
+            <span class="settings-item-text">Notifications</span>
             <svg
-              xmlns="http://www.w3.org/2000/svg"
+              class="chevron"
               viewBox="0 0 24 24"
               fill="none"
+              stroke-width="3"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="icon icon-xs chevron"
+              style="width: 20px; height: 20px"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="list-item">
+            <img src="icon/theme.svg" alt="" class="icon-img-sm" />
+            <span class="settings-item-text">Theme</span>
+            <svg
+              class="chevron"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="width: 20px; height: 20px"
             >
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
           </a>
           <a href="support.html" class="list-item">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="icon icon-sm"
-            >
-              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
+            <img src="icon/support.svg" alt="" class="icon-img-sm" />
             <span class="settings-item-text">Support</span>
             <svg
-              xmlns="http://www.w3.org/2000/svg"
+              class="chevron"
               viewBox="0 0 24 24"
               fill="none"
+              stroke-width="3"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="icon icon-xs chevron"
+              style="width: 20px; height: 20px"
             >
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
@@ -690,18 +664,7 @@
           id="edit-back-btn"
           aria-label="Back"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="icon icon-md"
-          >
-            <polyline points="15 18 9 12 15 6"></polyline>
-          </svg>
+          <img src="icon/back-chevron.svg" alt="Back" class="icon-img-md" />
         </button>
         <h2 class="edit-title">Personal</h2>
         <button
@@ -713,12 +676,18 @@
         </button>
       </header>
       <main class="edit-content">
-        <img
-          src=""
-          alt="Edit Profile Picture"
-          class="edit-profile-pic"
-          id="edit-profile-pic"
-        />
+        <div class="edit-profile-pic-container">
+          <img
+            src=""
+            alt="Edit Profile Picture"
+            class="edit-profile-pic hide"
+            id="edit-profile-pic"
+          />
+          <div
+            class="edit-profile-initials hide"
+            id="edit-profile-initials"
+          ></div>
+        </div>
         <span class="change-photo-link">Change Photo</span>
         <input type="file" id="edit-pic-input" accept="image/*" />
         <div class="input-group">
@@ -740,8 +709,8 @@
       </main>
     </div>
 
-    <!-- RIPPLE EFFECT SCRIPT -->
     <script>
+      // RIPPLE EFFECT SCRIPT
       document
         .querySelectorAll(
           ".header-icon-button, .list-item, .edit-header-button, #main-profile-picture-container, #main-cashtag-container"
@@ -763,37 +732,40 @@
             }, 600);
           });
         });
-    </script>
 
-    <!-- FUNCTIONAL SCRIPT -->
-    <script>
+      // ADVANCED FUNCTIONAL SCRIPT
       const userProfileKey = "cashAppUserProfile";
-      const defaultProfile = {
-        fullName: "Jane Doe",
-        cashtag: "waldoapp",
-        accountNumber: "••••3186",
-        routingNumber: "••••0715",
-        profilePic:
-          "https://images.pexels.com/photos/1516680/pexels-photo-1516680.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-      };
       let userProfile = {};
 
+      // DOM Elements
       const mainProfilePic = document.getElementById("main-profile-pic");
+      const mainProfileInitials = document.getElementById(
+        "main-profile-initials"
+      );
       const mainProfileName = document.getElementById("main-profile-name");
       const mainCashtag = document.getElementById("main-cashtag");
-      const personalBtn = document.getElementById("personal-btn");
+
+      const editProfileTriggers = document.querySelectorAll(
+        ".edit-profile-trigger"
+      );
       const personalEditOverlay = document.getElementById(
         "personal-edit-overlay"
       );
       const editBackBtn = document.getElementById("edit-back-btn");
       const editDoneBtn = document.getElementById("edit-done-btn");
+
       const editProfilePic = document.getElementById("edit-profile-pic");
+      const editProfileInitials = document.getElementById(
+        "edit-profile-initials"
+      );
       const editPicInput = document.getElementById("edit-pic-input");
+      const changePhotoLink = document.querySelector(".change-photo-link");
+
       const editFullName = document.getElementById("edit-full-name");
       const editCashtag = document.getElementById("edit-cashtag");
       const editAccountNumber = document.getElementById("edit-account-number");
       const editRoutingNumber = document.getElementById("edit-routing-number");
-      const changePhotoLink = document.querySelector(".change-photo-link");
+
       const mainProfilePicContainer = document.getElementById(
         "main-profile-picture-container"
       );
@@ -801,46 +773,67 @@
         "main-cashtag-container"
       );
 
-      function saveProfile() {
+      const generateInitials = (name) => {
+        if (!name) return "";
+        const parts = name.split(" ");
+        return parts
+          .map((part) => part[0])
+          .join("")
+          .toUpperCase();
+      };
+
+      const saveProfile = () =>
         localStorage.setItem(userProfileKey, JSON.stringify(userProfile));
-      }
 
-      function loadProfile() {
-        const savedProfile = localStorage.getItem(userProfileKey);
-        userProfile = savedProfile
-          ? JSON.parse(savedProfile)
-          : { ...defaultProfile };
-        userProfile = { ...defaultProfile, ...userProfile };
-        updateMainUI();
-      }
-
-      function updateMainUI() {
+      const updateMainUI = () => {
         mainProfileName.textContent = userProfile.fullName;
         mainCashtag.textContent = `$${userProfile.cashtag}`;
-        mainProfilePic.src =
-          userProfile.profilePic ||
-          "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
-      }
 
-      function openEditOverlay() {
+        if (userProfile.profilePic) {
+          mainProfilePic.src = userProfile.profilePic;
+          mainProfilePic.classList.remove("hide");
+          mainProfileInitials.classList.add("hide");
+        } else {
+          mainProfileInitials.textContent = generateInitials(
+            userProfile.fullName
+          );
+          mainProfileInitials.classList.remove("hide");
+          mainProfilePic.classList.add("hide");
+        }
+      };
+
+      const updateEditUI = () => {
         editFullName.value = userProfile.fullName;
         editCashtag.value = userProfile.cashtag;
         editAccountNumber.value = userProfile.accountNumber;
         editRoutingNumber.value = userProfile.routingNumber;
-        editProfilePic.src =
-          userProfile.profilePic ||
-          "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+
+        if (userProfile.profilePic) {
+          editProfilePic.src = userProfile.profilePic;
+          editProfilePic.classList.remove("hide");
+          editProfileInitials.classList.add("hide");
+        } else {
+          editProfileInitials.textContent = generateInitials(
+            userProfile.fullName
+          );
+          editProfileInitials.classList.remove("hide");
+          editProfilePic.classList.add("hide");
+        }
+      };
+
+      const openEditOverlay = () => {
+        updateEditUI();
         editDoneBtn.disabled = true;
         personalEditOverlay.classList.add("show");
         document.body.classList.add("modal-open");
-      }
+      };
 
-      function closeEditOverlay() {
+      const closeEditOverlay = () => {
         personalEditOverlay.classList.remove("show");
         document.body.classList.remove("modal-open");
-      }
+      };
 
-      function handleSaveChanges() {
+      const handleSaveChanges = () => {
         userProfile.fullName = editFullName.value;
         userProfile.cashtag = editCashtag.value;
         userProfile.accountNumber = editAccountNumber.value;
@@ -848,12 +841,52 @@
         saveProfile();
         updateMainUI();
         closeEditOverlay();
-      }
+      };
 
-      // Event listeners for opening the overlay
-      personalBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        openEditOverlay();
+      const loadProfile = async () => {
+        const savedProfile = localStorage.getItem(userProfileKey);
+        if (savedProfile) {
+          userProfile = JSON.parse(savedProfile);
+        } else {
+          try {
+            const response = await fetch(
+              "https://randomuser.me/api/?inc=name&nat=us,gb"
+            );
+            const data = await response.json();
+            const { first, last } = data.results[0].name;
+            userProfile = {
+              fullName: `${first} ${last}`,
+              cashtag: `${first.toLowerCase()}${last
+                .toLowerCase()
+                .slice(0, 4)}`,
+              accountNumber: `••••${Math.floor(1000 + Math.random() * 9000)}`,
+              routingNumber: `••••${Math.floor(1000 + Math.random() * 9000)}`,
+              profilePic: "", // Start with no picture to show initials
+            };
+          } catch (error) {
+            console.error(
+              "Failed to fetch random name, using fallback.",
+              error
+            );
+            userProfile = {
+              fullName: "Alex Ray",
+              cashtag: "alexray",
+              accountNumber: "••••1234",
+              routingNumber: "••••5678",
+              profilePic: "",
+            };
+          }
+          saveProfile();
+        }
+        updateMainUI();
+      };
+
+      // --- EVENT LISTENERS ---
+      editProfileTriggers.forEach((trigger) => {
+        trigger.addEventListener("click", (e) => {
+          e.preventDefault();
+          openEditOverlay();
+        });
       });
       mainProfilePicContainer.addEventListener("click", (e) => {
         e.preventDefault();
@@ -863,12 +896,9 @@
         e.preventDefault();
         openEditOverlay();
       });
-
-      // Event listeners for the overlay itself
       editBackBtn.addEventListener("click", closeEditOverlay);
       editDoneBtn.addEventListener("click", handleSaveChanges);
 
-      // Listener to enable the 'Done' button on any change
       [editFullName, editCashtag, editAccountNumber, editRoutingNumber].forEach(
         (input) => {
           input.addEventListener("input", () => {
@@ -885,9 +915,8 @@
         if (!file) return;
         const reader = new FileReader();
         reader.onload = (e) => {
-          const newPicSrc = e.target.result;
-          editProfilePic.src = newPicSrc;
-          userProfile.profilePic = newPicSrc;
+          userProfile.profilePic = e.target.result;
+          updateEditUI(); // Update the edit modal's picture instantly
           editDoneBtn.disabled = false;
         };
         reader.readAsDataURL(file);
