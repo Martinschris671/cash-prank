@@ -1,0 +1,961 @@
+/* --- All existing CSS is unchanged --- */
+@font-face {
+  font-family: "CashMarket";
+  font-style: normal;
+  src: url(font/CashSans-Regular.otf);
+  font-display: swap;
+}
+:root {
+  --padding-screen: 18px;
+  --footer-height: 65px;
+  --app-bg-color: #e6e6e6;
+  --card-bg-color: #ffffff;
+  --text-primary: #000000;
+  --text-secondary: #6c757d;
+  --button-bg: #e9ecef;
+  --button-text: #000000;
+  --border-color-light: #f0f1f2;
+  --border-color-subtle: rgba(0, 0, 0, 0.05);
+  --border-radius-card: 16px;
+  --border-radius-button: 24px;
+  --accent-green: #47b349;
+  --accent-purple: #6236ff;
+  --accent-blue: #16c7fe;
+  --font-family: "CashMarket", -apple-system, BlinkMacSystemFont, sans-serif;
+  --header-height: 65px;
+  --loader-size: 56px;
+  --loader-border-width: 5.5px;
+  --animation-speed: 1.2s;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  font-family: var(--font-family);
+  background-color: var(--app-bg-color);
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+body.modal-open {
+  overflow: hidden;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+.app-container {
+  max-width: 450px;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  background-color: var(--app-bg-color);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px var(--padding-screen);
+  height: var(--header-height);
+  flex-shrink: 0;
+  user-select: none;
+}
+.app-header h1 {
+  font-size: 22px;
+  font-weight: 600;
+}
+.profile-icon-link {
+  display: block;
+  width: 30px;
+  height: 30px;
+}
+.profile-icon {
+  font-size: 16px;
+  color: var(--text-secondary);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  object-fit: cover;
+}
+.main-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 0 var(--padding-screen);
+  padding-bottom: calc(var(--footer-height) + 20px);
+  scrollbar-width: none;
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.main-content::-webkit-scrollbar {
+  display: none;
+}
+
+.card {
+  background-color: var(--card-bg-color);
+  border-radius: var(--border-radius-card);
+  padding: 20px;
+  margin-bottom: 12px;
+}
+
+#balance-preview-card {
+  margin-bottom: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  padding-bottom: 20px;
+  user-select: none;
+}
+.paychecks-link-card {
+  background-color: var(--card-bg-color);
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: var(--border-radius-card);
+  border-bottom-right-radius: var(--border-radius-card);
+  padding: 12px 20px;
+  border-top: 1px solid var(--app-bg-color);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  margin-bottom: 24px;
+}
+.paychecks-link-card .icon {
+  font-size: 16px;
+  color: var(--text-primary);
+  font-weight: 300;
+  margin-left: -8px;
+}
+.paychecks-link-card .title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.paychecks-link-card .subtitle {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-left: auto;
+  margin-right: 0px;
+  white-space: nowrap;
+}
+
+.balance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.balance-header span {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.balance-amount {
+  font-size: 33px;
+  font-weight: 600;
+  line-height: 1.2;
+  word-break: break-all;
+  transition: font-size 0.2s ease-out;
+}
+.account-info {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  letter-spacing: 0.5px;
+}
+.balance-actions {
+  display: flex;
+  gap: 12px;
+}
+.balance-actions button {
+  flex-grow: 1;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--border-radius-button);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-family);
+}
+.section-header {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 24px 0 12px 4px;
+}
+.list-card {
+  background-color: var(--card-bg-color);
+  border-radius: var(--border-radius-card);
+}
+.list-item {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  gap: 16px;
+  cursor: pointer;
+  position: relative;
+  border-bottom: 1px solid var(--border-color-light);
+}
+.list-item:last-child {
+  border-bottom: none;
+}
+.list-item .icon-container {
+  flex-shrink: 0;
+}
+.list-item .details {
+  flex-grow: 1;
+}
+.list-item .details .title {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+}
+.list-item .details .subtitle {
+  font-size: 0.85rem;
+  color: #5f5f5f;
+  margin: 0.15rem 0 0;
+  font-weight: 400;
+}
+.chevron-icon {
+  width: 6px;
+  height: 12px;
+  flex-shrink: 0;
+}
+.savings-list-card {
+  background-color: var(--card-bg-color);
+  border-radius: var(--border-radius-card);
+  padding: 16px;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 7px;
+}
+.savings-list-card .details {
+  display: flex;
+  flex-direction: column;
+}
+.savings-list-card .title {
+  font-size: 16px;
+  font-weight: 700;
+}
+.savings-list-card .balance {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 4px 0 8px;
+}
+.savings-list-card .subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+.savings-list-card .chevron-icon {
+  position: absolute;
+  width: 6px;
+  height: 12px;
+}
+.savings-list-card .icon-container {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  align-self: flex-end;
+  position: relative;
+  border: 1px solid var(--border-color-light);
+}
+.savings-list-card .icon-container .icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  z-index: 1;
+}
+.savings-list-card .progress-ring-svg {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  transform: rotate(-90deg);
+}
+.savings-list-card .progress-ring-circle {
+  transition: stroke-dashoffset 0.5s ease;
+  stroke-linecap: round;
+}
+.explore-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.explore-card {
+  background-color: var(--card-bg-color);
+  border-radius: var(--border-radius-card);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 160px;
+  cursor: pointer;
+  position: relative;
+}
+.explore-card .title {
+  font-size: 16px;
+  font-weight: 700;
+}
+.explore-card .subtitle {
+  font-size: 0.85rem;
+  color: #5f5f5f;
+  font-weight: 400;
+}
+.explore-card .icon-container {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: white;
+}
+.explore-card .icon-container i {
+  font-size: 24px;
+}
+.explore-card .icon-container.purple {
+  background-color: var(--accent-purple);
+}
+.explore-card .icon-container.green {
+  background-color: var(--accent-green);
+}
+.explore-card .icon-container.blue {
+  background-color: var(--accent-blue);
+}
+.explore-card .chevron-icon {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+.more-ways-list .icon-container {
+  width: 24px;
+  height: 24px;
+  font-size: 20px;
+  color: var(--text-primary);
+  display: grid;
+  place-items: center;
+}
+.bottom-nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid #e9e9e9;
+  background-color: #ffffff;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--footer-height);
+  padding: 0 var(--padding-screen);
+  z-index: 200;
+}
+.nav-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-weight: 600;
+  color: #8c8c8c;
+  min-width: 44px;
+}
+.nav-button svg {
+  fill: #8c8c8c;
+}
+#footer-balance-display.active {
+  color: var(--text-primary);
+}
+#footer-balance-display {
+  font-size: 16px;
+}
+
+.transaction-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 2500;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+.transaction-modal-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+.transaction-modal,
+.action-sheet-content {
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.transaction-modal-overlay.show .transaction-modal,
+.transaction-modal-overlay.show .action-sheet-content {
+  transform: translateY(0);
+}
+
+.transaction-modal {
+  background-color: white;
+  width: 100%;
+  max-width: 450px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  padding: 12px var(--padding-screen) 30px;
+  display: flex;
+  flex-direction: column;
+}
+.modal-grabber {
+  width: 40px;
+  height: 5px;
+  background-color: #000;
+  border-radius: 2.5px;
+  margin: 0 auto 20px;
+}
+.modal-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-bottom: 23px;
+  margin-top: 2.5rem;
+}
+.modal-header h2 {
+  font-size: 18px;
+  font-weight: 600;
+}
+.modal-close-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 24px;
+  color: #000;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.modal-action-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  background-color: #47b349;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 28px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+.modal-action-btn:disabled {
+  background-color: #bbedc8;
+  cursor: not-allowed;
+}
+.preset-amounts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.preset-btn {
+  background-color: var(--button-bg);
+  border: none;
+  border-radius: 8px;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.preset-btn.active {
+  background-color: #d1d5d9;
+}
+
+#add-money-keypad-modal {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100%;
+  width: 100%;
+  max-width: 100%;
+  border-radius: 0;
+  padding-bottom: 25px;
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translateX(-6px);
+  }
+  20%,
+  80% {
+    transform: translateX(6px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-4px);
+  }
+  40%,
+  60% {
+    transform: translateX(4px);
+  }
+}
+#add-money-keypad-modal .modal-header {
+  flex-grow: 1;
+  margin: 0;
+  padding: 0 0 1rem 0;
+}
+#add-money-keypad-modal .modal-close-btn {
+  top: -7px;
+  transform: none;
+  font-size: 40px;
+}
+.keypad-display.shake {
+  animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* --- FINAL FIX: Keypad display container --- */
+.keypad-display {
+  display: flex;
+  align-items: center; /* Vertically center the text */
+  justify-content: center;
+  text-align: center;
+  padding: 1rem 18px;
+  margin: 0;
+  flex-shrink: 0; /* Prevent it from growing or shrinking */
+  min-height: 150px; /* Give it a consistent height */
+}
+/* --- FINAL FIX: Keypad amount display text --- */
+#keypad-amount-display {
+  color: var(--accent-green);
+  font-size: clamp(80px, 22vw, 120px);
+  font-weight: 700;
+  line-height: 1; /* This removes extra vertical space, fixing the shift */
+  white-space: nowrap;
+  margin: 0;
+  padding: 0;
+}
+
+#add-money-keypad-modal .keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1vh 23px;
+  flex-grow: 0;
+  align-content: center;
+  padding: 0 18px;
+  margin-bottom: 1rem;
+}
+#add-money-keypad-modal .modal-action-btn {
+  margin-top: 30px;
+}
+#add-money-keypad-modal .keypad-btn {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1.4rem;
+  font-weight: 600;
+  padding: 15px 6px;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family);
+}
+#add-money-keypad-modal .keypad-btn:active {
+  transform: scale(1.7);
+}
+#add-money-keypad-modal .keypad-btn .fa-circle {
+  font-size: 0.3rem;
+  vertical-align: middle;
+}
+#add-money-keypad-modal .keypad-btn svg {
+  vertical-align: middle;
+  width: 1.2rem;
+  height: 1.2rem;
+  stroke: #000;
+}
+#withdraw-slider-modal {
+  border-radius: 40px 40px 0 0;
+  height: 75vh;
+  justify-content: space-between;
+  padding-bottom: 40px;
+}
+#withdraw-slider-modal .modal-header {
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: auto;
+}
+.withdraw-display {
+  text-align: center;
+  margin-bottom: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+}
+
+#withdraw-amount-display {
+  font-size: 80px;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: font-size 0.2s ease-out;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+#withdraw-available {
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.slider-container {
+  padding: 0 10px;
+  margin-bottom: 3rem;
+}
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  background: #e0e0e0;
+  border-radius: 3px;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  background: linear-gradient(
+    to right,
+    var(--accent-green) 0%,
+    var(--accent-green) var(--progress, 0%),
+    #e0e0e0 0%
+  );
+  border-radius: 3px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: -11px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+#feature-modal {
+  text-align: center;
+}
+#feature-modal h2 {
+  margin-bottom: 8px;
+}
+#feature-modal p {
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+.gray {
+  color: #c7c7cc;
+}
+
+#spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--card-bg-color);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+#spinner-overlay.show {
+  display: flex;
+}
+
+#lottie-spinner-container {
+  width: 55px;
+  height: 55px;
+}
+
+#success-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  z-index: 3000;
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px var(--padding-screen) 40px;
+  transform: translateY(100%);
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+#success-overlay.show {
+  display: flex;
+  transform: translateY(0);
+}
+#success-close-btn {
+  position: fixed;
+  top: 20px;
+  left: var(--padding-screen);
+  font-size: 40px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.success-content {
+  text-align: left;
+  margin-top: 8vh;
+}
+.success-checkmark {
+  width: 50px;
+  height: 50px;
+  background-color: var(--accent-green);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 24px 0;
+}
+.success-checkmark i {
+  color: white;
+  font-size: 25px;
+}
+.success-message {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.action-sheet-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2600;
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+.action-sheet-container.show {
+  opacity: 1;
+  visibility: visible;
+}
+.action-sheet-content {
+  background-color: #ffffff;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 450px;
+  overflow: hidden;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+.action-sheet-prompt {
+  padding: 28px 24px 24px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: #000000;
+}
+.action-button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 18px 24px;
+  background: none;
+  border: none;
+  border-top: 1px solid #e5e5e5;
+  font-size: 17px;
+  font-family: inherit;
+  color: #000000;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.action-button:hover {
+  background-color: #f5f5f5;
+}
+.standard-transfer {
+  justify-content: flex-start;
+}
+.instant-transfer {
+  justify-content: space-between;
+}
+.instant-transfer .label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.instant-transfer .fee {
+  font-size: 15px;
+  color: #8a8a8e;
+  font-weight: 500;
+}
+.cancel-button {
+  justify-content: center;
+  font-weight: 600;
+}
+
+#add-money-perfected-modal {
+  padding: 0.75rem 1.5rem 1.5rem;
+  border-radius: 40px 40px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+#add-money-perfected-modal .perfected-sheet-handle {
+  width: 44px;
+  height: 5px;
+  background-color: #000;
+  border-radius: 100px;
+  margin: 0 auto 0.25rem;
+  flex-shrink: 0;
+}
+#add-money-perfected-modal .perfected-header h1 {
+  font-size: 1.7rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.4px;
+  color: #000000;
+}
+#add-money-perfected-modal .perfected-header p {
+  font-size: 1rem;
+  color: #5f5f5f;
+  margin: 0.25rem 0 0;
+  font-weight: 400;
+}
+#add-money-perfected-modal .perfected-preset-amounts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.85rem;
+}
+#add-money-perfected-modal .perfected-preset-btn {
+  background-color: transparent;
+  border: 2px solid #b1afb2;
+  border-radius: 14px;
+  padding: 0.9rem 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #000000;
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  font-family: inherit;
+}
+#add-money-perfected-modal .perfected-preset-btn:active {
+  transform: scale(0.96);
+}
+#add-money-perfected-modal .perfected-preset-btn.active {
+  border-color: var(--accent-green);
+}
+#add-money-perfected-modal .perfected-add-btn {
+  width: 100%;
+  background-color: var(--accent-green);
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 0.8rem 0;
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: filter 0.2s ease, transform 0.15s ease;
+  font-family: inherit;
+}
+#add-money-perfected-modal .perfected-add-btn:disabled {
+  background-color: #bbedc8;
+  color: #ffffff;
+  cursor: not-allowed;
+}
+#add-money-perfected-modal .perfected-add-btn:hover:not(:disabled) {
+  filter: brightness(1.03);
+}
+#add-money-perfected-modal .perfected-add-btn:active:not(:disabled) {
+  transform: scale(0.98);
+  filter: brightness(1);
+}
+#add-money-perfected-modal .perfected-divider {
+  border: none;
+  height: 1px;
+  background-color: #f0f0f0;
+  margin-left: -1.5rem;
+  margin-right: -1.5rem;
+}
+#add-money-perfected-modal .perfected-deposit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+#add-money-perfected-modal .perfected-deposit-option {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.25rem 0;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+#add-money-perfected-modal .perfected-deposit-option .icon-container {
+  font-size: 1.1rem;
+  color: #000000;
+  width: 24px;
+  text-align: center;
+}
+#add-money-perfected-modal .perfected-deposit-option .text-content .title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0;
+}
+#add-money-perfected-modal .perfected-deposit-option .text-content .subtitle {
+  font-size: 0.85rem;
+  color: #5f5f5f;
+  margin: 0.15rem 0 0;
+  font-weight: 400;
+}
+#add-money-perfected-modal .perfected-deposit-option .perfected-chevron-icon {
+  color: #c7c7c7;
+  font-size: 0.8rem;
+  margin-left: auto;
+}
+
+@media (max-width: 500px) {
+  .action-sheet-container {
+    padding: 0;
+  }
+  .action-sheet-content {
+    border-radius: 20px 20px 0 0;
+  }
+}
