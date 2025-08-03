@@ -105,7 +105,7 @@
         align-items: center;
         gap: 8px;
         background-color: var(--app-bg-secondary);
-        border-radius: 8px;
+        border-radius: 20px;
         padding: 10px;
       }
       .search-bar i {
@@ -123,9 +123,16 @@
         gap: 12px;
         padding: 16px var(--padding-screen);
         flex-shrink: 0;
+        overflow-x: auto;
+        white-space: nowrap;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .quick-actions::-webkit-scrollbar {
+        display: none;
       }
       .quick-action {
-        display: flex;
+        display: inline-flex;
         flex-direction: column;
         align-items: center;
         gap: 8px;
@@ -134,9 +141,12 @@
         width: 52px;
         height: 52px;
         border-radius: 50%;
-        display: grid;
-        place-items: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 22px;
+        color: white;
+        flex-shrink: 0;
       }
       .quick-action-icon.green {
         background-color: var(--accent-green);
@@ -151,6 +161,10 @@
       .quick-action-label {
         font-size: 14px;
         font-weight: 500;
+        max-width: 60px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .activity-list-container {
         flex-grow: 1;
@@ -158,14 +172,10 @@
         padding-bottom: 65px;
       }
       .date-group-header {
-        padding: 12px var(--padding-screen);
-        font-size: 13px;
+        padding: 18px var(--padding-screen) 8px;
+        font-size: 18px;
         font-weight: 600;
-        color: var(--text-secondary);
-        text-transform: uppercase;
-        background-color: var(--app-bg-secondary);
-        border-top: 1px solid var(--border-color-light);
-        border-bottom: 1px solid var(--border-color-light);
+        color: #000;
       }
       .transaction-list {
         list-style: none;
@@ -175,7 +185,6 @@
         display: flex;
         align-items: center;
         padding: 12px var(--padding-screen);
-        border-bottom: 1px solid var(--border-color-light);
         cursor: pointer;
         transition: height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
       }
@@ -197,27 +206,33 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 20px;
+        font-size: 24px;
         font-weight: 600;
         color: white;
         object-fit: cover;
-      }
-      .transaction-icon {
-        background-color: var(--accent-green);
+        flex-shrink: 0;
       }
       .transaction-details {
         flex-grow: 1;
         display: flex;
         flex-direction: column;
+        overflow: hidden;
       }
       .transaction-name {
         font-size: 16px;
         font-weight: 600;
       }
-      .transaction-info {
+      .transaction-status {
         font-size: 14px;
         color: var(--text-secondary);
         margin-top: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .transaction-time {
+        font-size: 14px;
+        color: var(--text-secondary);
       }
       .transaction-amount {
         font-size: 16px;
@@ -225,7 +240,7 @@
         text-align: right;
       }
       .transaction-amount.positive {
-        color: var(--accent-green);
+        color: var(--text-primary);
       }
       .empty-state {
         text-align: center;
@@ -241,38 +256,20 @@
         margin-top: 8px;
         margin-bottom: 30px;
       }
-      .empty-invite-icon {
-        width: 72px;
-        height: 72px;
-        border-radius: 50%;
-        background-color: var(--accent-green);
-        color: white;
-        display: grid;
-        place-items: center;
-        font-size: 32px;
-        margin: 0 auto 16px;
-      }
-      .empty-invite-text {
-        font-size: 18px;
-        font-weight: 600;
-      }
 
-      /* ================================================= */
-      /* --- START: NEW TRANSACTION DETAILS STYLES --- */
-      /* ================================================= */
-
+      /* TRANSACTION DETAILS OVERLAY STYLES */
       .details-overlay {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: #f2f2f7; /* Changed for new design */
+        background-color: #f2f2f7;
         color: var(--text-primary);
         z-index: 4000;
         transform: translateX(100%);
         transition: transform 0.35s ease-in-out;
-        display: flex; /* Changed for new design */
+        display: flex;
         justify-content: center;
         align-items: flex-start;
       }
@@ -295,25 +292,29 @@
         background-color: var(--app-bg-color);
         z-index: 10;
         padding: 16px 20px;
+        display: flex;
+        align-items: center;
       }
       .details-close-btn {
-        font-size: 28px;
-        font-weight: 400;
-        text-align: left;
-        color: var(--text-primary);
-        padding: 0;
         background: none;
         border: none;
         cursor: pointer;
-        line-height: 1;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .details-close-btn svg {
+        width: 24px;
+        height: 24px;
       }
       .details-content {
         flex-grow: 1;
-        padding: 0 20px 40px; /* Added bottom padding */
+        padding: 0 20px 0px;
       }
       .td-recipient-info {
         padding-top: 0px;
-        padding-bottom: 20px;
+        padding-bottom: 10px;
         text-align: left;
       }
       .td-avatar {
@@ -322,9 +323,15 @@
         border-radius: 50%;
         object-fit: cover;
         margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        font-weight: 600;
+        color: white;
       }
       .td-recipient-name {
-        font-size: 25px;
+        font-size: 28px;
         font-weight: 700;
         margin: 0;
         line-height: 1.2;
@@ -343,7 +350,7 @@
         vertical-align: middle;
       }
       .td-amount {
-        font-size: 40px;
+        font-size: 44px;
         font-weight: 700;
         text-align: left;
         margin: 0;
@@ -379,14 +386,14 @@
         align-items: center;
         justify-content: center;
         margin-right: 18px;
-        color: #8a8a8e;
+        color: var(--text-primary);
         font-size: 22px;
         font-weight: 500;
       }
       .td-icon svg {
         width: 100%;
         height: 100%;
-        fill: #8a8a8e;
+        fill: var(--text-primary);
       }
       .td-icon.check {
         font-family: sans-serif;
@@ -421,13 +428,61 @@
       .td-icon-right svg {
         width: 100%;
         height: 100%;
-        fill: #c7c7cc;
+        fill: var(--text-primary);
+      }
+      .td-actions-section {
+        padding: 25px 0;
+        border-top: 1px solid #e5e5ea;
+        margin-top: 25px;
+      }
+      .td-actions-header {
+        font-size: 17px;
+        font-weight: 700;
+        margin: 0 0 25px 0;
+      }
+      .td-action-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 28px;
+        cursor: pointer;
+      }
+      .td-action-item:last-child {
+        margin-bottom: 0;
+      }
+      .td-action-icon {
+        flex-shrink: 0;
+        width: 24px;
+        height: 24px;
+        margin-right: 18px;
+      }
+      .td-action-icon svg {
+        width: 100%;
+        height: 100%;
+        fill: var(--text-primary);
+      }
+      .td-action-label {
+        flex-grow: 1;
+        font-size: 17px;
+        font-weight: 500;
+        line-height: 1.2;
+      }
+      .td-action-chevron {
+        width: 16px;
+        height: 16px;
+      }
+      .td-footer-info {
+        padding: 25px 0;
+        border-top: 1px solid #e5e5ea;
+        color: #8a8a8e;
+        font-size: 14px;
+        line-height: 1.5;
+        margin-top: 10px;
+      }
+      .td-footer-info p {
+        margin: 0;
       }
 
-      /* =============================================== */
-      /* --- END: NEW TRANSACTION DETAILS STYLES --- */
-      /* =============================================== */
-
+      /* BOTTOM NAV AND MODAL STYLES */
       .bottom-nav {
         display: flex;
         justify-content: space-around;
@@ -634,7 +689,7 @@
       const userProfileKey = "cashAppUserProfile",
         contactStorageKey = "cashAppContacts",
         transactionsKey = "cashAppTransactions";
-      const defaultProfile = { fullName: "Punchmadedomo", profilePic: "" }; // Set default name
+      const defaultProfile = { fullName: "Punchmadedomo", profilePic: "" };
       const defaultContacts = [
         {
           id: 1,
@@ -652,14 +707,14 @@
           color: "#007bff",
         },
       ];
+      // --- Restore "Nothing Here" state by starting with an empty array ---
+      const defaultTransactions = [];
 
       let longPressTimer;
       let transactionToDelete = null;
 
-      const formatCurrency = (amount, sign = true) =>
-        `${sign ? (amount < 0 ? "− " : "+") : ""}$${Math.abs(
-          amount
-        ).toLocaleString("en-US", {
+      const formatCurrency = (amount, sign = false) =>
+        `${sign ? "+ " : ""}$${Math.abs(amount).toLocaleString("en-US", {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         })}`;
@@ -668,48 +723,102 @@
         `$${Math.abs(amount).toLocaleString("en-US")}`;
 
       const generateTransactionNumber = () =>
-        `#D-${Math.random().toString(16).substr(2, 8).toUpperCase()}`;
+        `#D-454B${Math.floor(1000 + Math.random() * 9000)}`;
 
-      function getRelativeDate(date) {
-        const today = new Date();
+      function getSmartDateGroup(dateStr) {
+        const date = new Date(dateStr);
+        const now = new Date();
+        const today = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate()
+        );
         const yesterday = new Date(today);
         yesterday.setDate(yesterday.getDate() - 1);
-        if (date.toDateString() === today.toDateString()) return "Today";
-        if (date.toDateString() === yesterday.toDateString())
-          return "Yesterday";
-        return date.toLocaleDateString("en-US", {
-          month: "long",
-          day: "numeric",
-        });
+
+        if (date >= today) return "Today";
+        if (date >= yesterday) return "Yesterday";
+
+        const startOfWeek = new Date(today);
+        startOfWeek.setDate(
+          startOfWeek.getDate() -
+            today.getDay() +
+            (today.getDay() === 0 ? -6 : 1)
+        );
+        if (date >= startOfWeek) return "This Week";
+
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        if (date >= startOfMonth) return "This Month";
+
+        const startOfLastMonth = new Date(
+          now.getFullYear(),
+          now.getMonth() - 1,
+          1
+        );
+        if (date >= startOfLastMonth) return "Last Month";
+
+        return date.toLocaleDateString("en-US", { month: "long" });
       }
 
       function renderActivity(query = "") {
         const transactions = (
-          JSON.parse(localStorage.getItem(transactionsKey)) || []
+          JSON.parse(localStorage.getItem(transactionsKey)) ||
+          defaultTransactions
         ).sort((a, b) => new Date(b.date) - new Date(a.date));
 
         const contacts =
           JSON.parse(localStorage.getItem(contactStorageKey)) ||
           defaultContacts;
-        const latestContact = contacts[0] || {};
 
-        quickActionsContainer.innerHTML = `<div class="quick-action"><div class="quick-action-icon green"><i class="fa-solid fa-plus"></i></div><span class="quick-action-label">Get $5</span></div><div class="quick-action"><div class="quick-action-icon"><img src="${
-          latestContact.avatar || "https://i.imgur.com/V4RclNb.png"
-        }" alt=""></div><span class="quick-action-label">${
-          latestContact.name
-        }</span></div>`;
+        const paymentTransactions = transactions.filter(
+          (t) => t.type === "payment"
+        );
+        const recentRecipients = [];
+        const recipientIds = new Set();
+        for (const t of paymentTransactions) {
+          if (recentRecipients.length >= 4) break;
+          const recipientId = t.recipient ? t.recipient.id : t.contactId;
+          if (recipientId && !recipientIds.has(recipientId)) {
+            recipientIds.add(recipientId);
+            let recipient =
+              t.recipient || contacts.find((c) => c.id == recipientId);
+            if (recipient) {
+              recentRecipients.push(recipient);
+            }
+          }
+        }
+
+        let quickActionsHtml = `<div class="quick-action"><div class="quick-action-icon green"><i class="fa-solid fa-plus"></i></div><span class="quick-action-label">Get $5</span></div>`;
+        recentRecipients.forEach((contact) => {
+          let iconHtml;
+          if (contact.avatar) {
+            iconHtml = `<img src="${contact.avatar}" alt="${contact.name}">`;
+          } else {
+            iconHtml = `${contact.name.charAt(0)}`;
+          }
+          quickActionsHtml += `
+            <div class="quick-action">
+                <div class="quick-action-icon" style="background-color:${
+                  contact.avatar ? "transparent" : contact.color || "#6c757d"
+                };">
+                    ${iconHtml}
+                </div>
+                <span class="quick-action-label">${contact.name}</span>
+            </div>`;
+        });
+        quickActionsContainer.innerHTML = quickActionsHtml;
 
         const filteredTransactions = transactions.filter((t) => {
           const searchTerm = query.toLowerCase();
           if (!searchTerm) return true;
           if (t.amount.toString().includes(searchTerm)) return true;
-          if (t.type.includes(searchTerm)) return true;
+          if (t.type.toLowerCase().includes(searchTerm)) return true;
           if (t.type === "payment") {
-            const recipientName = t.recipient
-              ? t.recipient.name
-              : (contacts.find((c) => c.id == t.contactId) || {}).name;
+            const recipientName = t.recipient?.name || "";
+            const note = t.note || "";
             return (
-              recipientName && recipientName.toLowerCase().includes(searchTerm)
+              recipientName.toLowerCase().includes(searchTerm) ||
+              note.toLowerCase().includes(searchTerm)
             );
           }
           return false;
@@ -727,9 +836,9 @@
         }
 
         const groupedTransactions = filteredTransactions.reduce((groups, t) => {
-          const date = getRelativeDate(new Date(t.date));
-          if (!groups[date]) groups[date] = [];
-          groups[date].push(t);
+          const groupName = getSmartDateGroup(t.date);
+          if (!groups[groupName]) groups[groupName] = [];
+          groups[groupName].push(t);
           return groups;
         }, {});
 
@@ -739,51 +848,59 @@
           groupedTransactions[dateGroup].forEach((t) => {
             let avatar,
               name,
-              info,
+              statusText,
+              timeText,
               amount,
               amountClass = "";
-            const time = new Date(t.date).toLocaleTimeString("en-US", {
+
+            const groupName = getSmartDateGroup(t.date);
+            const timeDisplay = new Date(t.date).toLocaleTimeString("en-US", {
               hour: "numeric",
               minute: "2-digit",
               hour12: true,
             });
+            const dateDisplay = new Date(t.date).toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+            });
+            timeText =
+              groupName === "Today" || groupName === "Yesterday"
+                ? timeDisplay
+                : dateDisplay;
+
             switch (t.type) {
               case "payment":
-                let recipient;
-                if (t.recipient) {
-                  recipient = t.recipient;
-                } else {
-                  recipient = contacts.find((c) => c.id == t.contactId);
-                }
-                if (!recipient) return;
-
+                let recipient = t.recipient ||
+                  contacts.find((c) => c.id == t.contactId) || {
+                    name: "Unknown",
+                    color: "#6c757d",
+                  };
                 avatar = recipient.avatar
                   ? `<img src="${recipient.avatar}" class="transaction-avatar" />`
                   : `<div class="transaction-avatar" style="background-color:${
-                      recipient.color
+                      recipient.color || "#6c757d"
                     };">${recipient.name.charAt(0)}</div>`;
                 name = recipient.name;
-                info =
-                  t.status === "success"
-                    ? `Payment sent • ${time}`
-                    : `Pending • ${time}`;
+                statusText =
+                  t.note ||
+                  (t.status === "success" ? `Payment sent` : `Pending`);
                 amount = formatSimpleCurrency(t.amount);
                 break;
               case "add":
-                avatar = `<div class="transaction-avatar transaction-icon"><i class="fa-solid fa-plus"></i></div>`;
+                avatar = `<div class="transaction-avatar" style="background-color: var(--accent-green);">$</div>`;
                 name = "Add money";
-                info = `Bank Account • ${time}`;
-                amount = formatCurrency(t.amount);
+                statusText = `from Chase`;
+                amount = formatCurrency(t.amount, true);
                 amountClass = "positive";
                 break;
               case "withdraw":
-                avatar = `<div class="transaction-avatar transaction-icon" style="background-color: #6c757d;"><i class="fa-solid fa-building-columns"></i></div>`;
+                avatar = `<div class="transaction-avatar" style="background-color: var(--accent-green);">$</div>`;
                 name = "Cash Out";
-                info = `Bank Account • ${time}`;
-                amount = formatCurrency(-t.amount);
+                statusText = `Direct Deposit`;
+                amount = formatSimpleCurrency(t.amount);
                 break;
             }
-            html += `<li class="transaction-item" data-id="${t.id}" data-type="${t.type}">${avatar}<div class="transaction-details"><span class="transaction-name">${name}</span><span class="transaction-info">${info}</span></div><div class="transaction-amount ${amountClass}">${amount}</div></li>`;
+            html += `<li class="transaction-item" data-id="${t.id}" data-type="${t.type}">${avatar}<div class="transaction-details"><span class="transaction-name">${name}</span><span class="transaction-status">${statusText}</span><span class="transaction-time">${timeText}</span></div><div class="transaction-amount ${amountClass}">${amount}</div></li>`;
           });
           html += "</ul>";
         }
@@ -796,43 +913,49 @@
         const transaction = transactions.find((t) => t.id == transactionId);
         if (!transaction || transaction.type !== "payment") return;
 
-        const contacts =
-          JSON.parse(localStorage.getItem(contactStorageKey)) ||
-          defaultContacts;
         const userProfile =
           JSON.parse(localStorage.getItem(userProfileKey)) || defaultProfile;
+        const recipient = transaction.recipient || {
+          name: "Unknown",
+          color: "#6c757d",
+        };
 
-        let recipient;
-        if (transaction.recipient) {
-          recipient = transaction.recipient;
+        let avatarHtml;
+        if (recipient.avatar) {
+          avatarHtml = `<img src="${recipient.avatar}" class="td-avatar" alt="Profile picture of ${recipient.name}">`;
         } else {
-          recipient = contacts.find((c) => c.id == transaction.contactId);
+          const fallbackColor = "#6c757d";
+          avatarHtml = `<div class="td-avatar" style="background-color:${
+            recipient.color || fallbackColor
+          };">${recipient.name.charAt(0)}</div>`;
         }
-        if (!recipient) return;
-
         const time = new Date(transaction.date).toLocaleTimeString("en-US", {
           hour: "numeric",
           minute: "2-digit",
           hour12: true,
         });
-        const noteHtml = `<p class="td-note">For Domo load<span class="td-emoji">🏁</span></p>`;
+        const noteHtml = transaction.note
+          ? `<p class="td-note">${transaction.note}</p>`
+          : "";
 
-        // SVG icons are embedded for reliability and performance.
         const personIcon = `<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path></svg>`;
+        const copyIcon = `<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"></path></svg>`;
         const feesIcon = `<svg viewBox="0 0 24 24"><path d="M3 15h18v-2H3v2zm0 4h18v-2H3v2zm0-8h18V9H3v2zm0-6v2h18V5H3z"></path></svg>`;
         const feesInfoIcon = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"></path></svg>`;
-        const copyIcon = `<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"></path></svg>`;
+        const closeIconSVG = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z" fill="#0F1729"/></svg>`;
+        const docIcon = `<svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"></path></svg>`;
+        const reportIcon = `<svg viewBox="0 0 24 24"><path d="M11 15h2v2h-2v-2zm0-8h2v6h-2V7zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"></path></svg>`;
+        const chatIcon = `<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"></path></svg>`;
+        const chevronIcon = `<svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"></path></svg>`;
 
         const detailsHtml = `
           <div class="details-inner-container">
             <header class="details-header">
-              <button class="details-close-btn" id="details-close-btn">×</button>
+              <button class="details-close-btn" id="details-close-btn">${closeIconSVG}</button>
             </header>
             <main class="details-content">
               <section class="td-recipient-info">
-                <img src="${
-                  recipient.avatar
-                }" class="td-avatar" alt="Profile picture of ${recipient.name}">
+                ${avatarHtml}
                 <h1 class="td-recipient-name">${recipient.name}</h1>
                 <p class="td-timestamp">Today at ${time}</p>
                 ${noteHtml}
@@ -844,6 +967,7 @@
                 )}</p>
               </section>
               <hr class="td-divider">
+              
               <section class="td-list-section">
                 <h2 class="td-list-header">Transaction details</h2>
                 <div class="td-detail-item">
@@ -876,7 +1000,7 @@
                   </div>
                   <div class="td-icon-right">${feesInfoIcon}</div>
                 </div>
-                <div class="td-detail-item">
+                 <div class="td-detail-item">
                   <div class="td-icon">#</div>
                   <div class="td-text-content">
                     <p class="td-title">Transaction number</p>
@@ -885,6 +1009,34 @@
                   <div class="td-icon-right">${copyIcon}</div>
                 </div>
               </section>
+              
+              <section class="td-actions-section">
+                <h2 class="td-actions-header">What you can do</h2>
+                <div class="td-action-item">
+                    <div class="td-action-icon">${docIcon}</div>
+                    <div class="td-action-label">View all ${
+                      recipient.name.split(" ")[0]
+                    }<br>transactions</div>
+                    <div class="td-action-chevron">${chevronIcon}</div>
+                </div>
+                <div class="td-action-item">
+                    <div class="td-action-icon">${reportIcon}</div>
+                    <div class="td-action-label">Report a missing offer</div>
+                    <div class="td-action-chevron">${chevronIcon}</div>
+                </div>
+                 <div class="td-action-item">
+                    <div class="td-action-icon">${chatIcon}</div>
+                    <div class="td-action-label">Contact Support</div>
+                    <div class="td-action-chevron">${chevronIcon}</div>
+                </div>
+              </section>
+              <footer class="td-footer-info">
+                <p><strong>Block, Inc.</strong></p>
+                <p>1955 Broadway, Suite 500</p>
+                <p>Oakland, CA 94612</p>
+                <p>(800) 969-1940</p>
+                <p>NMLS #: 986264</p>
+              </footer>
             </main>
           </div>
         `;
@@ -933,6 +1085,7 @@
         } else {
           profileIconLink.innerHTML = `<img src="icons/person-circle-svgrepo-com.png" alt="Profile" class="profile-icon">`;
         }
+
         renderActivity();
 
         searchInput.addEventListener("input", () =>

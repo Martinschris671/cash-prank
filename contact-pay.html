@@ -25,7 +25,6 @@
         src: url(font/CashSans-Regular.otf);
         font-display: swap;
       }
-      /* Main App UI from your Final Code */
       :root {
         --accent-green: #00d54b;
         --text-primary: #000000;
@@ -58,9 +57,10 @@
         flex-direction: column;
         position: relative;
       }
-      .fixed-top-content {
-        background-color: #ffffff;
-        position: relative;
+      .sticky-header-wrapper {
+        position: sticky;
+        top: 0;
+        background-color: white;
         z-index: 10;
         padding: 0 18px;
         flex-shrink: 0;
@@ -71,8 +71,8 @@
         align-items: center;
         padding: 12px 0;
         position: relative;
-        padding-bottom: 0px;
       }
+
       .header::after {
         content: "";
         position: absolute;
@@ -82,13 +82,19 @@
         height: 1px;
         background-color: var(--border-color-light);
       }
+
       .close-btn {
         background: none;
         border: none;
-        color: var(--text-primary);
-        font-size: 40px;
-        font-weight: 400;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+      }
+      .close-btn svg {
+        width: 24px;
+        height: 24px;
       }
       .amount {
         font-size: 17px;
@@ -175,7 +181,7 @@
       .suggested-title {
         font-size: 20px;
         font-weight: 700;
-        margin-top: 7px;
+        margin-top: 15px;
         margin-bottom: 15px;
       }
       .scrollable-content {
@@ -209,6 +215,7 @@
         font-size: 20px;
         font-weight: 500;
         cursor: pointer;
+        flex-shrink: 0;
       }
       .contact-info {
         display: flex;
@@ -415,10 +422,8 @@
       .edit-done-btn:disabled {
         color: #a0e6bb;
       }
-
-      /* [FIX] Edit Content perfectly placed and clean */
       .edit-content {
-        padding: 32px 16px; /* Increased top padding */
+        padding: 32px 16px;
       }
       .edit-avatar {
         width: 100px;
@@ -440,7 +445,7 @@
         display: none;
       }
       .edit-content .input-group {
-        margin-bottom: 24px; /* Consistent margin */
+        margin-bottom: 24px;
         border-bottom: none;
         padding: 0;
       }
@@ -485,8 +490,6 @@
       .color-swatch.active i {
         transform: scale(1);
       }
-
-      /* Alert and Loading Styles */
       .alert-modal-overlay {
         position: fixed;
         top: 0;
@@ -551,12 +554,10 @@
         align-items: center;
         z-index: 9999;
       }
-      /* CORRECTED LOTTIE CONTAINER SIZE */
       #lottie-container {
         width: 50px;
         height: 50px;
       }
-      /* NEW RULE TO GUARANTEE THE VISUAL SIZE OF THE ANIMATION */
       #lottie-container > * {
         transform: scale(0.28);
       }
@@ -564,9 +565,24 @@
   </head>
   <body>
     <div class="container">
-      <div class="fixed-top-content">
+      <div class="sticky-header-wrapper">
         <header class="header">
-          <a href="pay.html"><button class="close-btn">×</button></a>
+          <a href="pay.html">
+            <button class="close-btn">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z"
+                  fill="#0F1729"
+                />
+              </svg>
+            </button>
+          </a>
           <div class="amount" id="amount">$547</div>
           <button class="pay-btn" id="payBtn">Pay</button>
         </header>
@@ -610,9 +626,11 @@
             </div>
           </div>
         </div>
-        <h2 class="suggested-title">Suggested</h2>
       </div>
-      <div class="scrollable-content"><div id="contactList"></div></div>
+      <div class="scrollable-content">
+        <h2 class="suggested-title">Suggested</h2>
+        <div id="contactList"></div>
+      </div>
     </div>
     <div class="payment-overlay" id="paymentOverlay">
       <div class="payment-modal">
@@ -678,14 +696,12 @@
         <button class="modal-action-btn" id="alert-ok-btn">OK</button>
       </div>
     </div>
-    <!-- UPGRADED HTML FOR LOTTIE ANIMATION -->
     <div id="loading-overlay">
       <div id="lottie-container"></div>
     </div>
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        // --- Element Selections ---
         const payBtn = document.getElementById("payBtn"),
           toInput = document.getElementById("toInput"),
           forInput = document.getElementById("forInput"),
@@ -712,7 +728,6 @@
           alertOkBtn = document.getElementById("alert-ok-btn"),
           loadingOverlay = document.getElementById("loading-overlay");
 
-        // --- Lottie Animation Setup ---
         const lottieContainer = document.getElementById("lottie-container");
         let loadingAnimation;
 
@@ -724,7 +739,6 @@
           path: "/loader_lm.json",
         });
 
-        // --- App State and Data ---
         const contactStorageKey = "cashAppContacts",
           balanceStorageKey = "cashAppBalance",
           paymentAmountKey = "paymentAmount",
@@ -1007,6 +1021,10 @@
           let recipientData = selectedContact;
           if (!recipientData) {
             const typedName = toInput.value.trim();
+            const randomColor =
+              availableColors[
+                Math.floor(Math.random() * availableColors.length)
+              ];
             recipientData = {
               id: `temp-${Date.now()}`,
               name: typedName,
@@ -1015,7 +1033,7 @@
                 .replace(/\s+/g, "")
                 .replace(/[^a-z0-9]/g, "")}`,
               avatar: "",
-              color: "#6c757d",
+              color: randomColor,
             };
           }
           localStorage.setItem(
@@ -1024,11 +1042,9 @@
           );
           localStorage.setItem(pendingPaymentMessageKey, forInput.value.trim());
 
-          // TRIGGER THE LOADING ANIMATION
           loadingOverlay.style.display = "flex";
           loadingAnimation.play();
 
-          // Wait for 5 seconds before redirecting
           setTimeout(() => {
             window.location.href = "payment-result.html";
           }, 5000);
@@ -1039,7 +1055,6 @@
           alertModalOverlay.classList.add("show");
         }
 
-        // --- Initial Setup ---
         const paymentAmount =
           localStorage.getItem(paymentAmountKey) || "547.00";
         const cashBalance =
@@ -1054,7 +1069,6 @@
         contacts = getContacts();
         renderContacts();
 
-        // --- Event Listeners ---
         toInput.addEventListener("input", () => {
           if (selectedContact) {
             document
