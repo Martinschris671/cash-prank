@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pro Image & Icon Theme Tester | Transparency Support</title>
+    <title>Ultimate Image Tester | Full Resolution Processing</title>
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap");
 
@@ -15,7 +15,6 @@
         --secondary-color: #10b981;
         --border-color: #e2e8f0;
         --checkerboard-light: #e2e8f0;
-        --checkerboard-dark: #f1f5f9;
         --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
           0 2px 4px -1px rgba(0, 0, 0, 0.06);
       }
@@ -130,19 +129,18 @@
       }
 
       .image-container {
-        width: 128px;
-        height: 128px;
+        width: 150px; /* Visual container size */
+        height: 150px; /* Visual container size */
         margin: 0 auto 1rem;
         display: flex;
         align-items: center;
         justify-content: center;
         border-radius: 8px;
-        padding: 1rem;
         border: 1px solid var(--border-color);
+        overflow: hidden; /* Hide anything that spills out */
       }
 
       .image-container.checkerboard-bg {
-        background-color: var(--card-background);
         background-image: linear-gradient(
             45deg,
             var(--checkerboard-light) 25%,
@@ -163,11 +161,14 @@
         background-position: 0 0, 10px 0, 10px -10px, 0px 10px;
       }
 
+      /* This is key: The canvas/image will be high-res, but CSS scales it down for display */
       .image-container img,
       .image-container canvas {
         max-width: 100%;
         max-height: 100%;
         object-fit: contain;
+        image-rendering: -webkit-optimize-contrast; /* Helps keep it sharp */
+        image-rendering: crisp-edges;
       }
 
       .info {
@@ -218,11 +219,8 @@
   </head>
   <body>
     <div class="container">
-      <h1>Pro Image & Icon Theme Tester</h1>
-      <p>
-        Upload an image (PNG with transparency recommended) to see themed
-        versions.
-      </p>
+      <h1>Ultimate Image Tester</h1>
+      <p>Lossless, full-resolution processing for pixel-perfect results.</p>
 
       <div class="upload-section">
         <input
@@ -232,12 +230,14 @@
           style="display: none"
         />
         <div id="drop-area">
-          <p>Drag & Drop Your Image Here or <span>Click to Upload</span></p>
+          <p>
+            Drag & Drop Your High-Res Image Here or <span>Click to Upload</span>
+          </p>
         </div>
       </div>
 
       <div id="preview-section" class="preview-section">
-        <h2>Live Previews (Transparency Preserved)</h2>
+        <h2>Live Previews (Original Resolution)</h2>
         <div class="preview-grid">
           <!-- Original Image -->
           <div class="preview-card">
@@ -255,11 +255,7 @@
             <div>
               <h3>Monochrome (Black)</h3>
               <div class="image-container checkerboard-bg">
-                <canvas
-                  id="mono-black-canvas"
-                  width="128"
-                  height="128"
-                ></canvas>
+                <canvas id="mono-black-canvas"></canvas>
               </div>
               <p class="info">Simulates light mode icon</p>
             </div>
@@ -268,20 +264,6 @@
               data-canvas="mono-black-canvas"
               data-suffix="_monochrome-black"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"
-                />
-                <path
-                  d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"
-                />
-              </svg>
               Download
             </button>
           </div>
@@ -294,11 +276,7 @@
             <div>
               <h3>Monochrome (White)</h3>
               <div class="image-container checkerboard-bg">
-                <canvas
-                  id="mono-white-canvas"
-                  width="128"
-                  height="128"
-                ></canvas>
+                <canvas id="mono-white-canvas"></canvas>
               </div>
               <p class="info" style="color: #94a3b8">
                 Simulates dark mode icon
@@ -309,20 +287,6 @@
               data-canvas="mono-white-canvas"
               data-suffix="_monochrome-white"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"
-                />
-                <path
-                  d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"
-                />
-              </svg>
               Download
             </button>
           </div>
@@ -332,7 +296,7 @@
             <div>
               <h3>Custom Tint</h3>
               <div class="image-container checkerboard-bg">
-                <canvas id="tint-canvas" width="128" height="128"></canvas>
+                <canvas id="tint-canvas"></canvas>
               </div>
               <div class="controls">
                 <label for="tint-color">Tint:</label>
@@ -344,20 +308,6 @@
               data-canvas="tint-canvas"
               data-suffix="_custom-tint"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"
-                />
-                <path
-                  d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"
-                />
-              </svg>
               Download
             </button>
           </div>
@@ -366,20 +316,39 @@
     </div>
 
     <script>
+      // --- DOM Elements ---
       const dropArea = document.getElementById("drop-area");
       const fileElem = document.getElementById("fileElem");
       const previewSection = document.getElementById("preview-section");
       const originalImg = document.getElementById("original-img");
       const originalInfo = document.getElementById("original-info");
       const tintColorInput = document.getElementById("tint-color");
+      const monoBlackCanvas = document.getElementById("mono-black-canvas");
+      const monoWhiteCanvas = document.getElementById("mono-white-canvas");
+      const tintCanvas = document.getElementById("tint-canvas");
 
+      // --- State ---
       let currentImage = null;
       let originalFileName = "";
 
       // --- Event Listeners ---
       ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
-        dropArea.addEventListener(eventName, preventDefaults, false);
-        document.body.addEventListener(eventName, preventDefaults, false);
+        dropArea.addEventListener(
+          eventName,
+          (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          },
+          false
+        );
+        document.body.addEventListener(
+          eventName,
+          (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          },
+          false
+        );
       });
       ["dragenter", "dragover"].forEach((eventName) =>
         dropArea.addEventListener(
@@ -395,12 +364,17 @@
           false
         )
       );
+
       dropArea.addEventListener("drop", handleDrop, false);
       dropArea.addEventListener("click", () => fileElem.click());
       fileElem.addEventListener("change", (e) => handleFiles(e.target.files));
+
       tintColorInput.addEventListener("input", () => {
-        if (currentImage) applyTintColor(currentImage, tintColorInput.value);
+        if (currentImage) {
+          applyTintColor(currentImage, tintColorInput.value);
+        }
       });
+
       document.querySelectorAll(".download-btn").forEach((button) => {
         button.addEventListener("click", (e) => {
           const canvasId = e.currentTarget.dataset.canvas;
@@ -410,11 +384,6 @@
       });
 
       // --- Core Functions ---
-      function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-
       function handleDrop(e) {
         handleFiles(e.dataTransfer.files);
       }
@@ -428,14 +397,13 @@
 
         originalFileName =
           file.name.split(".").slice(0, -1).join(".") || "download";
-
         const reader = new FileReader();
         reader.onload = (e) => {
           const img = new Image();
           img.onload = () => {
             currentImage = img;
             displayOriginalImage(img, file);
-            applyAllTransforms(img);
+            renderAllCanvases(img);
             previewSection.classList.add("visible");
           };
           img.src = e.target.result;
@@ -443,7 +411,16 @@
         reader.readAsDataURL(file);
       }
 
-      function applyAllTransforms(img) {
+      function renderAllCanvases(img) {
+        const { naturalWidth, naturalHeight } = img;
+
+        // CRITICAL STEP: Set all canvases to the image's native resolution.
+        [monoBlackCanvas, monoWhiteCanvas, tintCanvas].forEach((canvas) => {
+          canvas.width = naturalWidth;
+          canvas.height = naturalHeight;
+        });
+
+        // Now apply the image processing at full resolution.
         applyMonochrome(img, "black");
         applyMonochrome(img, "white");
         applyTintColor(img, tintColorInput.value);
@@ -451,45 +428,29 @@
 
       function displayOriginalImage(img, file) {
         originalImg.src = img.src;
-        originalInfo.textContent = `${img.naturalWidth} x ${
+        originalInfo.textContent = ` ${img.naturalWidth} x ${
           img.naturalHeight
         }px | ${(file.size / 1024).toFixed(2)} KB`;
       }
 
       function processImage(img, canvas, colorizeFn) {
         const ctx = canvas.getContext("2d");
-        const { width: canvasWidth, height: canvasHeight } = canvas;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Draw image at its full, native size onto the correctly-sized canvas.
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-        // Clear canvas to be fully transparent before drawing
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-        // Calculate aspect ratio to fit image inside canvas
-        const scale = Math.min(
-          canvasWidth / img.naturalWidth,
-          canvasHeight / img.naturalHeight
-        );
-        const drawWidth = img.naturalWidth * scale;
-        const drawHeight = img.naturalHeight * scale;
-        const x = (canvasWidth - drawWidth) / 2;
-        const y = (canvasHeight - drawHeight) / 2;
-
-        ctx.drawImage(img, x, y, drawWidth, drawHeight);
-
-        if (colorizeFn) {
-          const imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
-          colorizeFn(imageData.data);
-          ctx.putImageData(imageData, 0, 0);
-        }
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        colorizeFn(imageData.data);
+        ctx.putImageData(imageData, 0, 0);
       }
 
       function applyMonochrome(img, color) {
-        const canvas = document.getElementById(`mono-${color}-canvas`);
+        const canvas = color === "black" ? monoBlackCanvas : monoWhiteCanvas;
         const [r, g, b] = color === "black" ? [0, 0, 0] : [255, 255, 255];
-
         processImage(img, canvas, (data) => {
           for (let i = 0; i < data.length; i += 4) {
-            // Only modify pixels that are not fully transparent
             if (data[i + 3] > 0) {
+              // Only color non-transparent pixels
               data[i] = r;
               data[i + 1] = g;
               data[i + 2] = b;
@@ -499,19 +460,17 @@
       }
 
       function applyTintColor(img, hexColor) {
-        const canvas = document.getElementById("tint-canvas");
         const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(
           hexColor
         );
         if (!result) return;
-        const r = parseInt(result[1], 16);
-        const g = parseInt(result[2], 16);
-        const b = parseInt(result[3], 16);
-
-        processImage(img, canvas, (data) => {
+        const r = parseInt(result[1], 16),
+          g = parseInt(result[2], 16),
+          b = parseInt(result[3], 16);
+        processImage(img, tintCanvas, (data) => {
           for (let i = 0; i < data.length; i += 4) {
-            // Only modify pixels that are not fully transparent
             if (data[i + 3] > 0) {
+              // Only color non-transparent pixels
               data[i] = r;
               data[i + 1] = g;
               data[i + 2] = b;
@@ -523,8 +482,7 @@
       function downloadCanvasAsImage(canvas, suffix) {
         const link = document.createElement("a");
         link.download = `${originalFileName}${suffix}.png`;
-        // toDataURL('image/png') preserves transparency. 'image/jpeg' would not.
-        link.href = canvas.toDataURL("image/png");
+        link.href = canvas.toDataURL("image/png"); // Preserves transparency
         link.click();
       }
     </script>
