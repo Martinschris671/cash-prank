@@ -703,8 +703,8 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 #lottie-spinner-container {
-  width: 55px;
-  height: 55px;
+  width: 60px;
+  height: 60px;
 }
 
 #success-overlay {
