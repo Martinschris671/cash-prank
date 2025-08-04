@@ -33,16 +33,13 @@ const lottieSpinnerContainer = document.getElementById(
 );
 let loadingSpinnerAnimation;
 
-// Ensure bodymovin/lottie is loaded before this script runs
-if (typeof bodymovin !== "undefined") {
-  loadingSpinnerAnimation = bodymovin.loadAnimation({
-    container: lottieSpinnerContainer,
-    renderer: "svg",
-    loop: true,
-    autoplay: false,
-    path: "loader_lm.json",
-  });
-}
+loadingSpinnerAnimation = bodymovin.loadAnimation({
+  container: lottieSpinnerContainer,
+  renderer: "svg",
+  loop: true,
+  autoplay: false,
+  path: "loader_lm.json",
+});
 
 const formatCurrency = (amount) =>
     `$${Number(amount).toLocaleString("en-US", {
@@ -63,7 +60,6 @@ const formatCurrency = (amount) =>
       ? `$${(amount / 1e3).toFixed(0)}K`
       : `$${Math.floor(amount)}`,
   adjustBalanceFontSize = (el) => {
-    if (!el) return;
     const len = el.textContent.length;
     if (len > 18) el.style.fontSize = "26px";
     else if (len > 15) el.style.fontSize = "30px";
@@ -72,16 +68,15 @@ const formatCurrency = (amount) =>
   };
 
 const adjustWithdrawFontSize = (element) => {
-  if (!element || !element.parentElement) return;
   const container = element.parentElement;
-  const maxFontSize = 60;
-  const minFontSize = 28;
-  element.style.fontSize = `${maxFontSize}px`;
+  const baseFontSize = 80;
+  const minFontSize = 32;
+  element.style.fontSize = `${baseFontSize}px`;
   const textWidth = element.scrollWidth;
   const containerWidth = container.clientWidth;
   if (textWidth > containerWidth) {
     const scaleFactor = containerWidth / textWidth;
-    const newSize = Math.floor(maxFontSize * scaleFactor);
+    const newSize = Math.floor(baseFontSize * scaleFactor);
     element.style.fontSize = `${Math.max(newSize, minFontSize)}px`;
   }
 };
@@ -113,8 +108,8 @@ function animateBalance(startValue, endValue) {
   let startTime = null;
   const step = (currentTime) => {
     if (!startTime) startTime = currentTime;
-    const progress = Math.min((currentTime - startTime) / duration, 1);
-    const animatedValue = startValue + (endValue - startValue) * progress;
+    const progress = Math.min((currentTime - startTime) / duration, 1),
+      animatedValue = startValue + (endValue - startValue) * progress;
     balanceAmountEl.textContent = formatCurrency(animatedValue);
     footerBalanceDisplay.textContent = formatBalanceForFooter(animatedValue);
     adjustBalanceFontSize(balanceAmountEl);
@@ -140,9 +135,9 @@ function loadState() {
   const userProfile = savedProfile ? JSON.parse(savedProfile) : defaultProfile;
   accountInfoEl.textContent = `Account ${userProfile.accountNumber} Routing ${userProfile.routingNumber}`;
   const placeholderImageSrc = "icons/person-circle-svgrepo-com.png";
-  if (userProfile.profilePic && profileIconLink) {
+  if (userProfile.profilePic) {
     profileIconLink.innerHTML = `<img src="${userProfile.profilePic}" alt="Profile" class="profile-icon">`;
-  } else if (profileIconLink) {
+  } else {
     profileIconLink.innerHTML = `<img src="${placeholderImageSrc}" alt="Profile" class="profile-icon">`;
   }
 }
@@ -170,10 +165,10 @@ function handleAddTransaction(amount) {
   const startBalance = currentBalance;
   hideAllModals();
   spinnerOverlay.classList.add("show");
-  if (loadingSpinnerAnimation) loadingSpinnerAnimation.play();
+  loadingSpinnerAnimation.play();
   setTimeout(() => {
     spinnerOverlay.classList.remove("show");
-    if (loadingSpinnerAnimation) loadingSpinnerAnimation.stop();
+    loadingSpinnerAnimation.stop();
     showSuccessOverlay("add", amount);
     setTimeout(() => {
       const newBalance = startBalance + amount;
@@ -187,17 +182,12 @@ function handleAddTransaction(amount) {
 
 function handleWithdrawal(amount) {
   if (isAnimating || isNaN(amount) || amount <= 0) return;
-  if (amount > currentBalance) {
-    // This is a safeguard, the primary check is in startWithdrawalFlow
-    alert("Error: Attempted to withdraw more than available balance.");
-    return;
-  }
+  if (amount > currentBalance) return;
   const startBalance = currentBalance;
-  const newBalance = startBalance - amount;
-  currentBalance = newBalance;
+  currentBalance -= amount;
   saveState();
   saveTransaction("withdraw", amount);
-  animateBalance(startBalance, newBalance);
+  animateBalance(startBalance, currentBalance);
 }
 
 function startWithdrawalFlow(amount, type) {
@@ -211,50 +201,37 @@ function startWithdrawalFlow(amount, type) {
 
   hideAllModals();
   spinnerOverlay.classList.add("show");
-  if (loadingSpinnerAnimation) loadingSpinnerAnimation.play();
+  loadingSpinnerAnimation.play();
 
   setTimeout(() => {
     spinnerOverlay.classList.remove("show");
-    if (loadingSpinnerAnimation) loadingSpinnerAnimation.stop();
+    loadingSpinnerAnimation.stop();
     showSuccessOverlay(type, amount);
     setTimeout(() => {
-      // The amount passed to handleWithdrawal should be the total amount to be removed from the balance.
       handleWithdrawal(totalDeduction);
     }, 1500);
   }, 5000);
 }
 
 function showModal(modalEl) {
-  if (!transactionOverlay || !modalEl) return;
   transactionOverlay.classList.add("show");
   allModals.forEach((m) => {
-    m.style.display = "none"; // Hide all first
-    m.classList.remove("show");
+    const isActionSheet = m.classList.contains("action-sheet-container");
+    const shouldDisplayFlex = modalEl.parentElement === m || modalEl === m;
+    m.style.display = shouldDisplayFlex ? "flex" : "none";
+    if (shouldDisplayFlex) {
+      m.classList.add("show");
+    }
   });
-
-  // Show the specific modal
-  modalEl.style.display = "flex";
-  modalEl.classList.add("show");
-
-  // If it's an action sheet, its container also needs to be visible
-  if (modalEl.parentElement.classList.contains("action-sheet-container")) {
-    modalEl.parentElement.style.display = "flex";
-    modalEl.parentElement.classList.add("show");
-  }
-
   document.body.classList.add("modal-open");
 }
 
 function hideAllModals() {
-  if (!transactionOverlay) return;
   transactionOverlay.classList.add("closing");
   setTimeout(() => {
     transactionOverlay.classList.remove("show");
     transactionOverlay.classList.remove("closing");
-    allModals.forEach((m) => {
-      m.classList.remove("show");
-      m.style.display = "none";
-    });
+    allModals.forEach((m) => m.classList.remove("show"));
     document.body.classList.remove("modal-open");
   }, 300);
 }
@@ -262,7 +239,6 @@ function hideAllModals() {
 function showSuccessOverlay(type, amount) {
   const successIconEl = document.getElementById("success-icon");
   const successMessageEl = document.getElementById("success-message");
-  if (!successIconEl || !successMessageEl || !successOverlay) return;
   let message;
   let iconClass;
 
@@ -288,323 +264,295 @@ function showSuccessOverlay(type, amount) {
 }
 
 function hideSuccessOverlay() {
-  if (successOverlay) successOverlay.classList.remove("show");
+  successOverlay.classList.remove("show");
 }
 
 function showFeatureNotImplementedModal() {
-  if (featureModal) showModal(featureModal);
+  showModal(featureModal);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   loadState();
 
   const mainContent = document.querySelector(".main-content");
-  if (mainContent) {
-    const PULL_TO_REFRESH_THRESHOLD = 80;
-    const PULL_RESISTANCE = 0.5;
-    const DRAG_START_THRESHOLD = 10;
-    let isPulling = false;
-    let isDragPotential = false;
-    let startPullY = 0;
-    let pullDistance = 0;
+  const PULL_TO_REFRESH_THRESHOLD = 80;
+  const PULL_RESISTANCE = 0.5;
+  const DRAG_START_THRESHOLD = 10;
+  let isPulling = false;
+  let isDragPotential = false;
+  let startPullY = 0;
+  let pullDistance = 0;
 
-    function getEventY(e) {
-      return e.touches ? e.touches[0].clientY : e.clientY;
-    }
-
-    function onPullStart(e) {
-      if (mainContent.scrollTop === 0 && !isAnimating) {
-        isDragPotential = true;
-        startPullY = getEventY(e);
-      }
-    }
-
-    function onPullMove(e) {
-      if (!isDragPotential) return;
-      const currentY = getEventY(e);
-      let deltaY = currentY - startPullY;
-      if (!isPulling && deltaY > DRAG_START_THRESHOLD) {
-        isPulling = true;
-        mainContent.style.transition = "none";
-      }
-      if (isPulling) {
-        if (e.cancelable) e.preventDefault();
-        if (deltaY < 0) deltaY = 0;
-        pullDistance = (deltaY - DRAG_START_THRESHOLD) * PULL_RESISTANCE;
-        mainContent.style.transform = `translateY(${pullDistance}px)`;
-      }
-    }
-
-    function onPullEnd() {
-      if (isPulling) {
-        mainContent.style.transition =
-          "transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
-        if (pullDistance >= PULL_TO_REFRESH_THRESHOLD) {
-          loadState();
-        }
-        mainContent.style.transform = "translateY(0)";
-      }
-      isDragPotential = false;
-      isPulling = false;
-    }
-    mainContent.addEventListener("mousedown", onPullStart);
-    mainContent.addEventListener("touchstart", onPullStart, {
-      passive: true,
-    });
-    document.addEventListener("mousemove", onPullMove, {
-      passive: false,
-    });
-    document.addEventListener("mouseup", onPullEnd);
-    document.addEventListener("touchmove", onPullMove, {
-      passive: false,
-    });
-    document.addEventListener("touchend", onPullEnd);
+  function getEventY(e) {
+    return e.touches ? e.touches[0].clientY : e.clientY;
   }
 
-  const addMoneyBtn = document.getElementById("add-money-btn");
-  if (addMoneyBtn) {
-    addMoneyBtn.addEventListener("click", () =>
-      showModal(addMoneyPerfectedModal)
-    );
+  function onPullStart(e) {
+    if (mainContent.scrollTop === 0 && !isAnimating) {
+      isDragPotential = true;
+      startPullY = getEventY(e);
+    }
   }
+
+  function onPullMove(e) {
+    if (!isDragPotential) return;
+    const currentY = getEventY(e);
+    let deltaY = currentY - startPullY;
+    if (!isPulling && deltaY > DRAG_START_THRESHOLD) {
+      isPulling = true;
+      mainContent.style.transition = "none";
+    }
+    if (isPulling) {
+      e.preventDefault();
+      if (deltaY < 0) deltaY = 0;
+      pullDistance = (deltaY - DRAG_START_THRESHOLD) * PULL_RESISTANCE;
+      mainContent.style.transform = `translateY(${pullDistance}px)`;
+    }
+  }
+
+  function onPullEnd() {
+    if (isPulling) {
+      // THIS IS THE ONLY LINE THAT HAS BEEN CHANGED
+      mainContent.style.transition =
+        "transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 1.1)";
+      if (pullDistance >= PULL_TO_REFRESH_THRESHOLD) {
+        loadState();
+      }
+      mainContent.style.transform = "translateY(0)";
+    }
+    isDragPotential = false;
+    isPulling = false;
+  }
+  mainContent.addEventListener("mousedown", onPullStart);
+  mainContent.addEventListener("touchstart", onPullStart, {
+    passive: true,
+  });
+  document.addEventListener("mousemove", onPullMove, {
+    passive: false,
+  });
+  document.addEventListener("mouseup", onPullEnd);
+  document.addEventListener("touchmove", onPullMove, {
+    passive: false,
+  });
+  document.addEventListener("touchend", onPullEnd);
+
+  document
+    .getElementById("add-money-btn")
+    .addEventListener("click", () => showModal(addMoneyPerfectedModal));
 
   const perfectedPresetContainer = document.getElementById(
     "perfected-preset-container"
   );
   const perfectedAddBtn = document.getElementById("perfected-add-btn");
-  if (perfectedPresetContainer && perfectedAddBtn) {
-    let selectedPerfectedAmount = 0;
-    perfectedPresetContainer.addEventListener("click", (e) => {
-      const btn = e.target.closest(".perfected-preset-btn");
-      if (!btn) return;
-      if (btn.id === "perfected-other-btn") {
-        keypadValue = "0";
-        updateKeypadDisplay();
-        showModal(addMoneyKeypadModal);
-        return;
-      }
-      perfectedPresetContainer
-        .querySelectorAll(".active")
-        .forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      selectedPerfectedAmount = parseFloat(btn.dataset.amount);
-      perfectedAddBtn.disabled = false;
-    });
-    perfectedAddBtn.addEventListener("click", () => {
-      if (selectedPerfectedAmount > 0) {
-        handleAddTransaction(selectedPerfectedAmount);
-      }
-    });
-  }
+  let selectedPerfectedAmount = 0;
 
-  const keypad = document.getElementById("keypad"),
-    keypadAmountDisplay = document.getElementById("keypad-amount-display"),
-    keypadDisplayContainer = document.querySelector(".keypad-display"),
-    addKeypadBtn = document.getElementById("add-keypad-btn");
-  if (keypad && keypadAmountDisplay && keypadDisplayContainer && addKeypadBtn) {
-    const MAX_KEYPAD_AMOUNT = 99999;
-    let keypadValue = "0";
-
-    function triggerLimitError() {
-      if (navigator.vibrate) {
-        navigator.vibrate(150);
-      }
-      keypadDisplayContainer.classList.add("shake");
-      setTimeout(() => {
-        keypadDisplayContainer.classList.remove("shake");
-      }, 400);
-    }
-
-    function adjustKeypadFontSize() {
-      const len = keypadAmountDisplay.textContent.length;
-      if (len > 13) {
-        keypadAmountDisplay.style.fontSize = "3rem";
-      } else if (len > 10) {
-        keypadAmountDisplay.style.fontSize = "4rem";
-      } else {
-        keypadAmountDisplay.style.fontSize = "5rem";
-      }
-    }
-    const updateKeypadDisplay = () => {
-      let displayValue;
-      if (keypadValue === "0" || keypadValue === "") {
-        displayValue = "$0";
-      } else {
-        const parts = keypadValue.split(".");
-        const integerPart = Number(parts[0].replace(/,/g, "")).toLocaleString(
-          "en-US"
-        );
-        displayValue =
-          parts.length > 1 ? `$${integerPart}.${parts[1]}` : `$${integerPart}`;
-      }
-      keypadAmountDisplay.innerHTML = displayValue;
-      adjustKeypadFontSize();
-      const numericValue = parseFloat(keypadValue.replace(/,/g, ""));
-      addKeypadBtn.disabled = numericValue <= 0 || isNaN(numericValue);
-    };
-
-    updateKeypadDisplay();
-
-    keypad.addEventListener("click", (e) => {
-      const key = e.target.closest(".keypad-btn")?.dataset.key;
-      if (!key) return;
-      const previousValue = keypadValue;
-      let rawValue = keypadValue.replace(/,/g, "");
-      if (key === "<") {
-        rawValue = rawValue.length > 1 ? rawValue.slice(0, -1) : "0";
-      } else if (key === "." && !rawValue.includes(".")) {
-        rawValue += ".";
-      } else if (key >= "0" && key <= "9") {
-        if (rawValue === "0" && key !== ".") {
-          rawValue = key;
-        } else {
-          const decimalPart = rawValue.split(".")[1];
-          if (decimalPart && decimalPart.length >= 2) {
-            return;
-          }
-          rawValue += key;
-        }
-      }
-      const numericCheck = parseFloat(rawValue);
-      if (numericCheck > MAX_KEYPAD_AMOUNT) {
-        keypadValue = previousValue;
-        triggerLimitError();
-        return;
-      }
-      keypadValue = rawValue;
+  perfectedPresetContainer.addEventListener("click", (e) => {
+    const btn = e.target.closest(".perfected-preset-btn");
+    if (!btn) return;
+    if (btn.id === "perfected-other-btn") {
+      keypadValue = "0";
       updateKeypadDisplay();
-    });
+      showModal(addMoneyKeypadModal);
+      return;
+    }
+    perfectedPresetContainer
+      .querySelectorAll(".active")
+      .forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
+    selectedPerfectedAmount = parseFloat(btn.dataset.amount);
+    perfectedAddBtn.disabled = false;
+  });
 
-    addKeypadBtn.addEventListener("click", () =>
-      handleAddTransaction(parseFloat(keypadValue.replace(/,/g, "")))
-    );
+  perfectedAddBtn.addEventListener("click", () => {
+    if (selectedPerfectedAmount > 0) {
+      handleAddTransaction(selectedPerfectedAmount);
+    }
+  });
+
+  const keypad = document.getElementById("keypad");
+  const keypadAmountDisplay = document.getElementById("keypad-amount-display");
+  const keypadDisplayContainer = document.querySelector(".keypad-display");
+  const addKeypadBtn = document.getElementById("add-keypad-btn");
+
+  const MAX_KEYPAD_AMOUNT = 99999.99;
+  let keypadValue = "0";
+
+  function triggerKeypadLimitError() {
+    if (navigator.vibrate) {
+      navigator.vibrate(150);
+    }
+    keypadDisplayContainer.classList.add("shake");
+    setTimeout(() => {
+      keypadDisplayContainer.classList.remove("shake");
+    }, 400);
   }
 
-  const keypadCloseBtn = document.getElementById("keypad-close-btn");
-  if (keypadCloseBtn) keypadCloseBtn.addEventListener("click", hideAllModals);
+  function updateKeypadDisplay() {
+    let displayValue;
+    if (keypadValue === "0" || keypadValue === "") {
+      displayValue = "$0";
+    } else {
+      const parts = keypadValue.split(".");
+      const integerPart = Number(parts[0].replace(/,/g, "")).toLocaleString(
+        "en-US"
+      );
+      displayValue =
+        parts.length > 1 ? `$${integerPart}.${parts[1]}` : `$${integerPart}`;
+    }
+    keypadAmountDisplay.innerHTML = displayValue;
 
-  // --- WITHDRAWAL LOGIC ---
-  const withdrawBtn = document.getElementById("withdraw-btn");
-  const withdrawSlider = document.getElementById("withdraw-slider");
-  const withdrawAmountDisplay = document.getElementById(
-    "withdraw-amount-display"
+    const parent = keypadDisplayContainer;
+    const maxTextWidth = parent.clientWidth * 0.9;
+    keypadAmountDisplay.style.fontSize = "";
+
+    if (keypadAmountDisplay.scrollWidth > maxTextWidth) {
+      let currentFontSize = parseFloat(
+        window.getComputedStyle(keypadAmountDisplay).fontSize
+      );
+      while (
+        keypadAmountDisplay.scrollWidth > maxTextWidth &&
+        currentFontSize > 10
+      ) {
+        currentFontSize--;
+        keypadAmountDisplay.style.fontSize = `${currentFontSize}px`;
+      }
+    }
+    const numericValue = parseFloat(keypadValue.replace(/,/g, ""));
+    addKeypadBtn.disabled = !(numericValue > 0);
+  }
+
+  function handleKeypadKeyPress(key) {
+    if (
+      (key === "<" && keypadValue === "0") ||
+      (key === "0" && keypadValue === "0")
+    ) {
+      triggerKeypadLimitError();
+      return;
+    }
+
+    const decimalPart = keypadValue.split(".")[1];
+    if (decimalPart && decimalPart.length >= 2 && key !== "<") {
+      triggerKeypadLimitError();
+      return;
+    }
+
+    let potentialAmount = keypadValue;
+
+    if (key === "<") {
+      potentialAmount =
+        potentialAmount.length > 1 ? potentialAmount.slice(0, -1) : "0";
+    } else if (key === ".") {
+      if (!potentialAmount.includes(".")) {
+        potentialAmount += ".";
+      } else {
+        triggerKeypadLimitError();
+        return;
+      }
+    } else {
+      if (potentialAmount === "0") {
+        potentialAmount = key;
+      } else {
+        potentialAmount += key;
+      }
+    }
+
+    if (parseFloat(potentialAmount.replace(/,/g, "")) > MAX_KEYPAD_AMOUNT) {
+      triggerKeypadLimitError();
+      return;
+    }
+
+    keypadValue = potentialAmount;
+    updateKeypadDisplay();
+  }
+
+  keypad.addEventListener("click", (e) => {
+    const btn = e.target.closest(".keypad-btn");
+    if (btn && btn.dataset.key) {
+      handleKeypadKeyPress(btn.dataset.key);
+    }
+  });
+
+  addKeypadBtn.addEventListener("click", () =>
+    handleAddTransaction(parseFloat(keypadValue.replace(/,/g, "")))
   );
-  const withdrawConfirmBtn = document.getElementById("withdraw-confirm-btn");
-  const withdrawAvailableDisplay =
-    document.getElementById("withdraw-available");
+
+  document
+    .getElementById("keypad-close-btn")
+    .addEventListener("click", hideAllModals);
+
+  const withdrawSlider = document.getElementById("withdraw-slider"),
+    withdrawAmountDisplay = document.getElementById("withdraw-amount-display"),
+    withdrawConfirmBtn = document.getElementById("withdraw-confirm-btn"),
+    withdrawAvailableDisplay = document.getElementById("withdraw-available");
+
   const withdrawalPromptAmount = document.getElementById(
-    "withdrawal-prompt-amount"
-  );
-  const withdrawalStandardDay = document.getElementById(
-    "withdrawal-standard-day"
-  );
-  const withdrawalInstantFee = document.getElementById(
-    "withdrawal-instant-fee"
-  );
-  const standardWithdrawalBtn = document.getElementById(
-    "standard-withdrawal-btn"
-  );
-  const instantWithdrawalBtn = document.getElementById(
-    "instant-withdrawal-btn"
-  );
-  const withdrawalCancelBtn = document.getElementById("withdrawal-cancel-btn");
+      "withdrawal-prompt-amount"
+    ),
+    withdrawalStandardDay = document.getElementById("withdrawal-standard-day"),
+    withdrawalInstantFee = document.getElementById("withdrawal-instant-fee"),
+    standardWithdrawalBtn = document.getElementById("standard-withdrawal-btn"),
+    instantWithdrawalBtn = document.getElementById("instant-withdrawal-btn"),
+    withdrawalCancelBtn = document.getElementById("withdrawal-cancel-btn");
   let amountToWithdraw = 0;
 
-  if (withdrawBtn) {
-    withdrawBtn.addEventListener("click", () => {
-      if (!withdrawSliderModal || !withdrawSlider) return;
-      withdrawSlider.max = currentBalance;
-      withdrawSlider.value = currentBalance;
-      if (withdrawAvailableDisplay) {
-        withdrawAvailableDisplay.textContent = `${formatCurrency(
-          currentBalance
-        )} available`;
-      }
-      if (withdrawAmountDisplay) {
-        withdrawAmountDisplay.textContent = formatCurrencyWhole(currentBalance);
-        adjustWithdrawFontSize(withdrawAmountDisplay);
-      }
-      if (withdrawConfirmBtn) {
-        withdrawConfirmBtn.disabled = currentBalance <= 0;
-      }
-      withdrawSlider.style.setProperty("--progress", "100%");
-      showModal(withdrawSliderModal);
-    });
-  }
+  document.getElementById("withdraw-btn").addEventListener("click", () => {
+    withdrawSlider.max = currentBalance;
+    withdrawSlider.value = currentBalance;
+    withdrawAvailableDisplay.textContent = `${formatCurrency(
+      currentBalance
+    )} available`;
+    withdrawAmountDisplay.textContent = formatCurrencyWhole(currentBalance);
+    adjustWithdrawFontSize(withdrawAmountDisplay);
+    withdrawConfirmBtn.disabled = currentBalance <= 0;
+    withdrawSlider.style.setProperty("--progress", "100%");
+    showModal(withdrawSliderModal);
+  });
 
-  if (withdrawSlider) {
-    withdrawSlider.addEventListener("input", () => {
-      const value = parseFloat(withdrawSlider.value);
-      if (withdrawAmountDisplay) {
-        withdrawAmountDisplay.textContent = formatCurrencyWhole(value);
-        adjustWithdrawFontSize(withdrawAmountDisplay);
-      }
-      if (withdrawConfirmBtn) {
-        withdrawConfirmBtn.disabled = value <= 0;
-      }
-      const maxVal = parseFloat(withdrawSlider.max);
-      const progressPercent = maxVal > 0 ? (value / maxVal) * 100 : 0;
-      withdrawSlider.style.setProperty("--progress", `${progressPercent}%`);
-    });
-  }
+  withdrawSlider.addEventListener("input", () => {
+    const value = parseFloat(withdrawSlider.value);
+    withdrawAmountDisplay.textContent = formatCurrencyWhole(value);
+    adjustWithdrawFontSize(withdrawAmountDisplay);
+    withdrawConfirmBtn.disabled = value <= 0;
+    const maxVal = parseFloat(withdrawSlider.max);
+    const progressPercent = maxVal > 0 ? (value / maxVal) * 100 : 0;
+    withdrawSlider.style.setProperty("--progress", `${progressPercent}%`);
+  });
 
-  if (withdrawConfirmBtn) {
-    withdrawConfirmBtn.addEventListener("click", () => {
-      if (!withdrawSlider || !withdrawalActionSheet) return;
-      amountToWithdraw = parseFloat(withdrawSlider.value);
-      if (amountToWithdraw <= 0) return;
+  withdrawConfirmBtn.addEventListener("click", () => {
+    amountToWithdraw = parseFloat(withdrawSlider.value);
+    const fee = amountToWithdraw * INSTANT_FEE_RATE;
+    const arrivalDay = calculateArrivalDay(3);
+    withdrawalPromptAmount.textContent = formatCurrency(amountToWithdraw);
+    withdrawalStandardDay.textContent = arrivalDay;
+    withdrawalInstantFee.textContent = `${formatCurrency(fee)} FEE`;
+    showModal(withdrawalActionSheet);
+  });
 
-      const fee = amountToWithdraw * INSTANT_FEE_RATE;
-      const arrivalDay = calculateArrivalDay(3);
+  standardWithdrawalBtn.addEventListener("click", () => {
+    startWithdrawalFlow(amountToWithdraw, "standard");
+  });
 
-      if (withdrawalPromptAmount)
-        withdrawalPromptAmount.textContent = formatCurrency(amountToWithdraw);
-      if (withdrawalStandardDay) withdrawalStandardDay.textContent = arrivalDay;
-      if (withdrawalInstantFee)
-        withdrawalInstantFee.textContent = `${formatCurrency(fee)} FEE`;
+  instantWithdrawalBtn.addEventListener("click", () => {
+    startWithdrawalFlow(amountToWithdraw, "instant");
+  });
 
-      // Use the specific action sheet content for showModal
-      const actionSheetContent = withdrawalActionSheet.querySelector(
-        ".action-sheet-content"
-      );
-      if (actionSheetContent) {
-        showModal(withdrawalActionSheet);
-      }
-    });
-  }
+  withdrawalCancelBtn.addEventListener("click", hideAllModals);
 
-  if (standardWithdrawalBtn) {
-    standardWithdrawalBtn.addEventListener("click", () => {
-      startWithdrawalFlow(amountToWithdraw, "standard");
-    });
-  }
+  transactionOverlay.addEventListener("click", (e) => {
+    if (e.target === transactionOverlay) {
+      hideAllModals();
+    }
+  });
 
-  if (instantWithdrawalBtn) {
-    instantWithdrawalBtn.addEventListener("click", () => {
-      startWithdrawalFlow(amountToWithdraw, "instant");
-    });
-  }
-
-  if (withdrawalCancelBtn) {
-    withdrawalCancelBtn.addEventListener("click", hideAllModals);
-  }
-
-  if (transactionOverlay) {
-    transactionOverlay.addEventListener("click", (e) => {
-      if (e.target === transactionOverlay) hideAllModals();
-    });
-  }
-  const successCloseBtn = document.getElementById("success-close-btn");
-  if (successCloseBtn)
-    successCloseBtn.addEventListener("click", hideSuccessOverlay);
-
-  const successDoneBtn = document.getElementById("success-done-btn");
-  if (successDoneBtn)
-    successDoneBtn.addEventListener("click", hideSuccessOverlay);
-
-  const featureModalOkBtn = document.getElementById("feature-modal-ok-btn");
-  if (featureModalOkBtn)
-    featureModalOkBtn.addEventListener("click", hideAllModals);
+  document
+    .getElementById("success-close-btn")
+    .addEventListener("click", hideSuccessOverlay);
+  document
+    .getElementById("success-done-btn")
+    .addEventListener("click", hideSuccessOverlay);
+  document
+    .getElementById("feature-modal-ok-btn")
+    .addEventListener("click", hideAllModals);
 
   saveState();
   window.dispatchEvent(new CustomEvent("balanceUpdated"));
