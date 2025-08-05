@@ -559,8 +559,9 @@ a {
   font-weight: 700;
   line-height: 1; /* This removes extra vertical space, fixing the shift */
   white-space: nowrap;
-  margin: 0;
+  margin-bottom: 50px;
   padding: 0;
+  position: absolute;
 }
 
 #add-money-keypad-modal .keypad {
