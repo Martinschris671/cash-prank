@@ -1,4 +1,4 @@
-// This is the full code for the new file: api/status.js
+// This is the upgraded code for api/status.js
 
 const low = require("lowdb");
 const FileSync = require("lowdb/adapters/FileSync");
@@ -8,30 +8,29 @@ const dbPath = path.join("/tmp", "db.json");
 const adapter = new FileSync(dbPath);
 const db = low(adapter);
 
-// Set default data
-db.defaults({ trials: [], users: {} }).write();
+// Set default data structure
+db.defaults({ trials: [], users: {}, redeemedCodes: {} }).write();
 
 module.exports = (req, res) => {
-  // We only accept GET requests with a user email
   if (req.method !== "GET") {
     return res.status(405).json({ message: "Method Not Allowed" });
   }
 
-  const { email } = req.query; // e.g., /api/status?email=user@example.com
+  const { email } = req.query;
 
   if (!email) {
     return res.status(400).json({ message: "User email is required." });
   }
 
   try {
-    // Find the user's subscription data on the server
+    // Find the user's subscription data on the server using the safe key.
     const userSubData = db.get(`users.${email.replace(/\./g, "_")}`).value();
 
     if (userSubData) {
-      // User found, return their status
+      // User found, return their current status.
       return res.status(200).json(userSubData);
     } else {
-      // No subscription data found for this user on the server
+      // No subscription data found for this user, return a default expired state.
       return res
         .status(404)
         .json({

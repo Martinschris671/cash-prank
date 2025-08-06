@@ -331,16 +331,10 @@
     </div>
 
     <script type="module">
-      // --- The Final, Server-Synced Subscription Logic ---
+      // --- The Final, High-End, Server-Synced Subscription Logic ---
 
-      // =======================================================
-      // == CONFIGURATION ==
-      // =======================================================
       const YOUR_TELEGRAM_USERNAME = "christopher7745";
 
-      // =======================================================
-      // == DOM ELEMENTS ==
-      // =======================================================
       const elements = {
         userEmailDisplay: document.getElementById("user-email-display"),
         statusGlow: document.getElementById("status-glow"),
@@ -356,62 +350,29 @@
 
       let countdownInterval;
 
-      // =======================================================
-      // == CORE FUNCTIONS ==
-      // =======================================================
+      // --- CORE LOGIC ---
 
-      /**
-       * Fetches the official subscription state from our secure server.
-       * This is the new "source of truth".
-       * @param {string} userEmail - The email of the user to check.
-       * @returns {Promise<object>} - A promise that resolves to the user's subscription state.
-       */
       const getSubscriptionStateFromServer = async (userEmail) => {
         try {
-          // Ask our new /api/status endpoint for the user's data.
           const response = await fetch(
             `/api/status?email=${encodeURIComponent(userEmail)}`
           );
-
-          if (!response.ok) {
-            // If the user isn't found or there's an error, treat them as expired for security.
-            console.error(`Server responded with status ${response.status}`);
-            return { status: "EXPIRED", remainingTime: 0 };
-          }
-
-          const serverData = await response.json(); // e.g., { status: "TRIAL", endDate: "..." }
+          if (!response.ok) return { status: "EXPIRED", remainingTime: 0 };
+          const serverData = await response.json();
           const { status = "EXPIRED", endDate: endDateString } = serverData;
-
-          if (status === "LIFETIME") {
-            return { status, remainingTime: Infinity };
-          }
-          if (!endDateString) {
-            return { status: "EXPIRED", remainingTime: 0 };
-          }
-
+          if (status === "LIFETIME") return { status, remainingTime: Infinity };
+          if (!endDateString) return { status: "EXPIRED", remainingTime: 0 };
           const endDate = new Date(endDateString);
           const remainingTime = endDate.getTime() - new Date().getTime();
-
-          if (remainingTime <= 0) {
-            return { status: "EXPIRED", remainingTime: 0 };
-          }
-          // Return the validated, official state from the server.
-          return { status, remainingTime, endDate };
+          return remainingTime <= 0
+            ? { status: "EXPIRED", remainingTime: 0 }
+            : { status, remainingTime, endDate };
         } catch (error) {
-          console.error(
-            "Failed to fetch subscription status from server:",
-            error
-          );
-          // Default to an expired status if the network fails for any reason.
+          console.error("Failed to fetch status:", error);
           return { status: "EXPIRED", remainingTime: 0 };
         }
       };
 
-      /**
-       * Formats milliseconds into a d/h/m/s string for the UI.
-       * @param {number} ms - The remaining time in milliseconds.
-       * @returns {string} - The formatted HTML string.
-       */
       const formatTimeForDisplay = (ms) => {
         if (ms <= 0) return `0d <span>00h 00m 00s</span>`;
         let s = Math.floor(ms / 1000),
@@ -425,35 +386,27 @@
         return `${d}d <span>${pad(h)}h ${pad(m)}m ${pad(s)}s</span>`;
       };
 
-      /**
-       * Updates the entire page UI based on the subscription state.
-       * @param {object} state - The subscription state object from the server.
-       */
       const updateUI = (state) => {
-        clearInterval(countdownInterval); // Stop any previous timers.
+        clearInterval(countdownInterval);
         const timerEl = elements.countdownTimer;
+        const isExpired = state.status === "EXPIRED";
+
+        timerEl.classList.toggle("active", !isExpired);
+        elements.statusGlow.classList.toggle("active", !isExpired);
 
         if (state.status === "LIFETIME") {
           timerEl.innerHTML = "Forever";
-          timerEl.classList.add("active");
-          elements.statusGlow.classList.add("active");
           elements.statusLabel.textContent = "LIFETIME PLAN";
-        } else if (state.status === "EXPIRED") {
+        } else if (isExpired) {
           timerEl.innerHTML = `0d <span>00h 00m 00s</span>`;
-          timerEl.classList.remove("active");
-          elements.statusGlow.classList.remove("active");
           elements.statusLabel.textContent = "SUBSCRIPTION EXPIRED";
         } else {
-          // Active trial or subscription
-          timerEl.classList.add("active");
-          elements.statusGlow.classList.add("active");
           elements.statusLabel.textContent =
             state.status === "TRIAL" ? "TRIAL PERIOD" : "ACTIVE PLAN";
-
           const updateCountdown = () => {
             const remaining = state.endDate.getTime() - new Date().getTime();
             if (remaining < 0) {
-              location.reload(); // Reload the page to refetch the now-expired state
+              location.reload();
               return;
             }
             timerEl.innerHTML = formatTimeForDisplay(remaining);
@@ -463,40 +416,65 @@
         }
       };
 
-      /**
-       * Placeholder function for redeeming a code.
-       * NOTE: The real logic must be moved to the server to be secure.
-       */
-      const handleRedeem = () => {
-        elements.errorMessage.textContent =
-          "This feature is being upgraded. Please contact support.";
-        // In the future, this will call a new endpoint, e.g., POST /api/redeem
+      const showLoading = (isLoading) => {
+        elements.redeemButton.disabled = isLoading;
+        elements.codeInput.disabled = isLoading;
+        elements.buttonText.classList.toggle("hidden", isLoading);
+        elements.spinner.classList.toggle("hidden", !isLoading);
       };
 
-      // =======================================================
-      // == PAGE INITIALIZATION ==
-      // =======================================================
+      // --- THIS IS THE NEW, SECURE REDEEM HANDLER ---
+      const handleRedeem = async (currentUserEmail) => {
+        const code = elements.codeInput.value.trim().toUpperCase();
+        if (!code) {
+          elements.errorMessage.textContent = "Please enter a code.";
+          return;
+        }
+
+        showLoading(true);
+        elements.errorMessage.textContent = "";
+
+        try {
+          // Call our new secure /api/redeem endpoint
+          const response = await fetch("/api/redeem", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: currentUserEmail, code: code }),
+          });
+
+          const result = await response.json();
+
+          if (!response.ok) {
+            // If the server responded with an error, display its clear message
+            throw new Error(result.message);
+          }
+
+          // --- SUCCESS! ---
+          alert(result.message); // Show a success pop-up, e.g., "Successfully activated lifetime plan!"
+          location.reload(); // Reload the page to automatically fetch and display the new status.
+        } catch (error) {
+          elements.errorMessage.textContent = error.message;
+          showLoading(false);
+        }
+      };
+
+      // --- PAGE INITIALIZATION ---
       document.addEventListener("DOMContentLoaded", async () => {
-        // 1. Identify the current user from localStorage.
         const currentUserEmail = localStorage.getItem("lastAppUser");
         if (!currentUserEmail) {
-          // If we don't know who the user is, we can't check their status. This is a hard-stop.
           window.location.replace("authentication.html");
           return;
         }
 
-        // 2. Display the user's email while we fetch the data.
         elements.userEmailDisplay.textContent = `Account: ${currentUserEmail}`;
-        elements.statusLabel.textContent = "CHECKING STATUS...";
+        elements.statusLabel.textContent = "SYNCING WITH SERVER...";
 
-        // 3. Get their official subscription state from our secure server.
         const state = await getSubscriptionStateFromServer(currentUserEmail);
-
-        // 4. Update the entire page with the real data.
         updateUI(state);
 
-        // 5. Attach event listeners.
-        elements.redeemButton.addEventListener("click", handleRedeem);
+        elements.redeemButton.addEventListener("click", () =>
+          handleRedeem(currentUserEmail)
+        );
         elements.contactLink.addEventListener("click", () => {
           window.open(`https://t.me/${YOUR_TELEGRAM_USERNAME}`, "_blank");
         });
