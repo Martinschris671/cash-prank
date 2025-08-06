@@ -1,8 +1,8 @@
 {
-  "name": "secure-auth-app",
+  "name": "cash-prank-secure-api",
   "version": "1.0.0",
-  "description": "App with secure trial logic",
+  "description": "Secure API for trial checks",
   "dependencies": {
-    "lowdb": "^7.0.1"
+    "lowdb": "1.0.0"
   }
 }

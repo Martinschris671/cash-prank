@@ -1,17 +1,19 @@
-// We'll use 'lowdb', a simple file-based database perfect for Vercel's environment.
-const { Low } = require("lowdb");
-const { JSONFile } = require("lowdb/node");
+// This is the full, corrected code for api/signup.js
+
+const low = require("lowdb");
+const FileSync = require("lowdb/adapters/FileSync");
 const path = require("path");
 
-// Vercel's serverless functions have a temporary writable directory at /tmp.
-// This is where we will store our simple database file of fingerprints.
+// The path to the database file in Vercel's temporary directory
 const dbPath = path.join("/tmp", "db.json");
-const adapter = new JSONFile(dbPath);
-const db = new Low(adapter, { trials: [] }); // Default data: an empty array of trials
+const adapter = new FileSync(dbPath);
+const db = low(adapter);
 
-// This is the main function Vercel will run.
-module.exports = async (req, res) => {
-  // We only accept POST requests for this action.
+// Set default data if the database file doesn't exist
+db.defaults({ trials: [] }).write();
+
+module.exports = (req, res) => {
+  // We only accept POST requests
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method Not Allowed" });
   }
@@ -25,16 +27,14 @@ module.exports = async (req, res) => {
         .json({ message: "Email and fingerprint are required." });
     }
 
-    // Load the database from the file into memory.
-    await db.read();
-
-    // Check if a trial with this fingerprint already exists.
-    const existingTrial = db.data.trials.find(
-      (trial) => trial.fingerprint === fingerprint
-    );
+    // Find a trial where the fingerprint matches the one from the request
+    const existingTrial = db
+      .get("trials")
+      .find({ fingerprint: fingerprint })
+      .value();
 
     if (existingTrial) {
-      // FINGERPRINT EXISTS: Deny the request with a "Forbidden" status.
+      // FINGERPRINT FOUND: Deny access
       return res
         .status(403)
         .json({
@@ -42,25 +42,22 @@ module.exports = async (req, res) => {
             "This device is not eligible for a new free trial. Please sign in.",
         });
     } else {
-      // FINGERPRINT IS NEW: Add it to our database array.
-      db.data.trials.push({
-        email: email,
-        fingerprint: fingerprint,
-        signup_date: new Date().toISOString(),
-      });
+      // FINGERPRINT NOT FOUND: Approve the trial and add it to the database
+      db.get("trials")
+        .push({
+          email: email,
+          fingerprint: fingerprint,
+          signup_date: new Date().toISOString(),
+        })
+        .write(); // Save the changes to the file
 
-      // Save the updated array back to the file.
-      await db.write();
-
-      // Send a "Created" success response.
-      return res
-        .status(201)
-        .json({ message: "Free trial successfully started!" });
+      // Send success response
+      return res.status(201).json({ message: "Trial approved by server." });
     }
   } catch (error) {
-    console.error("Internal Server Error:", error);
+    console.error("Function Crash:", error);
     return res
       .status(500)
-      .json({ message: "An error occurred on the server." });
+      .json({ message: "An internal server error occurred." });
   }
 };
