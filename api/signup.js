@@ -1,17 +1,19 @@
-// This is the upgraded code for api/signup.js
+// This is the full, corrected code for api/signup.js
 
 const low = require("lowdb");
 const FileSync = require("lowdb/adapters/FileSync");
 const path = require("path");
 
+// The path to the database file in Vercel's temporary directory
 const dbPath = path.join("/tmp", "db.json");
 const adapter = new FileSync(dbPath);
 const db = low(adapter);
 
 // Set default data if the database file doesn't exist
-db.defaults({ trials: [], users: {} }).write(); // We add a 'users' object now
+db.defaults({ trials: [] }).write();
 
 module.exports = (req, res) => {
+  // We only accept POST requests
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method Not Allowed" });
   }
@@ -25,37 +27,29 @@ module.exports = (req, res) => {
         .json({ message: "Email and fingerprint are required." });
     }
 
+    // Find a trial where the fingerprint matches the one from the request
     const existingTrial = db
       .get("trials")
       .find({ fingerprint: fingerprint })
       .value();
 
     if (existingTrial) {
-      return res
-        .status(403)
-        .json({ message: "This device is not eligible for a new free trial." });
+      // FINGERPRINT FOUND: Deny access
+      return res.status(403).json({
+        message:
+          "This device is not eligible for a new free trial. Please sign in.",
+      });
     } else {
-      // -- UPGRADE --
-      // We now also create the user's subscription record on the server
-      const trialEndDate = new Date();
-      trialEndDate.setDate(trialEndDate.getDate() + 2); // 2-day trial
-
-      // Save the user's subscription status, keyed by their email
-      db.set(`users.${email.replace(/\./g, "_")}`, {
-        // Replace dots in email for a safe key
-        status: "TRIAL",
-        endDate: trialEndDate.toISOString(),
-      }).write();
-
-      // Save the device fingerprint to prevent re-use
+      // FINGERPRINT NOT FOUND: Approve the trial and add it to the database
       db.get("trials")
         .push({
           email: email,
           fingerprint: fingerprint,
           signup_date: new Date().toISOString(),
         })
-        .write();
+        .write(); // Save the changes to the file
 
+      // Send success response
       return res.status(201).json({ message: "Trial approved by server." });
     }
   } catch (error) {

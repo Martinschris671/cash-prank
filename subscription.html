@@ -331,8 +331,14 @@
     </div>
 
     <script type="module">
-      // --- The Final, High-End, Server-Synced Subscription Logic ---
+      // --- The Final Elite, Account-Specific Subscription Logic ---
+      // NOTE: THIS SCRIPT IS UNCHANGED FROM THE PREVIOUS PERFECT VERSION
 
+      const UNLOCK_CODES = {
+        "WEEKLY-129": "weekly",
+        "MONTHLY-456": "monthly",
+        "LIFETIME-789": "lifetime",
+      };
       const YOUR_TELEGRAM_USERNAME = "christopher7745";
 
       const elements = {
@@ -350,27 +356,20 @@
 
       let countdownInterval;
 
-      // --- CORE LOGIC ---
+      const getSubscriptionState = (userEmail) => {
+        const userSubData =
+          JSON.parse(localStorage.getItem(`sub_${userEmail}`)) || {};
+        const { status = "EXPIRED", endDate: endDateString } = userSubData;
 
-      const getSubscriptionStateFromServer = async (userEmail) => {
-        try {
-          const response = await fetch(
-            `/api/status?email=${encodeURIComponent(userEmail)}`
-          );
-          if (!response.ok) return { status: "EXPIRED", remainingTime: 0 };
-          const serverData = await response.json();
-          const { status = "EXPIRED", endDate: endDateString } = serverData;
-          if (status === "LIFETIME") return { status, remainingTime: Infinity };
-          if (!endDateString) return { status: "EXPIRED", remainingTime: 0 };
-          const endDate = new Date(endDateString);
-          const remainingTime = endDate.getTime() - new Date().getTime();
-          return remainingTime <= 0
-            ? { status: "EXPIRED", remainingTime: 0 }
-            : { status, remainingTime, endDate };
-        } catch (error) {
-          console.error("Failed to fetch status:", error);
-          return { status: "EXPIRED", remainingTime: 0 };
-        }
+        if (status === "LIFETIME") return { status, remainingTime: Infinity };
+        if (!endDateString) return { status: "EXPIRED", remainingTime: 0 };
+
+        const endDate = new Date(endDateString);
+        const remainingTime = endDate.getTime() - new Date().getTime();
+
+        if (remainingTime <= 0)
+          return { status: "EXPIRED", remainingTime: 0, endDate };
+        return { status, remainingTime, endDate };
       };
 
       const formatTimeForDisplay = (ms) => {
@@ -389,21 +388,23 @@
       const updateUI = (state) => {
         clearInterval(countdownInterval);
         const timerEl = elements.countdownTimer;
-        const isExpired = state.status === "EXPIRED";
-
-        timerEl.classList.toggle("active", !isExpired);
-        elements.statusGlow.classList.toggle("active", !isExpired);
 
         if (state.status === "LIFETIME") {
           timerEl.innerHTML = "Forever";
+          timerEl.classList.add("active");
+          elements.statusGlow.classList.add("active");
           elements.statusLabel.textContent = "LIFETIME PLAN";
-        } else if (isExpired) {
+        } else if (state.status === "EXPIRED") {
           timerEl.innerHTML = `0d <span>00h 00m 00s</span>`;
+          timerEl.classList.remove("active");
+          elements.statusGlow.classList.remove("active");
           elements.statusLabel.textContent = "SUBSCRIPTION EXPIRED";
         } else {
+          timerEl.classList.add("active");
+          elements.statusGlow.classList.add("active");
           elements.statusLabel.textContent =
             state.status === "TRIAL" ? "TRIAL PERIOD" : "ACTIVE PLAN";
-          const updateCountdown = () => {
+          const update = () => {
             const remaining = state.endDate.getTime() - new Date().getTime();
             if (remaining < 0) {
               location.reload();
@@ -411,19 +412,26 @@
             }
             timerEl.innerHTML = formatTimeForDisplay(remaining);
           };
-          updateCountdown();
-          countdownInterval = setInterval(updateCountdown, 1000);
+          update();
+          countdownInterval = setInterval(update, 1000);
         }
       };
 
-      const showLoading = (isLoading) => {
-        elements.redeemButton.disabled = isLoading;
-        elements.codeInput.disabled = isLoading;
-        elements.buttonText.classList.toggle("hidden", isLoading);
-        elements.spinner.classList.toggle("hidden", !isLoading);
+      const enterLoadingState = () => {
+        elements.redeemButton.disabled = true;
+        elements.codeInput.disabled = true;
+        elements.buttonText.classList.add("hidden");
+        elements.spinner.classList.remove("hidden");
+        elements.errorMessage.textContent = "";
       };
 
-      // --- THIS IS THE NEW, SECURE REDEEM HANDLER ---
+      const exitLoadingState = () => {
+        elements.redeemButton.disabled = false;
+        elements.codeInput.disabled = false;
+        elements.buttonText.classList.remove("hidden");
+        elements.spinner.classList.add("hidden");
+      };
+
       const handleRedeem = async (currentUserEmail) => {
         const code = elements.codeInput.value.trim().toUpperCase();
         if (!code) {
@@ -431,35 +439,61 @@
           return;
         }
 
-        showLoading(true);
-        elements.errorMessage.textContent = "";
+        enterLoadingState();
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
-        try {
-          // Call our new secure /api/redeem endpoint
-          const response = await fetch("/api/redeem", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: currentUserEmail, code: code }),
-          });
-
-          const result = await response.json();
-
-          if (!response.ok) {
-            // If the server responded with an error, display its clear message
-            throw new Error(result.message);
+        const redeemedCodes = JSON.parse(
+          localStorage.getItem("redeemed_codes_db") || "{}"
+        );
+        if (redeemedCodes[code]) {
+          if (redeemedCodes[code] === currentUserEmail) {
+            elements.errorMessage.textContent =
+              "You have already redeemed this code.";
+          } else {
+            elements.errorMessage.textContent =
+              "This code has already been claimed by another account.";
           }
-
-          // --- SUCCESS! ---
-          alert(result.message); // Show a success pop-up, e.g., "Successfully activated lifetime plan!"
-          location.reload(); // Reload the page to automatically fetch and display the new status.
-        } catch (error) {
-          elements.errorMessage.textContent = error.message;
-          showLoading(false);
+          exitLoadingState();
+          return;
         }
+
+        const planType = UNLOCK_CODES[code];
+        if (!planType) {
+          elements.errorMessage.textContent =
+            "Invalid code. Please check and try again.";
+          exitLoadingState();
+          return;
+        }
+
+        let newEndDate = new Date(),
+          newStatus = "ACTIVE";
+        if (planType === "weekly") newEndDate.setDate(newEndDate.getDate() + 7);
+        else if (planType === "monthly")
+          newEndDate.setDate(newEndDate.getDate() + 30);
+        else {
+          newStatus = "LIFETIME";
+          newEndDate = new Date("9999-12-31T23:59:59Z");
+        }
+
+        const newSubData = {
+          status: newStatus,
+          endDate: newEndDate.toISOString(),
+        };
+        localStorage.setItem(
+          `sub_${currentUserEmail}`,
+          JSON.stringify(newSubData)
+        );
+
+        redeemedCodes[code] = currentUserEmail;
+        localStorage.setItem(
+          "redeemed_codes_db",
+          JSON.stringify(redeemedCodes)
+        );
+
+        window.location.href = "pay.html";
       };
 
-      // --- PAGE INITIALIZATION ---
-      document.addEventListener("DOMContentLoaded", async () => {
+      document.addEventListener("DOMContentLoaded", () => {
         const currentUserEmail = localStorage.getItem("lastAppUser");
         if (!currentUserEmail) {
           window.location.replace("authentication.html");
@@ -467,9 +501,7 @@
         }
 
         elements.userEmailDisplay.textContent = `Account: ${currentUserEmail}`;
-        elements.statusLabel.textContent = "SYNCING WITH SERVER...";
-
-        const state = await getSubscriptionStateFromServer(currentUserEmail);
+        const state = getSubscriptionState(currentUserEmail);
         updateUI(state);
 
         elements.redeemButton.addEventListener("click", () =>
