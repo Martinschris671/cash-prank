@@ -11,7 +11,7 @@ const db = low(adapter);
 // --- The "Master List" of all valid, purchasable codes ---
 // This makes it easy to add or remove codes in the future.
 const UNLOCK_CODES = {
-  "WEEKLY-129": "weekly",
+  "WEEKLY-128": "weekly",
   "MONTHLY-456": "monthly",
   "LIFETIME-789": "lifetime",
 };
