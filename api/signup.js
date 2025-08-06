@@ -1,73 +1,57 @@
-// This is the final, corrected code for api/signup.js
+// This is the full, corrected code for api/signup.js
 
 const low = require("lowdb");
 const FileSync = require("lowdb/adapters/FileSync");
 const path = require("path");
 
+// The path to the database file in Vercel's temporary directory
 const dbPath = path.join("/tmp", "db.json");
 const adapter = new FileSync(dbPath);
 const db = low(adapter);
 
+// Set default data if the database file doesn't exist
 db.defaults({ trials: [] }).write();
 
 module.exports = (req, res) => {
+  // We only accept POST requests
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method Not Allowed" });
   }
 
   try {
-    // We now get three things from the front-end
-    const { email, fingerprint, checkOnly } = req.body;
+    const { email, fingerprint } = req.body;
 
-    if (!fingerprint) {
+    if (!email || !fingerprint) {
       return res
         .status(400)
-        .json({ message: "Device fingerprint is required." });
+        .json({ message: "Email and fingerprint are required." });
     }
 
+    // Find a trial where the fingerprint matches the one from the request
     const existingTrial = db
       .get("trials")
       .find({ fingerprint: fingerprint })
       .value();
 
     if (existingTrial) {
-      // FINGERPRINT FOUND: Always deny access for new trials.
-      return res
-        .status(403)
-        .json({
-          message: "This device already has an account. Please log in.",
-        });
+      // FINGERPRINT FOUND: Deny access
+      return res.status(403).json({
+        message:
+          "This device is not eligible for a new free trial. Please sign in.",
+      });
+    } else {
+      // FINGERPRINT NOT FOUND: Approve the trial and add it to the database
+      db.get("trials")
+        .push({
+          email: email,
+          fingerprint: fingerprint,
+          signup_date: new Date().toISOString(),
+        })
+        .write(); // Save the changes to the file
+
+      // Send success response
+      return res.status(201).json({ message: "Trial approved by server." });
     }
-
-    // --- NEW LOGIC FOR THE INITIAL CHECK ---
-    // If the front-end is just checking and the device is new, send a success message
-    // without creating a record.
-    if (checkOnly) {
-      return res
-        .status(200)
-        .json({ message: "Device is new and eligible for sign-up." });
-    }
-    // --- END OF NEW LOGIC ---
-
-    // If it's a real sign-up attempt, ensure an email is present.
-    if (!email) {
-      return res
-        .status(400)
-        .json({ message: "Email is required for sign-up." });
-    }
-
-    // FINGERPRINT IS NEW and this is a REAL SIGN-UP: Approve and save.
-    db.get("trials")
-      .push({
-        email: email,
-        fingerprint: fingerprint,
-        signup_date: new Date().toISOString(),
-      })
-      .write();
-
-    return res
-      .status(201)
-      .json({ message: "Trial approved and user created." });
   } catch (error) {
     console.error("Function Crash:", error);
     return res
