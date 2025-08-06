@@ -1,0 +1,8 @@
+{
+  "name": "secure-auth-app",
+  "version": "1.0.0",
+  "description": "App with secure trial logic",
+  "dependencies": {
+    "lowdb": "^7.0.1"
+  }
+}

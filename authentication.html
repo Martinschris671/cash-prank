@@ -264,12 +264,12 @@
     </div>
 
     <script type="module">
-      // --- The Final, Bulletproof Authentication Logic ---
+      // --- The Final, Ultra-Strong & User-Friendly Authentication Logic ---
 
       // =======================================================
-      // == THE GATEKEEPER SCRIPT ==
+      // == SCRIPT 1: THE GATEKEEPER (Prevents access if expired) ==
       // =======================================================
-      // This runs immediately to check if a logged-in but expired user is trying to access this page.
+      // This script's purpose is to block expired users from even seeing this page.
       (() => {
         const currentUserEmail = localStorage.getItem("lastAppUser");
         if (currentUserEmail) {
@@ -284,13 +284,47 @@
             isExpired = false;
           }
           if (isExpired) {
-            // If they are expired, they cannot be on this page. Send to paywall.
             window.location.replace("subscription.html");
           }
         }
       })();
       // =======================================================
 
+      // =======================================================
+      // == SCRIPT 2: THE AUTO-REDIRECT (For active, returning users) ==
+      // =======================================================
+      // This new script provides a seamless experience for active users.
+      (() => {
+        const currentUserEmail = localStorage.getItem("lastAppUser");
+        // If no user is remembered, do nothing and let the login page load.
+        if (!currentUserEmail) {
+          return;
+        }
+
+        // If there is a remembered user, check their subscription status.
+        const userSubData =
+          JSON.parse(localStorage.getItem(`sub_${currentUserEmail}`)) || {};
+        const { status, endDate: endDateString } = userSubData;
+
+        let isActive = false;
+        if (
+          status === "LIFETIME" ||
+          (endDateString && new Date(endDateString).getTime() > Date.now())
+        ) {
+          isActive = true;
+        }
+
+        // If their subscription is active, send them straight to the next page.
+        if (isActive) {
+          // Use .replace() so the user cannot click "Back" to return to the auth page.
+          window.location.replace("pay.html");
+        }
+        // If their subscription is not active, do nothing. They will see the login
+        // form below, which is the correct behavior for an expired user.
+      })();
+      // =======================================================
+
+      // Import the Firebase functions we'll need
       import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
       import {
         getAuth,
@@ -298,8 +332,11 @@
         signInWithEmailAndPassword,
       } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
 
+      // =======================================================
+      // == FIREBASE CONFIGURATION ==
+      // =======================================================
       const firebaseConfig = {
-        apiKey: "AIzaSyDhQn9-OGTgoGNwhHYEHgSop82tVX4dlNg",
+        apiKey: "AIzaSyDhQn9-OGTgoGNwhHYEHgSop82tVX4dlNg", // Replace with your actual Firebase config
         authDomain: "cashapp-subscription-1.firebaseapp.com",
         projectId: "cashapp-subscription-1",
         storageBucket: "cashapp-subscription-1.appspot.com",
@@ -309,8 +346,36 @@
       };
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
+      // =======================================================
 
-      // --- The rest of the script is unchanged and works perfectly ---
+      // =======================================================
+      // == ADVANCED DEVICE FINGERPRINTING FUNCTION ==
+      // =======================================================
+      const generateFingerprint = async () => {
+        const hash = (data) => CryptoJS.SHA256(data).toString(CryptoJS.enc.Hex);
+        const components = {};
+        components.userAgent = navigator.userAgent;
+        components.language = navigator.language;
+        components.colorDepth = window.screen.colorDepth;
+        components.deviceMemory = navigator.deviceMemory || -1;
+        components.screenResolution = `${window.screen.width}x${window.screen.height}`;
+        components.timezone = new Date().getTimezoneOffset();
+        components.platform = navigator.platform;
+        components.cpuCores = navigator.hardwareConcurrency || -1;
+        try {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          ctx.fillText("a'!)_`~-^@,;*<:>.?/|&%$#123AbZ", 2, 15);
+          components.canvas = hash(canvas.toDataURL());
+        } catch (e) {
+          components.canvas = "error";
+        }
+        const fullFingerprintString = JSON.stringify(components);
+        return hash(fullFingerprintString);
+      };
+      // =======================================================
+
+      // --- DOM ELEMENTS AND UI LOGIC ---
       const elements = {
         form: document.getElementById("auth-form"),
         title: document.getElementById("form-title"),
@@ -327,6 +392,7 @@
         switchAccountLink: document.getElementById("switch-account-link"),
       };
       let isLoginMode = true;
+
       const render = () => {
         elements.errorMessage.textContent = "";
         if (isLoginMode) {
@@ -344,11 +410,14 @@
           .getElementById("mode-toggle")
           .addEventListener("click", toggleMode);
       };
+
       const toggleMode = (e) => {
         e.preventDefault();
         isLoginMode = !isLoginMode;
         render();
       };
+
+      // --- THE NEW, SECURE AUTHENTICATION HANDLER ---
       const handleAuth = async (e) => {
         e.preventDefault();
         const email = elements.emailInput.value.trim();
@@ -357,10 +426,25 @@
         elements.actionButton.disabled = true;
         elements.buttonText.classList.add("hidden");
         elements.spinner.classList.remove("hidden");
+
         try {
           if (isLoginMode) {
+            // LOGIN LOGIC
             await signInWithEmailAndPassword(auth, email, password);
+            localStorage.setItem("lastAppUser", email);
+            window.location.href = "pay.html";
           } else {
+            // === SECURE CREATE ACCOUNT LOGIC ===
+            const fingerprint = await generateFingerprint();
+            const response = await fetch("/api/signup", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email: email, fingerprint: fingerprint }),
+            });
+            const result = await response.json();
+            if (!response.ok) {
+              throw new Error(result.message);
+            }
             await createUserWithEmailAndPassword(auth, email, password);
             const trialEndDate = new Date();
             trialEndDate.setDate(trialEndDate.getDate() + 2);
@@ -369,14 +453,14 @@
               endDate: trialEndDate.toISOString(),
             };
             localStorage.setItem(`sub_${email}`, JSON.stringify(trialData));
+            localStorage.setItem("lastAppUser", email);
+            window.location.href = "pay.html";
           }
-          localStorage.setItem("lastAppUser", email);
-          window.location.href = "pay.html";
         } catch (error) {
           elements.actionButton.disabled = false;
           elements.buttonText.classList.remove("hidden");
           elements.spinner.classList.add("hidden");
-          let message = "An unknown error occurred. Please try again.";
+          let message = error.message;
           switch (error.code) {
             case "auth/user-not-found":
               message = "No account found with this email.";
@@ -385,7 +469,7 @@
               message = "Incorrect password. Please try again.";
               break;
             case "auth/email-already-in-use":
-              message = "This email is already in use.";
+              message = "This email is already registered.";
               break;
             case "auth/weak-password":
               message = "Password should be at least 6 characters.";
@@ -397,6 +481,7 @@
           elements.errorMessage.textContent = message;
         }
       };
+
       const toggleVisibility = () => {
         const isPassword = elements.passwordInput.type === "password";
         elements.passwordInput.type = isPassword ? "text" : "password";
@@ -404,11 +489,16 @@
           ? '<i class="fa-regular fa-eye"></i>'
           : '<i class="fa-regular fa-eye-slash"></i>';
       };
+
       const switchToNewAccount = () => {
         localStorage.removeItem("lastAppUser");
         location.reload();
       };
+
+      // --- ATTACH EVENT LISTENERS ON PAGE LOAD ---
       document.addEventListener("DOMContentLoaded", () => {
+        // This part of the code will now only run if the Auto-Redirect script
+        // did not fire, which is the correct behavior.
         const rememberedUser = localStorage.getItem("lastAppUser");
         if (rememberedUser) {
           isLoginMode = true;
