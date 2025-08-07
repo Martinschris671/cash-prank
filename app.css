@@ -331,7 +331,7 @@ a {
   display: grid;
   place-items: center;
   color: white;
-  transform: translatey(-12px);
+  transform: translatey(-15px);
 }
 .explore-card .icon-container img {
   width: 25px;
