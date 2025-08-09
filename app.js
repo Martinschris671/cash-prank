@@ -146,7 +146,7 @@ function saveState() {
   localStorage.setItem(localStorageBalanceKey, currentBalance.toString());
 }
 
-function saveTransaction(type, amount) {
+function saveAddTransaction(type, amount) {
   const transactions =
     JSON.parse(localStorage.getItem(localStorageTransactionsKey)) || [];
   transactions.push({
@@ -159,6 +159,32 @@ function saveTransaction(type, amount) {
     JSON.stringify(transactions)
   );
 }
+
+// ========================================================================
+// --- START: NEW HIGH-END WITHDRAWAL TRANSACTION SAVING FUNCTION ---
+// ========================================================================
+function saveWithdrawalTransaction(amount, fee, totalDeduction) {
+  const transactions =
+    JSON.parse(localStorage.getItem(localStorageTransactionsKey)) || [];
+
+  const newTransaction = {
+    type: "withdraw",
+    amount: amount, // The amount the user chose to withdraw
+    fee: fee, // The calculated fee for the withdrawal
+    totalDeducted: totalDeduction, // The total amount removed from the balance
+    balanceAfter: currentBalance - totalDeduction, // The balance after this transaction
+    date: new Date().toISOString(),
+  };
+
+  transactions.push(newTransaction);
+  localStorage.setItem(
+    localStorageTransactionsKey,
+    JSON.stringify(transactions)
+  );
+}
+// ======================================================================
+// --- END: NEW HIGH-END WITHDRAWAL TRANSACTION SAVING FUNCTION ---
+// ======================================================================
 
 function handleAddTransaction(amount) {
   if (isAnimating || isNaN(amount) || amount <= 0) return;
@@ -174,19 +200,18 @@ function handleAddTransaction(amount) {
       const newBalance = startBalance + amount;
       currentBalance = newBalance;
       saveState();
-      saveTransaction("add", amount);
+      saveAddTransaction("add", amount); // Use the specific add transaction function
       animateBalance(startBalance, newBalance);
     }, 1500);
   }, 5000);
 }
 
-function handleWithdrawal(amount) {
-  if (isAnimating || isNaN(amount) || amount <= 0) return;
-  if (amount > currentBalance) return;
+function handleWithdrawal(totalDeduction) {
+  if (isAnimating || isNaN(totalDeduction) || totalDeduction <= 0) return;
+  if (totalDeduction > currentBalance) return;
   const startBalance = currentBalance;
-  currentBalance -= amount;
+  currentBalance -= totalDeduction;
   saveState();
-  saveTransaction("withdraw", amount);
   animateBalance(startBalance, currentBalance);
 }
 
@@ -208,6 +233,8 @@ function startWithdrawalFlow(amount, type) {
     loadingSpinnerAnimation.stop();
     showSuccessOverlay(type, amount);
     setTimeout(() => {
+      // --- INTEGRATION: Call the new save function before updating the balance ---
+      saveWithdrawalTransaction(amount, fee, totalDeduction);
       handleWithdrawal(totalDeduction);
     }, 1500);
   }, 5000);
@@ -312,7 +339,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function onPullEnd() {
     if (isPulling) {
-      // THIS IS THE ONLY LINE THAT HAS BEEN CHANGED
       mainContent.style.transition =
         "transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 1.1)";
       if (pullDistance >= PULL_TO_REFRESH_THRESHOLD) {

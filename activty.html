@@ -346,7 +346,7 @@
         font-weight: 700;
         text-align: left;
         margin: 0;
-        padding-bottom: 20px;
+        padding-bottom: 5px;
       }
       .td-divider {
         height: 1px;
@@ -355,7 +355,7 @@
         margin: 20px 0;
       }
       .td-list-section {
-        padding-top: 25px;
+        padding-top: 0px;
       }
       .td-list-header {
         font-size: 17px;
@@ -423,7 +423,7 @@
         fill: var(--text-primary);
       }
       .td-actions-section {
-        padding-top: 25px;
+        padding-top: 0px;
       }
       .td-actions-header {
         font-size: 17px;
@@ -499,7 +499,7 @@
         fill: white;
       }
 
-      /* BOTTOM NAV AND MODAL STYLES */
+      /* BOTTOM NAV */
       .bottom-nav {
         display: flex;
         justify-content: space-around;
@@ -537,67 +537,6 @@
       }
       #nav-balance-display {
         font-size: 16px;
-      }
-      .modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        display: none;
-        justify-content: center;
-        align-items: flex-end;
-        z-index: 5000;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-      .modal-overlay.show {
-        display: flex;
-        opacity: 1;
-      }
-      .modal-content {
-        background-color: white;
-        width: 100%;
-        max-width: 450px;
-        border-top-left-radius: 20px;
-        border-top-right-radius: 20px;
-        padding: 12px 18px 30px;
-        transform: translateY(100%);
-        transition: transform 0.3s ease;
-      }
-      .modal-overlay.show .modal-content {
-        transform: translateY(0);
-      }
-      .delete-modal-content {
-        text-align: center;
-        padding: 20px;
-      }
-      .delete-modal-content p {
-        font-size: 18px;
-        font-weight: 600;
-        margin-bottom: 20px;
-      }
-      .delete-modal-actions {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-      }
-      .delete-modal-btn {
-        padding: 14px;
-        border-radius: 28px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        border: none;
-      }
-      .delete-modal-btn.confirm {
-        background-color: var(--accent-red);
-        color: white;
-      }
-      .delete-modal-btn.cancel {
-        background-color: #e9ecef;
-        color: var(--text-primary);
       }
     </style>
   </head>
@@ -673,19 +612,6 @@
     </div>
 
     <div class="details-overlay" id="details-overlay"></div>
-    <div class="modal-overlay" id="delete-modal-overlay">
-      <div class="modal-content delete-modal-content">
-        <p>Are you sure you want to delete this transaction?</p>
-        <div class="delete-modal-actions">
-          <button class="delete-modal-btn cancel" id="delete-cancel-btn">
-            No
-          </button>
-          <button class="delete-modal-btn confirm" id="delete-confirm-btn">
-            Yes
-          </button>
-        </div>
-      </div>
-    </div>
 
     <script>
       const profileIconLink = document.querySelector(".profile-icon-link");
@@ -697,11 +623,6 @@
       );
       const detailsOverlay = document.getElementById("details-overlay");
       const searchInput = document.getElementById("search-input");
-      const deleteModalOverlay = document.getElementById(
-        "delete-modal-overlay"
-      );
-      const deleteConfirmBtn = document.getElementById("delete-confirm-btn");
-      const deleteCancelBtn = document.getElementById("delete-cancel-btn");
 
       const userProfileKey = "cashAppUserProfile",
         contactStorageKey = "cashAppContacts",
@@ -720,7 +641,7 @@
           name: "Raul Garcia",
           cashtag: "$raul",
           avatar:
-            "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=128&q=80",
+            "https://images.unsplash.com/photo-1570295999919-5ceb5ecca61?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=128&q=80",
           color: "#007bff",
         },
         {
@@ -732,9 +653,6 @@
         },
       ];
       const initialTransactions = [];
-
-      let longPressTimer;
-      let transactionToDelete = null;
 
       const formatCurrency = (amount, sign = false) =>
         `${sign ? "+ " : ""}$${Math.abs(amount).toLocaleString("en-US", {
@@ -787,6 +705,18 @@
         let transactions =
           JSON.parse(localStorage.getItem(transactionsKey)) ||
           initialTransactions;
+
+        let wasModified = false;
+        transactions.forEach((t) => {
+          if (!t.id) {
+            t.id = `tx-generated-${Math.random().toString(36).substr(2, 9)}`;
+            wasModified = true;
+          }
+        });
+        if (wasModified) {
+          localStorage.setItem(transactionsKey, JSON.stringify(transactions));
+        }
+
         if (transactions.length === 0) {
           transactions.push({
             id: `tx-pending-${Date.now()}`,
@@ -804,6 +734,22 @@
             status: "completed",
             date: new Date(Date.now() - 100000).toISOString(),
             note: "Thanks for the help!",
+          });
+          transactions.push({
+            id: `tx-add-${Date.now() - 200000}`,
+            type: "add",
+            amount: 9000.0,
+            status: "completed",
+            date: new Date(Date.now() - 200000).toISOString(),
+          });
+          transactions.push({
+            id: `tx-withdraw-${Date.now() - 300000}`,
+            type: "withdraw",
+            amount: 987.0,
+            fee: 13.0,
+            totalDeducted: 1000.0,
+            status: "completed",
+            date: new Date(Date.now() - 300000).toISOString(),
           });
           localStorage.setItem(transactionsKey, JSON.stringify(transactions));
         }
@@ -946,10 +892,10 @@
                 avatar = `<div class="transaction-avatar" style="background-color: var(--accent-green);">$</div>`;
                 name = "Withdrawal";
                 statusText = `Direct Deposit`;
-                amount = formatSimpleCurrency(t.amount);
+                amount = formatSimpleCurrency(t.totalDeducted);
                 break;
             }
-            html += `<li class="transaction-item" data-id="${t.id}" data-type="${t.type}" data-status="${t.status}">${avatar}<div class="transaction-details"><span class="transaction-name">${name}</span><span class="transaction-status">${statusText}</span><span class="transaction-time">${timeText}</span></div><div class="transaction-amount ${amountClass}">${amount}</div></li>`;
+            html += `<li class="transaction-item" data-id="${t.id}">${avatar}<div class="transaction-details"><span class="transaction-name">${name}</span><span class="transaction-status">${statusText}</span><span class="transaction-time">${timeText}</span></div><div class="transaction-amount ${amountClass}">${amount}</div></li>`;
           });
           html += "</ul>";
         }
@@ -962,43 +908,50 @@
         const transaction = transactions.find((t) => t.id == transactionId);
         if (!transaction) return;
 
+        switch (transaction.type) {
+          case "payment":
+          case "received":
+            renderPaymentDetails(transaction);
+            break;
+          case "add":
+            renderAddMoneyDetails(transaction);
+            break;
+          case "withdraw":
+            renderWithdrawalDetails(transaction);
+            break;
+        }
+      }
+
+      function renderPaymentDetails(transaction) {
         const userProfile =
           JSON.parse(localStorage.getItem(userProfileKey)) || defaultProfile;
         const recipient = transaction.recipient || {
           name: "Unknown",
           color: "#6c757d",
         };
-        const transactionStatus = transaction.status;
 
-        let avatarHtml;
-        if (recipient.avatar) {
-          avatarHtml = `<img src="${recipient.avatar}" class="td-avatar" alt="Profile picture of ${recipient.name}">`;
-        } else {
-          const fallbackColor = "#6c757d";
-          avatarHtml = `<div class="td-avatar" style="background-color:${
-            recipient.color || fallbackColor
-          };">${recipient.name.charAt(0)}</div>`;
-        }
+        let avatarHtml = recipient.avatar
+          ? `<img src="${recipient.avatar}" class="td-avatar" alt="${recipient.name}">`
+          : `<div class="td-avatar" style="background-color:${
+              recipient.color || "#6c757d"
+            };">${recipient.name.charAt(0)}</div>`;
+
         const time = new Date(transaction.date).toLocaleTimeString("en-US", {
           hour: "numeric",
           minute: "2-digit",
           hour12: true,
         });
-
         const noteHtml =
           transaction.status === "pending"
             ? `<p class="td-note">For pending payment request $100 to completed</p>`
             : transaction.note
             ? `<p class="td-note">${transaction.note}</p>`
             : "";
-
         const closeIconSVG = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z" fill="#0F1729"/></svg>`;
 
         let detailsHtml = `
             <div class="details-inner-container">
-                <header class="details-header">
-                    <button class="details-close-btn" id="details-close-btn">${closeIconSVG}</button>
-                </header>
+                <header class="details-header"><button class="details-close-btn" id="details-close-btn">${closeIconSVG}</button></header>
                 <main class="details-content">
                     <section class="td-recipient-info">
                         ${avatarHtml}
@@ -1006,27 +959,27 @@
                         <p class="td-timestamp">Today at ${time}</p>
                         ${noteHtml}
                     </section>
-                    <section class="td-amount-section">
-                        <p class="td-amount">${formatCurrency(
-                          transaction.amount,
-                          false
-                        )}</p>
-                    </section>
-                    <hr class="td-divider">`;
+                    <section class="td-amount-section"><p class="td-amount">${formatCurrency(
+                      transaction.amount,
+                      false
+                    )}</p></section>
+                    `;
 
         const docIcon = `<svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"></path></svg>`;
         const reportIcon = `<svg viewBox="0 0 24 24"><path d="M11 15h2v2h-2v-2zm0-8h2v6h-2V7zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"></path></svg>`;
         const chatIcon = `<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"></path></svg>`;
         const chevronIcon = `<svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"></path></svg>`;
 
-        if (transactionStatus === "pending") {
+        if (transaction.status === "pending") {
           const cancelIconSVG = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"></path></svg>`;
           const cancelIconWhiteSVG = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"></path></svg>`;
           detailsHtml += `
+          <hr class="td-divider">
                 <section class="td-list-section">
                     <h2 class="td-list-header">Transaction details</h2>
-                    <div class="td-detail-item"><div class="td-icon">...</div><div class="td-text-content"><p class="td-title">Pending</p><p class="td-subtitle">Payment has not settled yet</p></div></div>
+                    <div class="td-detail-item"><div class="td-icon" style="letter-spacing: -2px;">...</div><div class="td-text-content"><p class="td-title">Pending</p><p class="td-subtitle">Payment has not settled yet</p></div></div>
                 </section>
+                <hr class="td-divider">
                 <section class="td-actions-section">
                     <h2 class="td-actions-header">What you can do</h2>
                     <div class="td-action-item"><div class="td-action-icon">${cancelIconSVG}</div><div class="td-action-label">Cancel payment</div><div class="td-action-chevron">${chevronIcon}</div></div>
@@ -1040,7 +993,9 @@
                     <p><strong>Block, Inc.</strong></p><p>1955 Broadway, Suite 500</p><p>Oakland, CA 94612</p>
                     <p>(800) 969-1940</p><p>NMLS #: 986264</p>
                 </footer>
-                <footer class="td-footer-button-wrapper"><button class="td-cancel-button" id="td-cancel-btn">${cancelIconWhiteSVG} Cancel Payment</button></footer>`;
+                <footer class="td-footer-button-wrapper"><button class="td-cancel-button" data-id="${
+                  transaction.id
+                }" id="td-cancel-btn">${cancelIconWhiteSVG} Cancel Payment</button></footer>`;
         } else {
           const personIcon = `<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path></svg>`;
           const copyIcon = `<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"></path></svg>`;
@@ -1053,7 +1008,7 @@
           detailsHtml += `
               <section class="td-list-section">
                 <h2 class="td-list-header">Transaction details</h2>
-                <div class="td-detail-item"><div class="td-icon check">✓</div><div class="td-text-content"><p class="td-title">Complete</p><p class="td-subtitle">${completeSubtitle}</p></div></div>
+                <div class="td-detail-item"><div class="td-icon check">&#10003;</div><div class="td-text-content"><p class="td-title">Complete</p><p class="td-subtitle">${completeSubtitle}</p></div></div>
                 <div class="td-detail-item"><div class="td-icon">${personIcon}</div><div class="td-text-content"><p class="td-title">Payment between</p><p class="td-subtitle">To: ${
             recipient.name
           }</p><p class="td-subtitle">From: ${
@@ -1063,6 +1018,7 @@
                 <div class="td-detail-item"><div class="td-icon">${feesIcon}</div><div class="td-text-content"><p class="td-title">Fees</p><p class="td-subtitle">None applied</p></div><div class="td-icon-right">${feesInfoIcon}</div></div>
                 <div class="td-detail-item"><div class="td-icon">#</div><div class="td-text-content"><p class="td-title">Transaction number</p><p class="td-subtitle">${generateTransactionNumber()}</p></div><div class="td-icon-right">${copyIcon}</div></div>
               </section>
+              <hr class="td-divider">
               <section class="td-actions-section">
                 <h2 class="td-actions-header">What you can do</h2>
                 <div class="td-action-item"><div class="td-action-icon">${docIcon}</div><div class="td-action-label">View all ${
@@ -1071,25 +1027,122 @@
                 <div class="td-action-item"><div class="td-action-icon">${reportIcon}</div><div class="td-action-label">Report a missing offer</div><div class="td-action-chevron">${chevronIcon}</div></div>
                 <div class="td-action-item"><div class="td-action-icon">${chatIcon}</div><div class="td-action-label">Contact Support</div><div class="td-action-chevron">${chevronIcon}</div></div>
               </section>
-              <footer class="td-footer-info">
-                <p><strong>Block, Inc.</strong></p><p>1955 Broadway, Suite 500</p><p>Oakland, CA 94612</p>
-                <p>(800) 969-1940</p><p>NMLS #: 986264</p>
-              </footer>`;
+              <footer class="td-footer-info"><p><strong>Block, Inc.</strong></p><p>1955 Broadway, Suite 500</p><p>Oakland, CA 94612</p><p>(800) 969-1940</p><p>NMLS #: 986264</p></footer>`;
         }
         detailsHtml += `</main></div>`;
         detailsOverlay.innerHTML = detailsHtml;
         detailsOverlay.classList.add("show");
-
         document
           .getElementById("details-close-btn")
           .addEventListener("click", () =>
             detailsOverlay.classList.remove("show")
           );
-        if (transactionStatus === "pending") {
+        if (transaction.status === "pending") {
           document
             .getElementById("td-cancel-btn")
-            .addEventListener("click", () => cancelPayment(transaction.id));
+            .addEventListener("click", (e) =>
+              cancelPayment(e.currentTarget.dataset.id)
+            );
         }
+      }
+
+      function renderAddMoneyDetails(transaction) {
+        const time = new Date(transaction.date).toLocaleTimeString("en-US", {
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true,
+        });
+        const closeIconSVG = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z" fill="#0F1729"/></svg>`;
+        const chatIcon = `<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"></path></svg>`;
+        const transferIcon = `<svg viewBox="0 0 24 24"><path d="M16.01 11H4v2h12.01v3L20 12l-3.99-4v3z"></path></svg>`;
+        detailsOverlay.innerHTML = `
+            <div class="details-inner-container">
+                <header class="details-header"><button class="details-close-btn" id="details-close-btn">${closeIconSVG}</button></header>
+                <main class="details-content">
+                    <section class="td-recipient-info">
+                        <div class="td-avatar" style="background-color: var(--accent-green);">$</div>
+                        <h1 class="td-recipient-name">Add money</h1>
+                        <p class="td-timestamp">Today at ${time}</p>
+                    </section>
+                    <section class="td-amount-section"><p class="td-amount">+ ${formatCurrency(
+                      transaction.amount,
+                      false
+                    ).replace("$-", "$")}</p></section>
+                    <hr class="td-divider">
+                    <section class="td-list-section">
+                        <h2 class="td-list-header">Transaction details</h2>
+                        <div class="td-detail-item"><div class="td-icon check">&#10003;</div><div class="td-text-content"><p class="td-title">Complete</p><p class="td-subtitle">Transfer from Visa Debit 8885</p></div></div>
+                        <div class="td-detail-item"><div class="td-icon">$</div><div class="td-text-content"><p class="td-title">Transferred from</p><p class="td-subtitle">Visa Debit 8885</p></div></div>
+                        <div class="td-detail-item"><div class="td-icon">${transferIcon}</div><div class="td-text-content"><p class="td-title">Transferred to</p><p class="td-subtitle">Cash balance</p></div></div>
+                    </section>
+                    <hr class="td-divider">
+                    <section class="td-actions-section">
+                        <h2 class="td-actions-header">What you can do</h2>
+                        <div class="td-action-item"><div class="td-action-icon">${chatIcon}</div><div class="td-action-label">Contact Support</div></div>
+                    </section>
+                    <footer class="td-footer-info"><p><strong>Block, Inc.</strong></p><p>1955 Broadway, Suite 500</p><p>Oakland, CA 94612</p><p>(800) 969-1940</p><p>NMLS #: 986264</p></footer>
+                </main>
+            </div>`;
+        detailsOverlay.classList.add("show");
+        document
+          .getElementById("details-close-btn")
+          .addEventListener("click", () =>
+            detailsOverlay.classList.remove("show")
+          );
+      }
+
+      function renderWithdrawalDetails(transaction) {
+        const time = new Date(transaction.date).toLocaleTimeString("en-US", {
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true,
+        });
+        const closeIconSVG = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z" fill="#0F1729"/></svg>`;
+        const lightningIcon = `<svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"></path></svg>`;
+        const transferOutIcon = `<svg viewBox="0 0 24 24"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"></path></svg>`;
+        const chatIcon = `<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"></path></svg>`;
+        detailsOverlay.innerHTML = `
+             <div class="details-inner-container">
+                <header class="details-header"><button class="details-close-btn" id="details-close-btn">${closeIconSVG}</button></header>
+                <main class="details-content">
+                    <section class="td-recipient-info">
+                        <div class="td-avatar" style="background-color: var(--accent-green);">$</div>
+                        <h1 class="td-recipient-name">Withdrawal</h1>
+                        <p class="td-timestamp">Today at ${time}</p>
+                    </section>
+                    <section class="td-amount-section"><p class="td-amount">${formatCurrency(
+                      transaction.totalDeducted,
+                      false
+                    )}</p></section>
+                    <hr class="td-divider">
+                    <section class="td-list-section">
+                        <h2 class="td-list-header">Transaction details</h2>
+                        <div class="td-detail-item"><div class="td-icon">${lightningIcon}</div><div class="td-text-content"><p class="td-title">Instantly transferred</p><p class="td-subtitle">Funds transferred to your external bank</p></div></div>
+                        <div class="td-detail-item"><div class="td-icon" style="font-weight: 400;">%</div><div class="td-text-content"><p class="td-title">Instant transfer fee</p><p class="td-subtitle">${formatCurrency(
+                          transaction.fee,
+                          false
+                        )}</p></div></div>
+                        <div class="td-detail-item"><div class="td-icon">$</div><div class="td-text-content"><p class="td-title">Amount transferred</p><p class="td-subtitle">${formatCurrency(
+                          transaction.amount,
+                          false
+                        )}</p></div></div>
+                        <div class="td-detail-item"><div class="td-icon">$</div><div class="td-text-content"><p class="td-title">Transferred from</p><p class="td-subtitle">Cash Balance</p></div></div>
+                        <div class="td-detail-item"><div class="td-icon">${transferOutIcon}</div><div class="td-text-content"><p class="td-title">Transferred to</p><p class="td-subtitle">PRIVATE LABEL Debit 9389</p></div></div>
+                    </section>
+                    <hr class="td-divider">
+                    <section class="td-actions-section">
+                        <h2 class="td-actions-header">What you can do</h2>
+                        <div class="td-action-item"><div class="td-action-icon">${chatIcon}</div><div class="td-action-label">Contact Support</div></div>
+                    </section>
+                    <footer class="td-footer-info"><p><strong>Block, Inc.</strong></p><p>1955 Broadway, Suite 500</p><p>Oakland, CA 94612</p><p>(800) 969-1940</p><p>NMLS #: 986264</p></footer>
+                </main>
+            </div>`;
+        detailsOverlay.classList.add("show");
+        document
+          .getElementById("details-close-btn")
+          .addEventListener("click", () =>
+            detailsOverlay.classList.remove("show")
+          );
       }
 
       function cancelPayment(id) {
@@ -1100,24 +1153,6 @@
         localStorage.setItem(transactionsKey, JSON.stringify(transactions));
         detailsOverlay.classList.remove("show");
         renderActivity(searchInput.value);
-      }
-
-      function showDeleteModal(id) {
-        transactionToDelete = id;
-        deleteModalOverlay.classList.add("show");
-      }
-      function hideDeleteModal() {
-        deleteModalOverlay.classList.remove("show");
-        transactionToDelete = null;
-      }
-      function deleteTransaction() {
-        if (!transactionToDelete) return;
-        let transactions =
-          JSON.parse(localStorage.getItem(transactionsKey)) || [];
-        transactions = transactions.filter((t) => t.id != transactionToDelete);
-        localStorage.setItem(transactionsKey, JSON.stringify(transactions));
-        renderActivity(searchInput.value);
-        hideDeleteModal();
       }
 
       document.addEventListener("DOMContentLoaded", () => {
@@ -1135,30 +1170,14 @@
           renderActivity(searchInput.value)
         );
 
-        activityListContainer.addEventListener("pointerdown", (e) => {
-          const item = e.target.closest(".transaction-item");
-          if (!item) return;
-          e.preventDefault();
-          longPressTimer = setTimeout(() => {
-            showDeleteModal(item.dataset.id);
-          }, 500);
-        });
-
-        const clearLongPress = () => clearTimeout(longPressTimer);
-        activityListContainer.addEventListener("pointerup", clearLongPress);
-        activityListContainer.addEventListener("pointerleave", clearLongPress);
-        activityListContainer.addEventListener("pointermove", clearLongPress);
-
+        // --- FIXED AND UNLOCKED CLICK HANDLER ---
         activityListContainer.addEventListener("click", (e) => {
-          clearTimeout(longPressTimer);
           const item = e.target.closest(".transaction-item");
+          // This now works for ANY transaction with a data-id
           if (item && item.dataset.id) {
             renderTransactionDetails(item.dataset.id);
           }
         });
-
-        deleteConfirmBtn.addEventListener("click", deleteTransaction);
-        deleteCancelBtn.addEventListener("click", hideDeleteModal);
       });
     </script>
     <script src="footer.display.js"></script>
