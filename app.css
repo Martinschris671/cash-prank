@@ -660,8 +660,8 @@ input[type="range"]::-webkit-slider-runnable-track {
   height: 6px;
   background: linear-gradient(
     to right,
-    var(--accent-green) 0%,
-    var(--accent-green) var(--progress, 0%),
+    #000 0%,
+    #000 var(--progress, 0%),
     #e0e0e0 0%
   );
   border-radius: 3px;
