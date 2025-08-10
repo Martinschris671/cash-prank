@@ -8,7 +8,7 @@
     />
     <title>Authentication</title>
 
-    <!-- Fonts and Icons (Unchanged) -->
+    <!-- Fonts and Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -20,53 +20,17 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
     />
 
-    <!--
-      =======================================================
-      == REQUIRED LIBRARIES ==
-      =======================================================
-    -->
-    <!-- 1. The CryptoJS tool for hashing the fingerprint -->
+    <!-- Required Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-
-    <!-- 2. The Firebase tools for authentication -->
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js"></script>
-    <!-- ======================================================= -->
 
-    <!-- Your existing, perfect CSS (Unchanged) -->
+    <!-- Your CSS (Unchanged) -->
     <style>
       @font-face {
         font-family: "CashMarket";
-        font-style: normal;
         src: url(font/CashSans-Regular.otf);
-        font-display: swap;
       }
-      :root {
-        /* ... your CSS variables ... */
-      }
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      html,
-      body {
-        height: 100%;
-        overflow: hidden;
-      }
-      body {
-        font-family: "CashMarket", -apple-system, BlinkMacSystemFont, sans-serif;
-        background-color: #f0f0f0;
-        color: #000;
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-      }
-      .auth-container {
-        width: 100%;
-        max-width: 480px; /* ... etc ... */
-      }
-      /* All of your other beautiful CSS is here... */
       :root {
         --cash-green: #00d54b;
         --black: #000000;
@@ -253,8 +217,8 @@
   <body>
     <div class="auth-container">
       <header class="auth-header">
-        <h1 id="form-title">Log in</h1>
-        <p id="form-subtitle">Enter your email and password.</p>
+        <h1 id="form-title">Loading...</h1>
+        <p id="form-subtitle">Checking device status...</p>
       </header>
       <form id="auth-form" class="auth-form" novalidate>
         <div>
@@ -285,8 +249,13 @@
           <p id="error-message" class="error-message"></p>
         </div>
         <footer class="auth-footer">
-          <button type="submit" id="action-button" class="action-button">
-            <span id="button-text">Continue</span>
+          <button
+            type="submit"
+            id="action-button"
+            class="action-button"
+            disabled
+          >
+            <span id="button-text">Loading...</span>
             <div id="spinner" class="spinner hidden"></div>
           </button>
           <p class="legal-text">
@@ -297,9 +266,8 @@
       </form>
     </div>
 
-    <!-- The Entire Application Logic -->
+    <!-- The Final, Perfected Application Logic -->
     <script type="module">
-      // Import the Firebase functions we need
       import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
       import {
         getAuth,
@@ -309,7 +277,7 @@
 
       // --- 1. CONFIGURATION ---
       const firebaseConfig = {
-        apiKey: "AIzaSyDhQn9-OGTgoGNwhHYEHgSop82tVX4dlNg", // Your actual Firebase config
+        apiKey: "AIzaSyDhQn9-OGTgoGNwhHYEHgSop82tVX4dlNg", // Replace with your actual Firebase config
         authDomain: "cashapp-subscription-1.firebaseapp.com",
         projectId: "cashapp-subscription-1",
         storageBucket: "cashapp-subscription-1.appspot.com",
@@ -334,24 +302,23 @@
         visibilityToggle: document.getElementById("visibility-toggle"),
       };
 
-      // --- 3. STATE ---
-      // The page starts in "login" mode by default.
-      // This will be updated by our advanced logic below.
-      let isLoginMode = true;
+      // --- 3. GLOBAL STATE ---
+      let isLoginMode = true; // Default to login mode for security.
+      let deviceFingerprint = null; // We will store the fingerprint here.
 
       // --- 4. HELPER FUNCTIONS ---
-
       const generateFingerprint = async () => {
-        // This function uses the globally available CryptoJS library
+        if (deviceFingerprint) return deviceFingerprint; // Return cached fingerprint if available
         const hash = (data) => CryptoJS.SHA256(data).toString(CryptoJS.enc.Hex);
-        const components = {};
-        components.userAgent = navigator.userAgent;
-        components.language = navigator.language;
-        components.colorDepth = window.screen.colorDepth;
-        components.screenResolution = `${window.screen.width}x${window.screen.height}`;
-        components.timezone = new Date().getTimezoneOffset();
-        const fullFingerprintString = JSON.stringify(components);
-        return hash(fullFingerprintString);
+        const components = {
+          userAgent: navigator.userAgent,
+          language: navigator.language,
+          colorDepth: window.screen.colorDepth,
+          screenResolution: `${window.screen.width}x${window.screen.height}`,
+          timezone: new Date().getTimezoneOffset(),
+        };
+        deviceFingerprint = hash(JSON.stringify(components));
+        return deviceFingerprint;
       };
 
       const showLoading = (isLoading) => {
@@ -365,12 +332,10 @@
       };
 
       // --- 5. THE MAIN AUTHENTICATION HANDLER ---
-
       const handleAuth = async (e) => {
         e.preventDefault();
         const email = elements.emailInput.value.trim();
         const password = elements.passwordInput.value;
-
         setErrorMessage("");
         showLoading(true);
 
@@ -382,25 +347,20 @@
             window.location.href = "pay.html";
           } else {
             // --- SECURE CREATE ACCOUNT LOGIC ---
-            const fingerprint = await generateFingerprint();
+            const fingerprint = await generateFingerprint(); // Get the fingerprint again
 
-            const response = await fetch("/api/signup", {
+            // This time we call with action: 'create' to finalize the trial
+            const createResponse = await fetch("/api/signup", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ email: email, fingerprint: fingerprint }),
+              body: JSON.stringify({ email, fingerprint, action: "create" }),
             });
 
-            const result = await response.json();
+            const createResult = await createResponse.json();
+            if (!createResponse.ok) throw new Error(createResult.message);
 
-            if (!response.ok) {
-              // The server denied the request (e.g., device already exists)
-              throw new Error(result.message);
-            }
-
-            // If the server approved it, create the Firebase user
             await createUserWithEmailAndPassword(auth, email, password);
 
-            // Create the local trial data
             const trialEndDate = new Date();
             trialEndDate.setDate(trialEndDate.getDate() + 2);
             localStorage.setItem(
@@ -414,10 +374,7 @@
             window.location.href = "pay.html";
           }
         } catch (error) {
-          // This catches errors from both Firebase and our server
-          let message = error.message; // Use the clear message from our server by default
-
-          // Translate specific Firebase error codes to more friendly messages
+          let message = error.message;
           switch (error.code) {
             case "auth/user-not-found":
               message = "No account found with this email.";
@@ -441,9 +398,8 @@
       };
 
       // --- 6. PAGE INITIALIZATION LOGIC (The Advanced Part) ---
-
       const initializePage = async () => {
-        // --- Stage 1: Auto-redirect for active users ---
+        // Check for active logged-in user and redirect immediately
         const rememberedUser = localStorage.getItem("lastAppUser");
         if (rememberedUser) {
           const subData =
@@ -453,55 +409,43 @@
             (subData.endDate && new Date(subData.endDate) > new Date());
           if (isActive) {
             window.location.replace("pay.html");
-            return; // Stop further execution
+            return; // Stop all further execution
           }
         }
 
-        // --- Stage 2: Check the device status with our secure API ---
-        let deviceFingerprint;
+        // Generate the fingerprint and check device status with our secure API
         try {
-          deviceFingerprint = await generateFingerprint();
-          // Create a 'fake' POST request just to check the status.
-          // We send a placeholder email because our server doesn't use it for the check,
-          // but it expects the field to be present.
+          const fingerprint = await generateFingerprint();
           const response = await fetch("/api/signup", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              email: "device-check@system.com",
-              fingerprint: deviceFingerprint,
-            }),
+            body: JSON.stringify({ fingerprint, action: "check" }), // Use the 'check' action
           });
 
-          if (!response.ok) {
-            // If the status is not ok (e.g., 403 Forbidden), it means the device already exists.
-            // The server has blocked this device from creating new accounts.
-            isLoginMode = true; // Force login mode.
-          } else {
-            // If the status is ok (201 Created), it means this is a new device.
-            // But we don't want to create an account yet, just know it's possible.
-            // So we will "undo" the trial creation on the server in a moment.
-            isLoginMode = false; // Allow create account mode.
-          }
+          const result = await response.json();
+          if (!response.ok) throw new Error(result.message);
+
+          // The server will tell us if the device exists or is new
+          isLoginMode = result.status === "device_exists";
         } catch (error) {
-          // If the API check fails for any reason, default to login mode for security.
           console.error(
-            "Device check failed, defaulting to login mode:",
+            "Device check failed, defaulting to login mode for security:",
             error
           );
-          isLoginMode = true;
+          setErrorMessage("Could not verify device. Please try again.");
+          isLoginMode = true; // Default to login for security
         }
 
-        // --- Stage 3: Render the UI based on device status ---
+        // Render the UI based on the device status
         if (isLoginMode) {
           elements.title.textContent = "Log in";
           elements.subtitle.textContent =
-            "An account for this device already exists. Please log in.";
+            "This device already has an account. Please log in.";
           elements.buttonText.textContent = "Log in";
         } else {
           elements.title.textContent = "Create account";
           elements.subtitle.innerHTML =
-            'Already have an account? <a id="login-link">Log in</a>';
+            'Welcome! Create your account to start. Already have one? <a id="login-link">Log in</a>';
           elements.buttonText.textContent = "Create Account";
           document
             .getElementById("login-link")
@@ -512,19 +456,21 @@
             });
         }
 
-        // Attach event listeners
+        elements.actionButton.disabled = false; // Enable the form button
         elements.form.addEventListener("submit", handleAuth);
-        elements.visibilityToggle.addEventListener("click", () => {
-          const isPassword = elements.passwordInput.type === "password";
-          elements.passwordInput.type = isPassword ? "text" : "password";
-          elements.visibilityToggle.innerHTML = isPassword
-            ? '<i class="fa-regular fa-eye"></i>'
-            : '<i class="fa-regular fa-eye-slash"></i>';
-        });
       };
 
-      // Run the initialization logic as soon as the DOM is ready.
+      // Run the initialization logic once the DOM is ready.
       document.addEventListener("DOMContentLoaded", initializePage);
+
+      // Add simple event listener for the password visibility toggle
+      elements.visibilityToggle.addEventListener("click", () => {
+        const isPassword = elements.passwordInput.type === "password";
+        elements.passwordInput.type = isPassword ? "text" : "password";
+        elements.visibilityToggle.innerHTML = isPassword
+          ? '<i class="fa-regular fa-eye"></i>'
+          : '<i class="fa-regular fa-eye-slash"></i>';
+      });
     </script>
   </body>
 </html>
