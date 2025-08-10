@@ -1,8 +1,8 @@
 {
-  "name": "cash-prank-secure-api",
+  "name": "my-secure-auth-project",
   "version": "1.0.0",
-  "description": "Secure API for trial checks",
+  "private": true,
   "dependencies": {
-    "lowdb": "1.0.0"
+    "firebase-admin": "^11.5.0"
   }
 }
