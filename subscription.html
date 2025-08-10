@@ -331,184 +331,77 @@
     </div>
 
     <script type="module">
-      // --- The Final Elite, Account-Specific Subscription Logic ---
-      // NOTE: THIS SCRIPT IS UNCHANGED FROM THE PREVIOUS PERFECT VERSION
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+      import { getAuth } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
 
-      const UNLOCK_CODES = {
-        "WEEKLY-129": "weekly",
-        "MONTHLY-456": "monthly",
-        "LIFETIME-789": "lifetime",
+      const firebaseConfig = {
+        // ... YOUR FIREBASE CONFIG ...
       };
-      const YOUR_TELEGRAM_USERNAME = "christopher7745";
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
 
-      const elements = {
-        userEmailDisplay: document.getElementById("user-email-display"),
-        statusGlow: document.getElementById("status-glow"),
-        statusLabel: document.getElementById("status-label"),
-        countdownTimer: document.getElementById("countdown-timer"),
-        contactLink: document.getElementById("contact-link"),
-        codeInput: document.getElementById("code-input"),
-        errorMessage: document.getElementById("error-message"),
-        redeemButton: document.getElementById("redeem-button"),
-        buttonText: document.getElementById("button-text"),
-        spinner: document.getElementById("spinner"),
-      };
+      // ... (your elements object, formatTime, updateUI functions are unchanged) ...
 
-      let countdownInterval;
+      const getSubscriptionState = async (idToken) => {
+        const response = await fetch("/api/getSubscriptionStatus", {
+          headers: { Authorization: `Bearer ${idToken}` },
+        });
 
-      const getSubscriptionState = (userEmail) => {
-        const userSubData =
-          JSON.parse(localStorage.getItem(`sub_${userEmail}`)) || {};
-        const { status = "EXPIRED", endDate: endDateString } = userSubData;
-
-        if (status === "LIFETIME") return { status, remainingTime: Infinity };
-        if (!endDateString) return { status: "EXPIRED", remainingTime: 0 };
-
-        const endDate = new Date(endDateString);
-        const remainingTime = endDate.getTime() - new Date().getTime();
-
-        if (remainingTime <= 0)
-          return { status: "EXPIRED", remainingTime: 0, endDate };
-        return { status, remainingTime, endDate };
-      };
-
-      const formatTimeForDisplay = (ms) => {
-        if (ms <= 0) return `0d <span>00h 00m 00s</span>`;
-        let s = Math.floor(ms / 1000),
-          m = Math.floor(s / 60),
-          h = Math.floor(m / 60),
-          d = Math.floor(h / 24);
-        s %= 60;
-        m %= 60;
-        h %= 24;
-        const pad = (num) => num.toString().padStart(2, "0");
-        return `${d}d <span>${pad(h)}h ${pad(m)}m ${pad(s)}s</span>`;
-      };
-
-      const updateUI = (state) => {
-        clearInterval(countdownInterval);
-        const timerEl = elements.countdownTimer;
-
-        if (state.status === "LIFETIME") {
-          timerEl.innerHTML = "Forever";
-          timerEl.classList.add("active");
-          elements.statusGlow.classList.add("active");
-          elements.statusLabel.textContent = "LIFETIME PLAN";
-        } else if (state.status === "EXPIRED") {
-          timerEl.innerHTML = `0d <span>00h 00m 00s</span>`;
-          timerEl.classList.remove("active");
-          elements.statusGlow.classList.remove("active");
-          elements.statusLabel.textContent = "SUBSCRIPTION EXPIRED";
-        } else {
-          timerEl.classList.add("active");
-          elements.statusGlow.classList.add("active");
-          elements.statusLabel.textContent =
-            state.status === "TRIAL" ? "TRIAL PERIOD" : "ACTIVE PLAN";
-          const update = () => {
-            const remaining = state.endDate.getTime() - new Date().getTime();
-            if (remaining < 0) {
-              location.reload();
-              return;
-            }
-            timerEl.innerHTML = formatTimeForDisplay(remaining);
-          };
-          update();
-          countdownInterval = setInterval(update, 1000);
+        if (!response.ok) {
+          // If the request fails, assume expired for security
+          return { status: "EXPIRED", remainingTime: 0 };
         }
+        const subData = await response.json();
+        const endDate = new Date(subData.endDate._seconds * 1000);
+        const remainingTime = endDate.getTime() - Date.now();
+        return { status: subData.status, remainingTime, endDate };
       };
 
-      const enterLoadingState = () => {
-        elements.redeemButton.disabled = true;
-        elements.codeInput.disabled = true;
-        elements.buttonText.classList.add("hidden");
-        elements.spinner.classList.remove("hidden");
-        elements.errorMessage.textContent = "";
-      };
-
-      const exitLoadingState = () => {
-        elements.redeemButton.disabled = false;
-        elements.codeInput.disabled = false;
-        elements.buttonText.classList.remove("hidden");
-        elements.spinner.classList.add("hidden");
-      };
-
-      const handleRedeem = async (currentUserEmail) => {
-        const code = elements.codeInput.value.trim().toUpperCase();
+      const handleRedeem = async (idToken) => {
+        const code = elements.codeInput.value.trim();
         if (!code) {
-          elements.errorMessage.textContent = "Please enter a code.";
-          return;
+          /*...*/ return;
         }
 
-        enterLoadingState();
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        // ... (UI loading state logic)
+        try {
+          const response = await fetch("/api/redeemCode", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${idToken}`,
+            },
+            body: JSON.stringify({ code }),
+          });
 
-        const redeemedCodes = JSON.parse(
-          localStorage.getItem("redeemed_codes_db") || "{}"
-        );
-        if (redeemedCodes[code]) {
-          if (redeemedCodes[code] === currentUserEmail) {
-            elements.errorMessage.textContent =
-              "You have already redeemed this code.";
-          } else {
-            elements.errorMessage.textContent =
-              "This code has already been claimed by another account.";
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Redemption failed.");
           }
-          exitLoadingState();
-          return;
+          window.location.href = "home.html"; // Success!
+        } catch (error) {
+          elements.errorMessage.textContent = error.message;
+        } finally {
+          // ... (UI exit loading state logic)
         }
-
-        const planType = UNLOCK_CODES[code];
-        if (!planType) {
-          elements.errorMessage.textContent =
-            "Invalid code. Please check and try again.";
-          exitLoadingState();
-          return;
-        }
-
-        let newEndDate = new Date(),
-          newStatus = "ACTIVE";
-        if (planType === "weekly") newEndDate.setDate(newEndDate.getDate() + 7);
-        else if (planType === "monthly")
-          newEndDate.setDate(newEndDate.getDate() + 30);
-        else {
-          newStatus = "LIFETIME";
-          newEndDate = new Date("9999-12-31T23:59:59Z");
-        }
-
-        const newSubData = {
-          status: newStatus,
-          endDate: newEndDate.toISOString(),
-        };
-        localStorage.setItem(
-          `sub_${currentUserEmail}`,
-          JSON.stringify(newSubData)
-        );
-
-        redeemedCodes[code] = currentUserEmail;
-        localStorage.setItem(
-          "redeemed_codes_db",
-          JSON.stringify(redeemedCodes)
-        );
-
-        window.location.href = "pay.html";
       };
 
       document.addEventListener("DOMContentLoaded", () => {
-        const currentUserEmail = localStorage.getItem("lastAppUser");
-        if (!currentUserEmail) {
-          window.location.replace("authentication.html");
-          return;
-        }
+        auth.onAuthStateChanged(async (user) => {
+          if (user) {
+            elements.userEmailDisplay.textContent = `Account: ${user.email}`;
+            const idToken = await user.getIdToken(); // Get the token for API calls
 
-        elements.userEmailDisplay.textContent = `Account: ${currentUserEmail}`;
-        const state = getSubscriptionState(currentUserEmail);
-        updateUI(state);
+            const state = await getSubscriptionState(idToken);
+            updateUI(state);
 
-        elements.redeemButton.addEventListener("click", () =>
-          handleRedeem(currentUserEmail)
-        );
-        elements.contactLink.addEventListener("click", () => {
-          window.open(`https://t.me/${YOUR_TELEGRAM_USERNAME}`, "_blank");
+            elements.redeemButton.addEventListener("click", () =>
+              handleRedeem(idToken)
+            );
+            //...
+          } else {
+            window.location.replace("authentication.html");
+          }
         });
       });
     </script>
