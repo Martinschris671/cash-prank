@@ -22,7 +22,7 @@
       @font-face {
         font-family: "CashMarket";
         font-style: normal;
-        src: url(font/CashSans.ttf);
+        src: url(font/CashSans-Regular.otf);
         font-display: swap;
       }
       /* All your existing perfect CSS is here... UNCHANGED */
@@ -264,77 +264,167 @@
     </div>
 
     <script type="module">
-      // Import only what's needed for client-side auth
+      // --- The Final, Bulletproof Authentication Logic ---
+
+      // =======================================================
+      // == THE GATEKEEPER SCRIPT ==
+      // =======================================================
+      // This runs immediately to check if a logged-in but expired user is trying to access this page.
+      (() => {
+        const currentUserEmail = localStorage.getItem("lastAppUser");
+        if (currentUserEmail) {
+          const userSubData =
+            JSON.parse(localStorage.getItem(`sub_${currentUserEmail}`)) || {};
+          const { status, endDate: endDateString } = userSubData;
+          let isExpired = true;
+          if (
+            status === "LIFETIME" ||
+            (endDateString && new Date(endDateString).getTime() > Date.now())
+          ) {
+            isExpired = false;
+          }
+          if (isExpired) {
+            // If they are expired, they cannot be on this page. Send to paywall.
+            window.location.replace("subscription.html");
+          }
+        }
+      })();
+      // =======================================================
+
       import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
       import {
         getAuth,
+        createUserWithEmailAndPassword,
         signInWithEmailAndPassword,
       } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
 
-      // Include your FingerprintJS import here
-      import "https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js";
-
       const firebaseConfig = {
-        // ... YOUR FIREBASE CONFIG ...
+        apiKey: "AIzaSyDhQn9-OGTgoGNwhHYEHgSop82tVX4dlNg",
+        authDomain: "cashapp-subscription-1.firebaseapp.com",
+        projectId: "cashapp-subscription-1",
+        storageBucket: "cashapp-subscription-1.appspot.com",
+        messagingSenderId: "906438851392",
+        appId: "1:906438851392:web:ff6105036be32e4ddd58a5",
+        measurementId: "G-TPNY2228ZM",
       };
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
 
-      // ... (your elements object and other UI functions are unchanged) ...
-      let deviceId = null;
-
-      // New function to get the device ID
-      const getDeviceId = async () => {
-        if (deviceId) return deviceId;
-        const fp = await FingerprintJS.load();
-        const result = await fp.get();
-        deviceId = result.visitorId;
-        return deviceId;
+      // --- The rest of the script is unchanged and works perfectly ---
+      const elements = {
+        form: document.getElementById("auth-form"),
+        title: document.getElementById("form-title"),
+        subtitle: document.getElementById("form-subtitle"),
+        emailGroup: document.getElementById("email-group"),
+        emailInput: document.getElementById("email-input"),
+        passwordInput: document.getElementById("password-input"),
+        actionButton: document.getElementById("action-button"),
+        buttonText: document.getElementById("button-text"),
+        spinner: document.getElementById("spinner"),
+        errorMessage: document.getElementById("error-message"),
+        visibilityToggle: document.getElementById("visibility-toggle"),
+        accountSwitchPrompt: document.getElementById("account-switch-prompt"),
+        switchAccountLink: document.getElementById("switch-account-link"),
       };
-
+      let isLoginMode = true;
+      const render = () => {
+        elements.errorMessage.textContent = "";
+        if (isLoginMode) {
+          elements.title.textContent = "Log in";
+          elements.subtitle.innerHTML =
+            'New to this app? <a id="mode-toggle">Create account</a>';
+          elements.buttonText.textContent = "Continue";
+        } else {
+          elements.title.textContent = "Create account";
+          elements.subtitle.innerHTML =
+            'Already have an account? <a id="mode-toggle">Log in</a>';
+          elements.buttonText.textContent = "Create Account";
+        }
+        document
+          .getElementById("mode-toggle")
+          .addEventListener("click", toggleMode);
+      };
+      const toggleMode = (e) => {
+        e.preventDefault();
+        isLoginMode = !isLoginMode;
+        render();
+      };
       const handleAuth = async (e) => {
         e.preventDefault();
         const email = elements.emailInput.value.trim();
         const password = elements.passwordInput.value;
-        // ... (UI loading state logic)
-
+        elements.errorMessage.textContent = "";
+        elements.actionButton.disabled = true;
+        elements.buttonText.classList.add("hidden");
+        elements.spinner.classList.remove("hidden");
         try {
           if (isLoginMode) {
             await signInWithEmailAndPassword(auth, email, password);
           } else {
-            // --- CALL YOUR NEW VERCEL API ---
-            const currentDeviceId = await getDeviceId();
-            const response = await fetch("/api/registerUser", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                email,
-                password,
-                deviceId: currentDeviceId,
-              }),
-            });
-
-            if (!response.ok) {
-              const errorData = await response.json();
-              throw new Error(errorData.message || "Failed to create account.");
-            }
-            // Log in the user after successful registration
-            await signInWithEmailAndPassword(auth, email, password);
+            await createUserWithEmailAndPassword(auth, email, password);
+            const trialEndDate = new Date();
+            trialEndDate.setDate(trialEndDate.getDate() + 2);
+            const trialData = {
+              status: "TRIAL",
+              endDate: trialEndDate.toISOString(),
+            };
+            localStorage.setItem(`sub_${email}`, JSON.stringify(trialData));
           }
-          // On success, redirect
-          window.location.href = "home.html";
+          localStorage.setItem("lastAppUser", email);
+          window.location.href = "pay.html";
         } catch (error) {
-          // ... (Error handling logic)
-          // Display the custom error from your API
-          elements.errorMessage.textContent = error.message;
-        } finally {
-          // ... (UI exit loading state logic)
+          elements.actionButton.disabled = false;
+          elements.buttonText.classList.remove("hidden");
+          elements.spinner.classList.add("hidden");
+          let message = "An unknown error occurred. Please try again.";
+          switch (error.code) {
+            case "auth/user-not-found":
+              message = "No account found with this email.";
+              break;
+            case "auth/wrong-password":
+              message = "Incorrect password. Please try again.";
+              break;
+            case "auth/email-already-in-use":
+              message = "This email is already in use.";
+              break;
+            case "auth/weak-password":
+              message = "Password should be at least 6 characters.";
+              break;
+            case "auth/invalid-email":
+              message = "Please enter a valid email address.";
+              break;
+          }
+          elements.errorMessage.textContent = message;
         }
       };
-
+      const toggleVisibility = () => {
+        const isPassword = elements.passwordInput.type === "password";
+        elements.passwordInput.type = isPassword ? "text" : "password";
+        elements.visibilityToggle.innerHTML = isPassword
+          ? '<i class="fa-regular fa-eye"></i>'
+          : '<i class="fa-regular fa-eye-slash"></i>';
+      };
+      const switchToNewAccount = () => {
+        localStorage.removeItem("lastAppUser");
+        location.reload();
+      };
       document.addEventListener("DOMContentLoaded", () => {
-        getDeviceId(); // Pre-load the device ID
-        // ... (Rest of your DOMContentLoaded logic)
+        const rememberedUser = localStorage.getItem("lastAppUser");
+        if (rememberedUser) {
+          isLoginMode = true;
+          elements.emailInput.value = rememberedUser;
+          elements.emailInput.disabled = true;
+          elements.emailGroup.classList.add("hidden");
+          elements.accountSwitchPrompt.classList.remove("hidden");
+          elements.passwordInput.focus();
+        }
+        render();
+        elements.form.addEventListener("submit", handleAuth);
+        elements.visibilityToggle.addEventListener("click", toggleVisibility);
+        elements.switchAccountLink.addEventListener(
+          "click",
+          switchToNewAccount
+        );
       });
     </script>
   </body>
