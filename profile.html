@@ -16,11 +16,9 @@
         --secondary-text: #6c6c6c;
         --background-main: #ffffff;
         --background-alt: #f0f1f2;
-        --background-hover: #f5f5f5;
         --divider-color: #e5e5e5;
         --chevron-color: #8e8e93;
         --green-accent: #00d54b;
-        --ripple-color: rgba(0, 0, 0, 0.1);
         --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
           sans-serif;
       }
@@ -157,11 +155,7 @@
         cursor: pointer;
         transition: background-color 0.2s ease-in-out;
       }
-      .list-item:hover,
-      .header-icon-button:hover,
-      .edit-header-button:hover {
-        background-color: var(--background-hover);
-      }
+
       .list-item-icon-bg {
         width: 40px;
         height: 40px;
@@ -348,19 +342,40 @@
         stroke: var(--chevron-color);
       }
 
-      .ripple {
-        position: absolute;
-        border-radius: 50%;
-        background-color: var(--ripple-color);
-        transform: scale(0);
-        animation: ripple-animation 600ms linear;
-        pointer-events: none;
+      /* New Footer Styles */
+      .page-footer {
+        text-align: center;
+        padding: 24px 28px 0;
       }
-      @keyframes ripple-animation {
-        to {
-          transform: scale(4);
-          opacity: 0;
-        }
+      .footer-shield-icon {
+        width: 32px;
+        height: 32px;
+        margin: 0 auto 16px;
+        display: block;
+      }
+      .footer-text {
+        font-size: 13px;
+        line-height: 1.5;
+        color: var(--secondary-text);
+        margin: 0 0 24px;
+      }
+      .footer-text a {
+        color: var(--primary-text);
+        text-decoration: underline;
+      }
+      .footer-social-links {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        margin-bottom: 24px;
+      }
+      .footer-social-icon {
+        width: 24px;
+        height: 24px;
+      }
+      .footer-version {
+        font-size: 13px;
+        color: var(--secondary-text);
       }
     </style>
   </head>
@@ -368,7 +383,7 @@
     <header class="header">
       <a href="home.html" class="header-icon-button" aria-label="Close">
         <img
-          src="icon/new_close_Normal_monochrome-black.png"
+          src="icon/new_close_Normal_monochrome-black (1).png"
           alt="Close"
           class="icon-img-lg"
         />
@@ -376,14 +391,14 @@
       <div class="header-icons">
         <button class="header-icon-button" aria-label="QR Code">
           <img
-            src="icon/navigationScanQr_Normal_Normal@2x_1_monochrome-black.png"
+            src="icon/navigationScanQr_Normal_Normal@2x_1_monochrome-black (1).png"
             alt="QR Code"
             class="icon-img-md"
           />
         </button>
         <button class="header-icon-button" aria-label="Upload">
           <img
-            src="icon/navigationShareIos_Normal_Normal@2x_monochrome-black.png"
+            src="icon/navigationShareIos_Normal_Normal@2x_monochrome-black (1).png"
             alt="Upload"
             class="icon-img-md"
           />
@@ -605,8 +620,106 @@
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
           </a>
+          <!-- START OF NEW CONTENT -->
+          <a href="#" class="list-item">
+            <img src="icon/theme_Normal.png" alt="" class="icon-img-sm" />
+            <span class="settings-item-text">Themes</span>
+            <svg
+              class="chevron"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="width: 20px; height: 20px"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="list-item">
+            <img
+              src="icon/document24_Normal_Normal@3x_monochrome-black.png"
+              alt=""
+              class="icon-img-sm"
+            />
+            <span class="settings-item-text">Documents</span>
+            <svg
+              class="chevron"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="width: 20px; height: 20px"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="list-item">
+            <img
+              src="icon/navigationHelp_Normal_Normal@3x_monochrome-black.png"
+              alt=""
+              class="icon-img-sm"
+            />
+            <span class="settings-item-text">Support</span>
+            <svg
+              class="chevron"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="width: 20px; height: 20px"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+          <!-- END OF NEW CONTENT -->
         </nav>
       </main>
+
+      <!-- START OF NEW FOOTER -->
+      <footer class="page-footer">
+        <img
+          src="icon/fdic32_Normal_Normal@3x_1_custom-tint.png"
+          alt="Security Shield"
+          class="footer-shield-icon"
+        />
+        <p class="footer-text">
+          Your balance is eligible for FDIC pass-through insurance through our
+          Program Banks Wells Fargo Bank, N.A. and/or Sutton Bank, Members FDIC
+          for up to $250,000 per customer when aggregated with all other
+          deposits held in the same legal capacity at each Program Bank above,
+          if certain conditions are met.
+        </p>
+        <p class="footer-text">
+          Cash App is a financial services platform, and not an FDIC-insured
+          bank. Prepaid debit cards issued by Sutton Bank, Member FDIC.
+          <a href="#">See terms and conditions.</a>
+        </p>
+        <p class="footer-text">
+          Cash App's <a href="#">Privacy Notice</a>,
+          <a href="#">Terms of Service</a> and
+          <a href="#">Open Source Software</a>
+        </p>
+        <div class="footer-social-links">
+          <a href="#">
+            <img
+              src="icon/instagram-2_Normal.png"
+              alt="Instagram"
+              class="footer-social-icon"
+            />
+          </a>
+          <a href="#">
+            <img src="icon/x_Normal.png" alt="X" class="footer-social-icon" />
+          </a>
+        </div>
+        <p class="footer-version">Version 2.86 (2860041)</p>
+      </footer>
+      <!-- END OF NEW FOOTER -->
     </div>
 
     <div class="personal-edit-overlay" id="personal-edit-overlay">
@@ -617,7 +730,7 @@
           aria-label="Back"
         >
           <img
-            src="icon/back_Normal@2x_monochrome-black.png"
+            src="icon/backArrow_Normal_monochrome-black.png"
             alt="Back"
             class="icon-img-md"
           />
@@ -661,29 +774,6 @@
 
     <!-- SCRIPTS -->
     <script>
-      // RIPPLE EFFECT SCRIPT
-      document
-        .querySelectorAll(
-          ".header-icon-button, .list-item, .edit-header-button, #main-profile-picture-container, #main-cashtag-container"
-        )
-        .forEach((element) => {
-          element.addEventListener("mousedown", function (e) {
-            const rect = this.getBoundingClientRect();
-            const ripple = document.createElement("span");
-            ripple.className = "ripple";
-            ripple.style.height = ripple.style.width =
-              Math.max(rect.width, rect.height) + "px";
-            this.appendChild(ripple);
-            const top = e.clientY - rect.top - ripple.offsetHeight / 2;
-            const left = e.clientX - rect.left - ripple.offsetWidth / 2;
-            ripple.style.top = top + "px";
-            ripple.style.left = left + "px";
-            setTimeout(() => {
-              ripple.remove();
-            }, 600);
-          });
-        });
-
       // ADVANCED FUNCTIONAL SCRIPT
       const userProfileKey = "cashAppUserProfile";
       let userProfile = {};
