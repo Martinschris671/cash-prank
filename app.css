@@ -106,7 +106,7 @@ a {
 
 .card {
   background-color: var(--card-bg-color);
-  border-radius: var(--border-radius-card);
+  border-radius: 20px;
   padding: 20px;
   margin-bottom: 12px;
 }
@@ -122,8 +122,8 @@ a {
   background-color: var(--card-bg-color);
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  border-bottom-left-radius: var(--border-radius-card);
-  border-bottom-right-radius: var(--border-radius-card);
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
   padding: 12px 20px;
   border-top: 1px solid var(--app-bg-color);
   display: flex;
