@@ -209,7 +209,7 @@ a {
   gap: 16px;
   cursor: pointer;
   position: relative;
-  border-bottom: 1px solid var(--border-color-light);
+  /* border-bottom: 1px solid var(--border-color-light); */ /* This line is removed as requested */
 }
 .list-item:last-child {
   border-bottom: none;
@@ -967,3 +967,48 @@ input[type="range"]::-webkit-slider-thumb {
     border-radius: 20px 20px 0 0;
   }
 }
+
+/* --- START: NEW AND MODIFIED STYLES --- */
+
+/* 1. Inset border for the "More ways to add money" list */
+.more-ways-list .list-item:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  /* (item padding 16px) + (icon width 24px) + (gap 16px) = 56px */
+  left: 12px;
+  right: 12px;
+  height: 1px;
+  background-color: var(--border-color-light);
+}
+
+/* 2. Styles for the new footer disclaimer section */
+.footer-info-section {
+  text-align: center;
+  padding: 24px 10px 0;
+}
+
+.footer-shield-icon {
+  width: 28px;
+  height: 28px;
+  margin: 0 auto 16px;
+  opacity: 0.6;
+}
+
+.footer-disclaimer-text {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.footer-disclaimer-text:last-of-type {
+  margin-bottom: 0;
+}
+
+.footer-disclaimer-text a {
+  color: var(--text-primary);
+  font-weight: 600;
+  text-decoration: underline;
+}
+/* --- END: NEW AND MODIFIED STYLES --- */
