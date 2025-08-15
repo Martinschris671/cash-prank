@@ -264,32 +264,38 @@ function hideAllModals() {
 }
 
 function showSuccessOverlay(type, amount) {
-  const successIconEl = document.getElementById("success-icon");
+  const successIconContainer = document.querySelector(".success-checkmark");
   const successMessageEl = document.getElementById("success-message");
   let message;
-  let iconClass;
+  let iconHTML;
 
-  if (type === "add") {
-    message = `You added ${formatCurrency(amount)} to your Cash App`;
-    iconClass = "fas fa-check";
-  } else if (type === "standard") {
-    const arrivalDay = calculateArrivalDay(3);
-    message = `${formatCurrency(
-      amount
-    )} will be available in your external bank account ${arrivalDay}`;
-    iconClass = "fas fa-check";
-  } else if (type === "instant") {
+  // Use the image for "add" and "standard" types
+  if (type === "add" || type === "standard") {
+    iconHTML =
+      '<img src="icon/check32_Normal_Normal@3x_monochrome-white.png" alt="Success" />';
+
+    if (type === "add") {
+      message = `You added ${formatCurrency(amount)} to your Cash App`;
+    } else {
+      const arrivalDay = calculateArrivalDay(3);
+      message = `${formatCurrency(
+        amount
+      )} will be available in your external bank account ${arrivalDay}`;
+    }
+  }
+  // Use the Font Awesome bolt icon for "instant" type
+  else if (type === "instant") {
+    iconHTML = '<i class="fa-solid fa-bolt"></i>';
     message = `${formatCurrency(
       amount
     )} was transferred instantly to your bank account`;
-    iconClass = "fas fa-bolt";
   }
 
-  successIconEl.className = iconClass;
+  // Set the content of the container and the message
+  successIconContainer.innerHTML = iconHTML;
   successMessageEl.innerHTML = message;
   successOverlay.classList.add("show");
 }
-
 function hideSuccessOverlay() {
   successOverlay.classList.remove("show");
 }
