@@ -623,11 +623,77 @@
       );
       const detailsOverlay = document.getElementById("details-overlay");
       const searchInput = document.getElementById("search-input");
+      // ========================================================================
+      // --- START: PROFILE ICON GENERATOR (PASTE THIS CODE) ---
+      // ========================================================================
+
+      const DEFAULT_ICON_PATH =
+        "icon/avatarFill16_Normal_Normal@3x_monochrome-white.png"; // Make sure you have this icon file
+
+      /**
+       * Creates a default user profile, selects a random icon color ONCE,
+       * and saves the entire profile (including the color) to local storage.
+       */
+      function initializeUserProfile() {
+        // A curated palette of mature, deep colors.
+        const colors = [
+          "#C62828", // Deep Red
+          "#1565C0", // Strong Blue
+          "#2E7D32", // Forest Green
+          "#5E35B1", // Deep Purple
+          "#00695C", // Dark Teal
+          "#E65100", // Burnt Orange
+          "#546E7A", // Slate Gray
+          "#8B572A", // Brown
+        ];
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+        const newProfile = {
+          fullName: "Punchmadedomo", // Uses the name from your script
+          profilePic: null,
+          defaultIconColor: randomColor, // The chosen color is saved permanently
+        };
+
+        localStorage.setItem(userProfileKey, JSON.stringify(newProfile));
+        return newProfile;
+      }
+
+      /**
+       * Generates the HTML for the profile icon.
+       * It uses the real profile picture if it exists.
+       * Otherwise, it uses the SAVED background color and perfected alignment.
+       */
+      function generateProfileIcon(profile) {
+        if (profile && profile.profilePic) {
+          return `<img src="${profile.profilePic}" alt="Profile" class="profile-icon">`;
+        }
+
+        const backgroundColor = profile.defaultIconColor || "#546E7A"; // Fallback color
+
+        // Inner icon size is 55% for perfect visual centering
+        return `
+        <div style="
+            background-color: ${backgroundColor};
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        ">
+            <img src="${DEFAULT_ICON_PATH}" alt="Profile" style="width: 55%; height: 55%; object-fit: contain;">
+        </div>
+    `;
+      }
+      // ========================================================================
+      // --- END: PROFILE ICON GENERATOR ---
+      // ========================================================================
 
       const userProfileKey = "cashAppUserProfile",
         contactStorageKey = "cashAppContacts",
         transactionsKey = "cashAppTransactions";
-      const defaultProfile = { fullName: "Punchmadedomo", profilePic: "" };
+
       const defaultContacts = [
         {
           id: 1,
@@ -1156,25 +1222,24 @@
         renderActivity(searchInput.value);
       }
 
+      // NEW FINAL CODE
       document.addEventListener("DOMContentLoaded", () => {
-        const userProfile =
-          JSON.parse(localStorage.getItem(userProfileKey)) || defaultProfile;
-        if (userProfile.profilePic) {
-          profileIconLink.innerHTML = `<img src="${userProfile.profilePic}" alt="Profile" class="profile-icon">`;
-        } else {
-          profileIconLink.innerHTML = `<img src="icons/person-circle-svgrepo-com.png" alt="Profile" class="profile-icon">`;
-        }
+        // This new logic handles everything: loading, initializing, and rendering the icon.
+        const savedProfileJSON = localStorage.getItem(userProfileKey);
+        const userProfile = savedProfileJSON
+          ? JSON.parse(savedProfileJSON)
+          : initializeUserProfile();
+        profileIconLink.innerHTML = generateProfileIcon(userProfile);
 
+        // The rest of your code remains the same
         renderActivity();
 
         searchInput.addEventListener("input", () =>
           renderActivity(searchInput.value)
         );
 
-        // --- FIXED AND UNLOCKED CLICK HANDLER ---
         activityListContainer.addEventListener("click", (e) => {
           const item = e.target.closest(".transaction-item");
-          // This now works for ANY transaction with a data-id
           if (item && item.dataset.id) {
             renderTransactionDetails(item.dataset.id);
           }

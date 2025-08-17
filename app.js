@@ -1,4 +1,6 @@
 const INSTANT_FEE_RATE = 0.013;
+const DEFAULT_ICON_PATH =
+  "icon/avatarFill16_Normal_Normal@3x_monochrome-white.png"; // Path to your static white icon
 
 const balanceAmountEl = document.getElementById("balance-amount"),
   footerBalanceDisplay = document.getElementById("footer-balance-display"),
@@ -20,13 +22,6 @@ let currentBalance = 28104.77,
 const localStorageBalanceKey = "cashAppBalance",
   localStorageTransactionsKey = "cashAppTransactions",
   userProfileKey = "cashAppUserProfile";
-const defaultProfile = {
-  fullName: "Jane Doe",
-  cashtag: "waldoapp",
-  accountNumber: "**2923",
-  routingNumber: "**894",
-  profilePic: "icons/person-circle-svgrepo-com.png",
-};
 
 const lottieSpinnerContainer = document.getElementById(
   "lottie-spinner-container"
@@ -40,6 +35,73 @@ loadingSpinnerAnimation = bodymovin.loadAnimation({
   autoplay: false,
   path: "loader_lm.json",
 });
+
+// ========================================================================
+// --- START: FINALIZED PROFILE ICON LOGIC ---
+// ========================================================================
+
+/**
+ * Creates a default user profile, selects a random icon color ONCE from the new mature palette,
+ * and saves the entire profile (including the color) to local storage.
+ */
+function initializeUserProfile() {
+  // --- NEW: A curated palette of mature, deep colors. Light colors have been removed. ---
+  const colors = [
+    "#C62828", // Deep Red
+    "#1565C0", // Strong Blue
+    "#2E7D32", // Forest Green
+    "#5E35B1", // Deep Purple
+    "#00695C", // Dark Teal
+    "#E65100", // Burnt Orange
+    "#546E7A", // Slate Gray
+    "#8B572A", // Brown
+  ];
+  const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+  const newProfile = {
+    fullName: "Jane Doe",
+    cashtag: "waldoapp",
+    accountNumber: "**2923",
+    routingNumber: "**894",
+    profilePic: null,
+    defaultIconColor: randomColor, // The chosen color is saved permanently
+  };
+
+  localStorage.setItem(userProfileKey, JSON.stringify(newProfile));
+  return newProfile;
+}
+
+/**
+ * Generates the HTML for the profile icon.
+ * It uses the real profile picture if it exists.
+ * Otherwise, it uses the SAVED background color and perfected alignment for the icon.
+ */
+function generateProfileIcon(profile) {
+  if (profile && profile.profilePic) {
+    return `<img src="${profile.profilePic}" alt="Profile" class="profile-icon">`;
+  }
+
+  const backgroundColor = profile.defaultIconColor || "#546E7A"; // Fallback to Slate Gray
+
+  // --- UPDATED: Inner icon size is now 55% for better visual centering and alignment. ---
+  return `
+        <div style="
+            background-color: ${backgroundColor};
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        ">
+            <img src="${DEFAULT_ICON_PATH}" alt="Profile" style="width: 55%; height: 55%; object-fit: contain;">
+        </div>
+    `;
+}
+// ========================================================================
+// --- END: FINALIZED PROFILE ICON LOGIC ---
+// ========================================================================
 
 const formatCurrency = (amount) =>
     `$${Number(amount).toLocaleString("en-US", {
@@ -131,15 +193,14 @@ function loadState() {
   balanceAmountEl.textContent = formatCurrency(currentBalance);
   footerBalanceDisplay.textContent = formatBalanceForFooter(currentBalance);
   adjustBalanceFontSize(balanceAmountEl);
-  const savedProfile = localStorage.getItem(userProfileKey);
-  const userProfile = savedProfile ? JSON.parse(savedProfile) : defaultProfile;
+
+  const savedProfileJSON = localStorage.getItem(userProfileKey);
+  const userProfile = savedProfileJSON
+    ? JSON.parse(savedProfileJSON)
+    : initializeUserProfile();
+
   accountInfoEl.textContent = `Account ${userProfile.accountNumber} Routing ${userProfile.routingNumber}`;
-  const placeholderImageSrc = "icons/person-circle-svgrepo-com.png";
-  if (userProfile.profilePic) {
-    profileIconLink.innerHTML = `<img src="${userProfile.profilePic}" alt="Profile" class="profile-icon">`;
-  } else {
-    profileIconLink.innerHTML = `<img src="${placeholderImageSrc}" alt="Profile" class="profile-icon">`;
-  }
+  profileIconLink.innerHTML = generateProfileIcon(userProfile);
 }
 
 function saveState() {
@@ -160,19 +221,16 @@ function saveAddTransaction(type, amount) {
   );
 }
 
-// ========================================================================
-// --- START: NEW HIGH-END WITHDRAWAL TRANSACTION SAVING FUNCTION ---
-// ========================================================================
 function saveWithdrawalTransaction(amount, fee, totalDeduction) {
   const transactions =
     JSON.parse(localStorage.getItem(localStorageTransactionsKey)) || [];
 
   const newTransaction = {
     type: "withdraw",
-    amount: amount, // The amount the user chose to withdraw
-    fee: fee, // The calculated fee for the withdrawal
-    totalDeducted: totalDeduction, // The total amount removed from the balance
-    balanceAfter: currentBalance - totalDeduction, // The balance after this transaction
+    amount: amount,
+    fee: fee,
+    totalDeducted: totalDeduction,
+    balanceAfter: currentBalance - totalDeduction,
     date: new Date().toISOString(),
   };
 
@@ -182,9 +240,6 @@ function saveWithdrawalTransaction(amount, fee, totalDeduction) {
     JSON.stringify(transactions)
   );
 }
-// ======================================================================
-// --- END: NEW HIGH-END WITHDRAWAL TRANSACTION SAVING FUNCTION ---
-// ======================================================================
 
 function handleAddTransaction(amount) {
   if (isAnimating || isNaN(amount) || amount <= 0) return;
@@ -200,7 +255,7 @@ function handleAddTransaction(amount) {
       const newBalance = startBalance + amount;
       currentBalance = newBalance;
       saveState();
-      saveAddTransaction("add", amount); // Use the specific add transaction function
+      saveAddTransaction("add", amount);
       animateBalance(startBalance, newBalance);
     }, 1500);
   }, 5000);
@@ -233,7 +288,6 @@ function startWithdrawalFlow(amount, type) {
     loadingSpinnerAnimation.stop();
     showSuccessOverlay(type, amount);
     setTimeout(() => {
-      // --- INTEGRATION: Call the new save function before updating the balance ---
       saveWithdrawalTransaction(amount, fee, totalDeduction);
       handleWithdrawal(totalDeduction);
     }, 1500);
@@ -269,7 +323,6 @@ function showSuccessOverlay(type, amount) {
   let message;
   let iconHTML;
 
-  // Use the image for "add" and "standard" types
   if (type === "add" || type === "standard") {
     iconHTML =
       '<img src="icon/check32_Normal_Normal@3x_monochrome-white.png" alt="Success" />';
@@ -282,20 +335,18 @@ function showSuccessOverlay(type, amount) {
         amount
       )} will be available in your external bank account ${arrivalDay}`;
     }
-  }
-  // Use the Font Awesome bolt icon for "instant" type
-  else if (type === "instant") {
+  } else if (type === "instant") {
     iconHTML = '<i class="fa-solid fa-bolt"></i>';
     message = `${formatCurrency(
       amount
     )} was transferred instantly to your bank account`;
   }
 
-  // Set the content of the container and the message
   successIconContainer.innerHTML = iconHTML;
   successMessageEl.innerHTML = message;
   successOverlay.classList.add("show");
 }
+
 function hideSuccessOverlay() {
   successOverlay.classList.remove("show");
 }

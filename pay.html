@@ -383,14 +383,78 @@
       const requestBtn = document.getElementById("request-btn");
       const payBtn = document.getElementById("pay-btn");
       const profileIconLink = document.querySelector(".profile-icon-link");
+      // ========================================================================
+      // --- START: PROFILE ICON GENERATOR (PASTE THIS CODE) ---
+      // ========================================================================
 
+      const DEFAULT_ICON_PATH =
+        "icon/avatarFill16_Normal_Normal@3x_monochrome-white.png"; // Make sure you have this icon file
+
+      /**
+       * Creates a default user profile, selects a random icon color ONCE,
+       * and saves the entire profile (including the color) to local storage.
+       */
+      function initializeUserProfile() {
+        // A curated palette of mature, deep colors.
+        const colors = [
+          "#C62828",
+          "#1565C0",
+          "#2E7D32",
+          "#5E35B1",
+          "#00695C",
+          "#E65100",
+          "#546E7A",
+          "#8B572A",
+        ];
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+        const newProfile = {
+          fullName: "New User", // A default name
+          profilePic: null,
+          defaultIconColor: randomColor, // The chosen color is saved permanently
+        };
+
+        localStorage.setItem(userProfileKey, JSON.stringify(newProfile));
+        return newProfile;
+      }
+
+      /**
+       * Generates the HTML for the profile icon using the perfected logic.
+       */
+      function generateProfileIcon(profile) {
+        // If a REAL profile picture has been uploaded, use it.
+        if (profile && profile.profilePic) {
+          return `<img src="${profile.profilePic}" alt="Profile" class="profile-icon">`;
+        }
+
+        // Otherwise, use the SAVED color to build the icon.
+        const backgroundColor = profile.defaultIconColor || "#546E7A"; // Fallback color
+
+        // Inner icon is 55% for perfect visual centering.
+        return `
+        <div style="
+            background-color: ${backgroundColor};
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        ">
+            <img src="${DEFAULT_ICON_PATH}" alt="Profile" style="width: 55%; height: 55%; object-fit: contain;">
+        </div>
+    `;
+      }
+      // ========================================================================
+      // --- END: PROFILE ICON GENERATOR ---
+      // ========================================================================
       // --- MODIFIED: Elements and Constants for new features ---
       const amountDisplay = document.getElementById("amount-display");
       const MAX_AMOUNT = 99999.99; // Updated to include cents
       // --- END OF MODIFICATIONS ---
 
       const userProfileKey = "cashAppUserProfile";
-      const defaultProfile = { profilePic: "" };
 
       let amountValue = "0";
 
@@ -490,19 +554,18 @@
       }
       // --- END OF MODIFICATIONS ---
 
+      // This is the new, smart function that connects everything.
       function loadProfileIcon() {
-        const savedProfile = localStorage.getItem(userProfileKey);
-        const userProfile = savedProfile
-          ? JSON.parse(savedProfile)
-          : defaultProfile;
+        const savedProfileJSON = localStorage.getItem(userProfileKey);
 
-        if (userProfile.profilePic) {
-          profileIconLink.innerHTML = `<img src="${userProfile.profilePic}" alt="Profile" class="profile-icon">`;
-        } else {
-          profileIconLink.innerHTML = `<img src="icons/pfpwhite.png" alt="Profile" class="profile-icon">`;
-        }
+        // If a profile exists in storage, use it. If not, create a new one.
+        const userProfile = savedProfileJSON
+          ? JSON.parse(savedProfileJSON)
+          : initializeUserProfile();
+
+        // Generate the icon HTML and display it on the page.
+        profileIconLink.innerHTML = generateProfileIcon(userProfile);
       }
-
       keypad.addEventListener("click", (e) => {
         const btn = e.target.closest(".keypad-btn");
         if (btn && btn.dataset.key) {
