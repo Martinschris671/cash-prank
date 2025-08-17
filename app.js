@@ -87,8 +87,8 @@ function generateProfileIcon(profile) {
   return `
         <div style="
             background-color: ${backgroundColor};
-           width: 25px;
-            height: 25px;
+           width: 30px;
+            height: 30px;
             border-radius: 50%;
             display: flex;
             align-items: center;
