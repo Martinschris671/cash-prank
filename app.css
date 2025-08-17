@@ -8,11 +8,11 @@
 :root {
   --padding-screen: 18px;
   --footer-height: 65px;
-  --app-bg-color: #e6e6e6;
+  --app-bg-color: #efedf0;
   --card-bg-color: #ffffff;
   --text-primary: #000000;
   --text-secondary: #6c757d;
-  --button-bg: #e9ecef;
+  --button-bg: #efedf0;
   --button-text: #000000;
   --border-color-light: #f0f1f2;
   --border-color-subtle: rgba(0, 0, 0, 0.05);
@@ -161,10 +161,10 @@ a {
 .balance-header span {
   font-size: 15px;
   font-weight: 500;
-  color: var(--text-secondary);
+  color: #0e0e0e;
 }
 .balance-amount {
-  font-size: 33px;
+  font-size: 30px;
   font-weight: 600;
   line-height: 1.2;
   word-break: break-all;
@@ -185,9 +185,9 @@ a {
   background-color: var(--button-bg);
   color: var(--button-text);
   border: none;
-  padding: 10px 20px;
+  padding: 8px 20px;
   border-radius: var(--border-radius-button);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   font-family: var(--font-family);
