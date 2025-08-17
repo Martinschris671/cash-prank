@@ -774,9 +774,9 @@
 
     <!-- SCRIPTS -->
     <script>
-      // ADVANCED FUNCTIONAL SCRIPT
-      const userProfileKey = "cashAppUserProfile";
-      let userProfile = {};
+      // FINALIZED ADVANCED SCRIPT
+      const globalProfileKey = "cashAppUserProfile"; // For shared data (name, uploaded pic)
+      const pageInitialKey = "profilePageInitialAvatar"; // ONLY for this page's initial
 
       // DOM Elements
       const mainProfilePic = document.getElementById("main-profile-pic");
@@ -802,15 +802,13 @@
         "main-cashtag-container"
       );
 
-      // --- ADVANCED FEATURE: GENERATE INITIALS AVATAR ---
+      // --- GENERATE PERFECTLY ALIGNED INITIALS AVATAR ---
       function generateInitialAvatar(name) {
         const canvas = document.createElement("canvas");
         const context = canvas.getContext("2d");
-        const size = 128; // Generate a higher-res image
+        const size = 200; // High resolution for crispness
         canvas.width = size;
         canvas.height = size;
-
-        // Choose a random background color
         const colors = [
           "#00d54b",
           "#1a73e8",
@@ -822,84 +820,82 @@
         const randomColor = colors[Math.floor(Math.random() * colors.length)];
         context.fillStyle = randomColor;
         context.fillRect(0, 0, size, size);
-
-        // Get initials
-        const nameParts = name.split(" ");
-        const initials =
+        const nameParts = name.trim().split(" ");
+        const initials = (
           nameParts.length > 1
             ? nameParts[0][0] + nameParts[nameParts.length - 1][0]
-            : nameParts[0][0];
-
-        // Draw text
+            : nameParts[0]?.[0] || ""
+        ).toUpperCase();
         context.fillStyle = "#ffffff";
-        context.font = `bold ${size / 2.5}px ${
-          getComputedStyle(document.body).fontFamily
-        }`;
+        context.font = `bold ${
+          size / 2
+        }px "CashMarket", -apple-system, BlinkMacSystemFont, sans-serif`;
         context.textAlign = "center";
         context.textBaseline = "middle";
-        context.fillText(initials.toUpperCase(), size / 2, size / 2);
-
+        context.fillText(initials, size / 2, size / 2 + size * 0.05);
         return canvas.toDataURL();
       }
 
-      // --- ADVANCED FEATURE: FETCH RANDOM USER ---
-      async function createDefaultProfile() {
-        let fullName = "Alex Morgan"; // Fallback name
-        let cashtag = "alexmorgan";
+      // --- ULTRA-FAST PROFILE CREATION (NO NETWORK DELAY) ---
+      function createDefaultProfile() {
+        const randomUsers = [
+          { fullName: "Alex Morgan", cashtag: "alexmorgan" },
+          { fullName: "Jordan Lee", cashtag: "jordanlee" },
+          { fullName: "Casey Smith", cashtag: "caseysmith" },
+          { fullName: "Taylor Jones", cashtag: "taylorjones" },
+          { fullName: "Jamie Ryan", cashtag: "jamieryan" },
+        ];
+        const randomUser =
+          randomUsers[Math.floor(Math.random() * randomUsers.length)];
 
-        try {
-          const response = await fetch(
-            "https://randomuser.me/api/?nat=us,gb,ca"
-          );
-          const data = await response.json();
-          const user = data.results[0];
-          fullName = `${user.name.first} ${user.name.last}`;
-          cashtag = `${user.login.username}`;
-        } catch (error) {
-          console.error("Could not fetch random user, using fallback.", error);
-          // Fallback is already set
-        }
-
-        const initialAvatar = generateInitialAvatar(fullName);
-
-        return {
-          fullName: fullName,
-          cashtag: cashtag,
+        const newProfile = {
+          fullName: randomUser.fullName,
+          cashtag: randomUser.cashtag,
           accountNumber: "••••" + Math.floor(1000 + Math.random() * 9000),
           routingNumber: "••••" + Math.floor(1000 + Math.random() * 9000),
-          profilePic: initialAvatar, // Start with the generated avatar
+          profilePic: null, // The global profile does NOT store the initial
         };
+        localStorage.setItem(globalProfileKey, JSON.stringify(newProfile));
+
+        const initialAvatar = generateInitialAvatar(newProfile.fullName);
+        localStorage.setItem(pageInitialKey, initialAvatar);
+
+        return { ...newProfile, pageInitial: initialAvatar };
       }
 
       // --- CORE LOGIC ---
-      function saveProfile() {
-        localStorage.setItem(userProfileKey, JSON.stringify(userProfile));
-      }
+      function loadProfile() {
+        const savedProfileJSON = localStorage.getItem(globalProfileKey);
+        let profile;
 
-      async function loadProfile() {
-        const savedProfile = localStorage.getItem(userProfileKey);
-        if (savedProfile) {
-          userProfile = JSON.parse(savedProfile);
+        if (savedProfileJSON) {
+          profile = JSON.parse(savedProfileJSON);
+          // Check for this page's initial if no uploaded pic exists
+          if (!profile.profilePic) {
+            profile.pageInitial = localStorage.getItem(pageInitialKey);
+          }
         } else {
-          userProfile = await createDefaultProfile();
-          saveProfile(); // Save the newly created profile immediately
+          profile = createDefaultProfile();
         }
-        updateMainUI();
+        return profile;
       }
 
-      function updateMainUI() {
-        mainProfileName.textContent = userProfile.fullName;
-        mainCashtag.textContent = `$${userProfile.cashtag}`;
-        mainProfilePic.src = userProfile.profilePic;
-        editProfilePic.src = userProfile.profilePic;
+      function updateUI(profile) {
+        // Display uploaded photo if it exists, otherwise display the page-specific initial
+        const displayPic = profile.profilePic || profile.pageInitial || "";
+        mainProfilePic.src = displayPic;
+        editProfilePic.src = displayPic;
+        mainProfileName.textContent = profile.fullName;
+        mainCashtag.textContent = `$${profile.cashtag}`;
       }
 
       function openEditOverlay() {
-        editFullName.value = userProfile.fullName;
-        editCashtag.value = userProfile.cashtag;
-        editAccountNumber.value = userProfile.accountNumber;
-        editRoutingNumber.value = userProfile.routingNumber;
-        editProfilePic.src = userProfile.profilePic;
+        const profile = loadProfile();
+        editFullName.value = profile.fullName;
+        editCashtag.value = profile.cashtag;
+        editAccountNumber.value = profile.accountNumber;
+        editRoutingNumber.value = profile.routingNumber;
+        editProfilePic.src = profile.profilePic || profile.pageInitial || "";
         editDoneBtn.disabled = true;
         personalEditOverlay.classList.add("show");
         document.body.classList.add("modal-open");
@@ -908,19 +904,27 @@
       function closeEditOverlay() {
         personalEditOverlay.classList.remove("show");
         document.body.classList.remove("modal-open");
+        updateUI(loadProfile()); // Refresh main UI with saved data
       }
 
       function handleSaveChanges() {
-        userProfile.fullName = editFullName.value;
-        userProfile.cashtag = editCashtag.value;
-        userProfile.accountNumber = editAccountNumber.value;
-        userProfile.routingNumber = editRoutingNumber.value;
-        saveProfile();
-        updateMainUI();
+        const profile = loadProfile();
+        profile.fullName = editFullName.value;
+        profile.cashtag = editCashtag.value;
+        profile.accountNumber = editAccountNumber.value;
+        profile.routingNumber = editRoutingNumber.value;
+
+        // If there's no uploaded photo, regenerate the initial based on the new name
+        if (!profile.profilePic) {
+          const newInitial = generateInitialAvatar(profile.fullName);
+          localStorage.setItem(pageInitialKey, newInitial);
+        }
+
+        localStorage.setItem(globalProfileKey, JSON.stringify(profile));
         closeEditOverlay();
       }
 
-      // Event listeners
+      // --- EVENT LISTENERS ---
       personalBtn.addEventListener("click", (e) => {
         e.preventDefault();
         openEditOverlay();
@@ -937,30 +941,48 @@
       editDoneBtn.addEventListener("click", handleSaveChanges);
 
       [editFullName, editCashtag, editAccountNumber, editRoutingNumber].forEach(
-        (input) => {
+        (input) =>
           input.addEventListener("input", () => {
             editDoneBtn.disabled = false;
-          });
-        }
+          })
       );
 
-      changePhotoLink.addEventListener("click", () => {
-        editPicInput.click();
+      // Real-time initial update while typing name
+      editFullName.addEventListener("input", () => {
+        const profile = loadProfile();
+        if (!profile.profilePic) {
+          // Only update initial if no photo is uploaded
+          const newInitial = generateInitialAvatar(editFullName.value);
+          editProfilePic.src = newInitial;
+        }
       });
+
+      changePhotoLink.addEventListener("click", () => editPicInput.click());
+
       editPicInput.addEventListener("change", (event) => {
         const file = event.target.files[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = (e) => {
           const newPicSrc = e.target.result;
-          userProfile.profilePic = newPicSrc; // Update the profile object
-          updateMainUI(); // Update UI immediately
+          const profile = loadProfile();
+
+          // Save the UPLOADED photo to the GLOBAL profile
+          profile.profilePic = newPicSrc;
+          localStorage.setItem(globalProfileKey, JSON.stringify(profile));
+
+          // The initial is no longer needed, remove it
+          localStorage.removeItem(pageInitialKey);
+
+          editProfilePic.src = newPicSrc; // Update UI in the edit overlay
           editDoneBtn.disabled = false;
         };
         reader.readAsDataURL(file);
       });
 
-      document.addEventListener("DOMContentLoaded", loadProfile);
+      document.addEventListener("DOMContentLoaded", () => {
+        updateUI(loadProfile());
+      });
     </script>
   </body>
 </html>
