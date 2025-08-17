@@ -33,9 +33,8 @@ loadingSpinnerAnimation = bodymovin.loadAnimation({
   autoplay: false,
   path: "loader_lm.json",
 });
-
 // ========================================================================
-// --- START: RANDOM PROFILE IMAGE GENERATOR (USE THIS CODE) ---
+// --- START: CORRECTED RANDOM PROFILE IMAGE GENERATOR (USE THIS CODE) ---
 // ========================================================================
 
 const RANDOM_DEFAULT_ICONS = [
@@ -49,7 +48,7 @@ const RANDOM_DEFAULT_ICONS = [
 
 /**
  * Creates a default user profile, selects a RANDOM IMAGE ONCE,
- * and saves the entire profile (including the image path) to local storage.
+ * and saves the entire profile to local storage.
  */
 function initializeUserProfile() {
   // Pick one random image from the list.
@@ -59,9 +58,13 @@ function initializeUserProfile() {
     ];
 
   const newProfile = {
-    fullName: "Punchmadedomo", // The default name from your script
-    profilePic: null, // This will be null until they upload a real photo on the profile page
-    defaultProfileIcon: randomIconPath, // The randomly chosen image path is now saved
+    fullName: "Punchmadedomo",
+    // --- FIXED: Restored the missing account and routing numbers ---
+    accountNumber: "**2923",
+    routingNumber: "**894",
+    // -----------------------------------------------------------------
+    profilePic: null, // This will be null until they upload a real photo
+    defaultProfileIcon: randomIconPath, // The randomly chosen image path is saved
   };
 
   localStorage.setItem(userProfileKey, JSON.stringify(newProfile));
@@ -74,7 +77,7 @@ function initializeUserProfile() {
  * Otherwise, it uses the SAVED random default image.
  */
 function generateProfileIcon(profile) {
-  // If a REAL profile picture has been uploaded and saved from the main profile page, use it.
+  // If a REAL profile picture has been uploaded and saved, use it.
   if (profile && profile.profilePic) {
     return `<img src="${profile.profilePic}" alt="Profile" class="profile-icon">`;
   }
@@ -85,7 +88,7 @@ function generateProfileIcon(profile) {
   return `<img src="${imageToUse}" alt="Profile" class="profile-icon">`;
 }
 // ========================================================================
-// --- END: RANDOM PROFILE IMAGE GENERATOR ---
+// --- END: CORRECTED RANDOM PROFILE IMAGE GENERATOR ---
 // ========================================================================
 const formatCurrency = (amount) =>
     `$${Number(amount).toLocaleString("en-US", {
