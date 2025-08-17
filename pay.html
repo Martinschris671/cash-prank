@@ -33,7 +33,7 @@
         --header-height: 65px;
         --padding-screen: 18px;
         --footer-height: 70px;
-        --accent-green: #2db82f;
+        --accent-green: #21b227;
         --text-on-green: #ffffff;
         --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
           sans-serif;
@@ -208,27 +208,32 @@
       }
       .action-btn {
         font-family: var(--font-family);
-        background-color: rgba(0, 0, 0, 0.15);
-        color: var(--text-on-green);
+        background-color: #01bd2a;
+        color: white;
         border: none;
         border-radius: 28px;
-        padding: 12px;
+        padding: 14px 24px;
         font-size: 17px;
-        font-weight: 600;
+        font-weight: 700;
         cursor: pointer;
         transition: all 0.2s ease;
-        margin-bottom: 1px;
-      }
-      .action-btn:disabled {
-        background-color: rgba(0, 0, 0, 0.15);
-        color: rgba(255, 255, 255, var(--inactive-alpha));
-        cursor: default;
-      }
-      .action-btn:not(:disabled):active {
-        background-color: rgba(0, 0, 0, 0.25);
-        transform: scale(0.98);
+
+        /* Ensures the button takes up available space if in a flex container */
+        flex-grow: 1;
+        text-align: center;
       }
 
+      .action-btn:disabled {
+        background-color: #01bd2a;
+        cursor: default;
+      }
+
+      .action-btn:not(:disabled):active {
+        background-color: #01bd2a; /* A slightly darker green for the active state */
+        transform: scale(
+          0.98
+        ); /* Provides a subtle shrinking effect when pressed */
+      }
       /* Footer */
       .bottom-nav {
         display: flex;
