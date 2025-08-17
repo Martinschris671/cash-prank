@@ -95,7 +95,7 @@ function generateProfileIcon(profile) {
             justify-content: center;
             overflow: hidden;
         ">
-            <img src="${DEFAULT_ICON_PATH}" alt="Profile" style="width: 55%; height: 55%; object-fit: contain;">
+            <img src="${DEFAULT_ICON_PATH}" alt="Profile" style="width: 65%; height: 65%; object-fit: contain;">
         </div>
     `;
 }
