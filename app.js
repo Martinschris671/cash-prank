@@ -1,6 +1,4 @@
 const INSTANT_FEE_RATE = 0.013;
-const DEFAULT_ICON_PATH =
-  "icon/avatarFill16_Normal_Normal@3x_monochrome-white.png"; // Path to your static white icon
 
 const balanceAmountEl = document.getElementById("balance-amount"),
   footerBalanceDisplay = document.getElementById("footer-balance-display"),
@@ -37,34 +35,33 @@ loadingSpinnerAnimation = bodymovin.loadAnimation({
 });
 
 // ========================================================================
-// --- START: FINALIZED PROFILE ICON LOGIC ---
+// --- START: RANDOM PROFILE IMAGE GENERATOR (USE THIS CODE) ---
 // ========================================================================
 
+const RANDOM_DEFAULT_ICONS = [
+  "profile/IMG-20250817-WA0001.jpg",
+  "profile/IMG-20250817-WA0002.jpg",
+  "profile/IMG-20250817-WA0003.jpg",
+  "profile/IMG-20250817-WA0004.jpg",
+  "profile/IMG-20250817-WA0005.jpg",
+  "profile/IMG-20250817-WA0006.jpg",
+];
+
 /**
- * Creates a default user profile, selects a random icon color ONCE from the new mature palette,
- * and saves the entire profile (including the color) to local storage.
+ * Creates a default user profile, selects a RANDOM IMAGE ONCE,
+ * and saves the entire profile (including the image path) to local storage.
  */
 function initializeUserProfile() {
-  // --- NEW: A curated palette of mature, deep colors. Light colors have been removed. ---
-  const colors = [
-    "#C62828", // Deep Red
-    "#1565C0", // Strong Blue
-    "#2E7D32", // Forest Green
-    "#5E35B1", // Deep Purple
-    "#00695C", // Dark Teal
-    "#E65100", // Burnt Orange
-    "#546E7A", // Slate Gray
-    "#8B572A", // Brown
-  ];
-  const randomColor = colors[Math.floor(Math.random() * colors.length)];
+  // Pick one random image from the list.
+  const randomIconPath =
+    RANDOM_DEFAULT_ICONS[
+      Math.floor(Math.random() * RANDOM_DEFAULT_ICONS.length)
+    ];
 
   const newProfile = {
-    fullName: "Jane Doe",
-    cashtag: "waldoapp",
-    accountNumber: "**2923",
-    routingNumber: "**894",
-    profilePic: null,
-    defaultIconColor: randomColor, // The chosen color is saved permanently
+    fullName: "Punchmadedomo", // The default name from your script
+    profilePic: null, // This will be null until they upload a real photo on the profile page
+    defaultProfileIcon: randomIconPath, // The randomly chosen image path is now saved
   };
 
   localStorage.setItem(userProfileKey, JSON.stringify(newProfile));
@@ -73,36 +70,23 @@ function initializeUserProfile() {
 
 /**
  * Generates the HTML for the profile icon.
- * It uses the real profile picture if it exists.
- * Otherwise, it uses the SAVED background color and perfected alignment for the icon.
+ * It will use the real, user-uploaded profile picture if it exists.
+ * Otherwise, it uses the SAVED random default image.
  */
 function generateProfileIcon(profile) {
+  // If a REAL profile picture has been uploaded and saved from the main profile page, use it.
   if (profile && profile.profilePic) {
     return `<img src="${profile.profilePic}" alt="Profile" class="profile-icon">`;
   }
 
-  const backgroundColor = profile.defaultIconColor || "#546E7A"; // Fallback to Slate Gray
+  // Otherwise, use the persistent, saved default image from the list.
+  const imageToUse = profile.defaultProfileIcon || RANDOM_DEFAULT_ICONS[0]; // Fallback to the first image
 
-  // --- UPDATED: Inner icon size is now 55% for better visual centering and alignment. ---
-  return `
-        <div style="
-            background-color: ${backgroundColor};
-           width: 27px;
-            height: 27px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        ">
-            <img src="${DEFAULT_ICON_PATH}" alt="Profile" style="width: 65%; height: 65%; object-fit: contain;">
-        </div>
-    `;
+  return `<img src="${imageToUse}" alt="Profile" class="profile-icon">`;
 }
 // ========================================================================
-// --- END: FINALIZED PROFILE ICON LOGIC ---
+// --- END: RANDOM PROFILE IMAGE GENERATOR ---
 // ========================================================================
-
 const formatCurrency = (amount) =>
     `$${Number(amount).toLocaleString("en-US", {
       minimumFractionDigits: 2,
