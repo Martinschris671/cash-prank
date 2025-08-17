@@ -29,16 +29,33 @@
         font-display: swap;
       }
 
+      /* --- THEME COLOR DEFINITIONS --- */
       :root {
+        /* Non-Color Variables (Layout) */
         --header-height: 65px;
         --padding-screen: 18px;
         --footer-height: 70px;
-        --accent-green: #21b227;
-        --text-on-green: #ffffff;
         --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
           sans-serif;
-        --text-on-green: #ffffff;
+
+        /* Light Mode Colors (Original Green Theme) */
+        --pay-page-bg: #21b227;
+        --pay-page-text: #ffffff;
+        --pay-action-btn-bg: #01bd2a;
+        --pay-nav-text: rgba(255, 255, 255, 0.7);
+        --pay-nav-text-active: #ffffff;
       }
+
+      [data-theme="dark"] {
+        /* Dark Mode Colors (From Image) */
+        --pay-page-bg: #17191a;
+        --pay-page-text: #ffffff;
+        --pay-action-btn-bg: #444648;
+        --pay-nav-text: #a0a0a0;
+        --pay-nav-text-active: #ffffff;
+      }
+      /* --- END OF THEME DEFINITIONS --- */
+
       * {
         margin: 0;
         padding: 0;
@@ -53,11 +70,14 @@
       }
       body {
         font-family: var(--font-family);
-        background-color: var(--accent-green);
-        color: var(--text-on-green);
+        /* MODIFIED: Using theme variables now */
+        background-color: var(--pay-page-bg);
+        color: var(--pay-page-text);
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         text-rendering: optimizeLegibility;
+        /* ADDED: Smooth transition for theme change */
+        transition: background-color 0.3s ease;
       }
       a {
         text-decoration: none;
@@ -66,7 +86,7 @@
       .keypad-btn .fa-circle {
         font-size: 0.3rem;
         vertical-align: middle;
-        color: white;
+        color: white; /* This remains white in both themes */
       }
       .keypad-btn svg {
         vertical-align: middle;
@@ -93,17 +113,18 @@
         flex-shrink: 0;
       }
       .header-icon {
-        width: 20px; /* REVERTED: Back to original size */
-        height: 20px; /* REVERTED: Back to original size */
+        width: 20px;
+        height: 20px;
       }
       .profile-icon-link {
         display: block;
-        width: 27px; /* REVERTED: Back to original size */
-        height: 27px; /* REVERTED: Back to original size */
+        width: 27px;
+        height: 27px;
       }
       .profile-icon {
         font-size: 16px;
-        color: var(--text-on-green);
+        /* MODIFIED: Using theme variable */
+        color: var(--pay-page-text);
         width: 100%;
         height: 100%;
         border-radius: 50%;
@@ -132,7 +153,7 @@
         font-family: "CashMarket", -apple-system, BlinkMacSystemFont, sans-serif;
       }
 
-      /* --- NEW: SHAKE ANIMATION --- */
+      /* Shake Animation (Unchanged) */
       @keyframes shake {
         10%,
         90% {
@@ -155,7 +176,6 @@
       .shake {
         animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
       }
-      /* --- END OF NEW CSS --- */
 
       .amount-text {
         font-size: clamp(80px, 22vw, 120px);
@@ -181,7 +201,8 @@
       .keypad-btn {
         background: none;
         border: none;
-        color: var(--text-on-green);
+        /* MODIFIED: Using theme variable */
+        color: var(--pay-page-text);
         font-size: 1.3rem;
         font-weight: 600;
         padding: 15px 6px;
@@ -208,8 +229,9 @@
       }
       .action-btn {
         font-family: var(--font-family);
-        background-color: #01bd2a;
-        color: white;
+        /* MODIFIED: Using theme variable */
+        background-color: var(--pay-action-btn-bg);
+        color: white; /* This remains white in both themes */
         border: none;
         border-radius: 28px;
         padding: 14px 24px;
@@ -217,23 +239,23 @@
         font-weight: 700;
         cursor: pointer;
         transition: all 0.2s ease;
-
-        /* Ensures the button takes up available space if in a flex container */
         flex-grow: 1;
         text-align: center;
       }
 
       .action-btn:disabled {
-        background-color: #01bd2a;
+        /* MODIFIED: Using theme variable and adding opacity for better feedback */
+        background-color: var(--pay-action-btn-bg);
+        opacity: 0.6;
         cursor: default;
       }
 
       .action-btn:not(:disabled):active {
-        background-color: #01bd2a; /* A slightly darker green for the active state */
-        transform: scale(
-          0.98
-        ); /* Provides a subtle shrinking effect when pressed */
+        /* MODIFIED: Using theme variable */
+        background-color: var(--pay-action-btn-bg);
+        transform: scale(0.98);
       }
+
       /* Footer */
       .bottom-nav {
         display: flex;
@@ -252,23 +274,47 @@
         justify-content: center;
         font-family: inherit;
         font-weight: 600;
-        color: rgba(255, 255, 255, 0.7);
+        /* MODIFIED: Using theme variable */
+        color: var(--pay-nav-text);
         min-width: 44px;
       }
       .nav-button svg {
-        fill: rgba(255, 255, 255, 0.7);
+        /* MODIFIED: Using theme variable */
+        fill: var(--pay-nav-text);
       }
       .nav-button.active {
-        color: var(--text-on-green);
+        /* MODIFIED: Using theme variable */
+        color: var(--pay-nav-text-active);
       }
       .nav-button.active svg {
-        fill: var(--text-on-green);
+        /* MODIFIED: Using theme variable */
+        fill: var(--pay-nav-text-active);
       }
       #nav-balance-display {
         font-size: 16px;
         font-family: var(--font-family-nav);
       }
     </style>
+    <!-- 👇 PASTE THIS SCRIPT BLOCK HERE 👇 -->
+    <script>
+      // This script runs instantly to prevent a theme flicker.
+      (function () {
+        // Get the saved theme from localStorage, defaulting to 'system'.
+        let theme =
+          window.localStorage.getItem("app-theme-preference") || "system";
+
+        // If the theme is 'system', determine the actual theme from the user's OS settings.
+        if (theme === "system") {
+          theme = window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+        }
+
+        // Apply the determined theme to the <html> element.
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
+    <!-- 👆 END OF ANTI-FLICKER SCRIPT 👆 -->
   </head>
   <body>
     <div class="pay-app-container">
@@ -579,5 +625,6 @@
       });
     </script>
     <script src="footer.display.js"></script>
+    <script src="theme-switcher.js"></script>
   </body>
 </html>
