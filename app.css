@@ -5,6 +5,12 @@
   src: url(font/CashSans-Regular.otf);
   font-display: swap;
 }
+@font-face {
+  font-family: "CashMarketBold";
+  font-style: normal;
+  src: url(font/CashSans-Bold.otf);
+  font-display: swap;
+}
 :root {
   --padding-screen: 18px;
   --footer-height: 65px;
@@ -169,6 +175,7 @@ a {
   line-height: 1.2;
   word-break: break-all;
   transition: font-size 0.2s ease-out;
+  font-family: "CashMarketBold";
 }
 .account-info {
   font-size: 14px;
