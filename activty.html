@@ -22,19 +22,36 @@
         src: url(font/CashSans-Regular.otf);
         font-display: swap;
       }
+      /* ======================================= */
+      /* --- LIGHT THEME (DEFAULT) --- */
+      /* ======================================= */
       :root {
         --header-height: 65px;
         --padding-screen: 18px;
         --app-bg-color: #ffffff;
-        --app-bg-secondary: #f0f1f2;
+        --app-bg-secondary: #f3f3f3;
         --text-primary: #000000;
         --text-secondary: #6c757d;
+        --text-secondary-timestamp: #8a8a8e;
         --border-color-light: #e9ecef;
+        --divider-color: #e5e5ea;
         --border-radius-card: 12px;
         --accent-green: #00d54b;
         --accent-red: #ff3b30;
         --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
           sans-serif;
+      }
+      /* ======================================= */
+      /* --- DARK THEME --- */
+      /* ======================================= */
+      [data-theme="dark"] {
+        --app-bg-color: #000000;
+        --app-bg-secondary: #1c1c1e;
+        --text-primary: #ffffff;
+        /* --text-secondary remains greyish in dark mode */
+        --text-secondary-timestamp: #8a8a8e;
+        --border-color-light: #2c2c2e;
+        --divider-color: #2c2c2e;
       }
       * {
         margin: 0;
@@ -90,7 +107,7 @@
         width: 100%;
         height: 100%;
         border-radius: 50%;
-        background-color: #e9ecef;
+        background-color: var(--app-bg-secondary);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -117,11 +134,16 @@
         background: none;
         outline: none;
         font-size: 16px;
+        color: var(--text-primary);
+      }
+      .search-bar input::placeholder {
+        color: var(--text-secondary);
       }
       .quick-actions {
         display: flex;
         gap: 12px;
-        padding: 16px var(--padding-screen);
+        padding: 0px var(--padding-screen);
+        padding-bottom: 10px;
         flex-shrink: 0;
         overflow-x: auto;
         white-space: nowrap;
@@ -138,8 +160,8 @@
         gap: 8px;
       }
       .quick-action-icon {
-        width: 52px;
-        height: 52px;
+        width: 60px;
+        height: 60px;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -149,8 +171,17 @@
         flex-shrink: 0;
       }
       .quick-action-icon.green {
-        background-color: var(--accent-green);
-        color: white;
+        background-color: white;
+        color: #000;
+        border: 1px solid #000;
+      }
+      [data-theme="dark"] .quick-action-icon.green {
+        background-color: transparent;
+        color: #000;
+        border: 1px solid #ffffff;
+      }
+      .quick-action-icon.green svg path {
+        stroke: var(--text-primary);
       }
       .quick-action-icon img {
         width: 100%;
@@ -175,11 +206,11 @@
         padding: 18px var(--padding-screen) 8px;
         font-size: 18px;
         font-weight: 600;
-        color: #000;
+        color: var(--text-primary);
       }
       .transaction-list {
         list-style: none;
-        background-color: white;
+        background-color: var(--app-bg-color);
       }
       .transaction-item {
         display: flex;
@@ -233,7 +264,6 @@
         font-weight: 600;
         text-align: right;
       }
-
       .empty-state {
         text-align: center;
         padding: 10vh var(--padding-screen);
@@ -248,7 +278,6 @@
         margin-top: 8px;
         margin-bottom: 30px;
       }
-
       /* TRANSACTION DETAILS OVERLAY STYLES */
       .details-overlay {
         position: fixed;
@@ -256,7 +285,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: #f2f2f7;
+        background-color: var(--app-bg-color);
         color: var(--text-primary);
         z-index: 4000;
         transform: translateX(100%);
@@ -296,7 +325,7 @@
         align-items: center;
         justify-content: center;
       }
-      .details-close-btn svg {
+      .details-close-btn .themeable-icon {
         width: 24px;
         height: 24px;
       }
@@ -331,7 +360,7 @@
       .td-timestamp,
       .td-note {
         font-size: 15px;
-        color: #8a8a8e;
+        color: var(--text-secondary-timestamp);
         margin: 4px 0 0 0;
         line-height: 1.4;
         font-weight: 400;
@@ -351,7 +380,7 @@
       .td-divider {
         height: 1px;
         border: none;
-        background-color: #e5e5ea;
+        background-color: var(--divider-color);
         margin: 20px 0;
       }
       .td-list-section {
@@ -382,17 +411,6 @@
         font-size: 22px;
         font-weight: 500;
       }
-      .td-icon svg {
-        width: 100%;
-        height: 100%;
-        fill: var(--text-primary);
-      }
-      .td-icon.check {
-        font-family: sans-serif;
-        font-size: 18px;
-        font-weight: bold;
-        color: var(--text-primary);
-      }
       .td-text-content {
         flex-grow: 1;
       }
@@ -405,7 +423,7 @@
       .td-subtitle {
         font-size: 17px;
         font-weight: 400;
-        color: #8a8a8e;
+        color: var(--text-secondary-timestamp);
         margin: 0;
         line-height: 1.4;
       }
@@ -416,11 +434,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-      }
-      .td-icon-right svg {
-        width: 100%;
-        height: 100%;
-        fill: var(--text-primary);
       }
       .td-actions-section {
         padding-top: 0px;
@@ -445,11 +458,6 @@
         height: 24px;
         margin-right: 18px;
       }
-      .td-action-icon svg {
-        width: 100%;
-        height: 100%;
-        fill: var(--text-primary);
-      }
       .td-action-label {
         flex-grow: 1;
         font-size: 17px;
@@ -460,10 +468,15 @@
         width: 16px;
         height: 16px;
       }
+      .td-action-chevron svg {
+        width: 100%;
+        height: 100%;
+        fill: var(--text-secondary);
+      }
       .td-footer-info {
         padding: 25px 0;
-        border-top: 1px solid #e5e5ea;
-        color: #8a8a8e;
+        border-top: 1px solid var(--divider-color);
+        color: var(--text-secondary-timestamp);
         font-size: 14px;
         line-height: 1.5;
         margin-top: 25px;
@@ -474,7 +487,7 @@
       .td-footer-button-wrapper {
         position: sticky;
         bottom: 0;
-        background: white;
+        background: var(--app-bg-color);
         padding: 16px 0;
         margin-top: 20px;
       }
@@ -492,11 +505,14 @@
         align-items: center;
         justify-content: center;
         gap: 8px;
+        font-family: var(--font-family);
       }
-      .td-cancel-button svg {
-        width: 20px;
-        height: 20px;
-        fill: white;
+      .td-cancel-button .themeable-icon {
+        width: 24px;
+        height: 24px;
+      }
+      [data-theme="dark"] .td-cancel-button {
+        color: black;
       }
 
       /* BOTTOM NAV */
@@ -504,8 +520,8 @@
         display: flex;
         justify-content: space-around;
         align-items: center;
-        border-top: 1px solid #e9e9e9;
-        background-color: #ffffff;
+        border-top: 1px solid var(--border-color-light);
+        background-color: var(--app-bg-color);
         position: absolute;
         bottom: 0;
         left: 0;
@@ -524,11 +540,11 @@
         justify-content: center;
         font-family: inherit;
         font-weight: 600;
-        color: #8c8c8c;
+        color: var(--text-secondary);
         min-width: 44px;
       }
       .nav-button svg {
-        fill: #8c8c8c;
+        fill: var(--text-secondary);
       }
       .nav-button.active,
       .nav-button.active svg {
@@ -538,7 +554,62 @@
       #nav-balance-display {
         font-size: 16px;
       }
+
+      /* ======================================= */
+      /* --- START: THEMEABLE ICON CSS --- */
+      /* ======================================= */
+      .themeable-icon {
+        width: 100%;
+        height: 100%;
+        background-color: var(
+          --text-primary
+        ); /* Default color is the primary text color */
+
+        /* The magic part: Use the icon as a mask */
+        -webkit-mask-image: var(--icon-url);
+        mask-image: var(--icon-url);
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+      }
+      /* --- Specific Theme Classes (for overrides) --- */
+      .themeable-icon.white {
+        background-color: #ffffff;
+      }
+      .themeable-icon.black {
+        background-color: #000000;
+      }
+      /* --- Icon color in dark mode for specific cases --- */
+      [data-theme="dark"] .td-icon-right .themeable-icon {
+        background-color: var(--text-secondary);
+      }
+      /* ======================================= */
+      /* --- END: THEMEABLE ICON CSS --- */
+      /* ======================================= */
     </style>
+    <!-- 👇 PASTE THIS SCRIPT BLOCK HERE 👇 -->
+    <script>
+      // This script runs instantly to prevent a theme flicker.
+      (function () {
+        // Get the saved theme from localStorage, defaulting to 'system'.
+        let theme =
+          window.localStorage.getItem("app-theme-preference") || "system";
+
+        // If the theme is 'system', determine the actual theme from the user's OS settings.
+        if (theme === "system") {
+          theme = window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+        }
+
+        // Apply the determined theme to the <html> element.
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
+    <!-- 👆 END OF ANTI-FLICKER SCRIPT 👆 -->
   </head>
   <body>
     <div class="activity-container">
@@ -614,6 +685,7 @@
     <div class="details-overlay" id="details-overlay"></div>
 
     <script>
+      /* YOUR EXISTING SCRIPT - NO CHANGES MADE HERE */
       const profileIconLink = document.querySelector(".profile-icon-link");
       const quickActionsContainer = document.getElementById(
         "quick-actions-container"
@@ -623,12 +695,7 @@
       );
       const detailsOverlay = document.getElementById("details-overlay");
       const searchInput = document.getElementById("search-input");
-      // ========================================================================
-      // --- START: RANDOM PROFILE IMAGE GENERATOR (USE THIS CODE) ---
-      // ========================================================================
-
-      const userProfileKey = "cashAppUserProfile"; // This is needed by the functions below
-
+      const userProfileKey = "cashAppUserProfile";
       const RANDOM_DEFAULT_ICONS = [
         "profile/IMG-20250817-WA0001.jpg",
         "profile/IMG-20250817-WA0002.jpg",
@@ -637,52 +704,29 @@
         "profile/IMG-20250817-WA0005.jpg",
         "profile/IMG-20250817-WA0006.jpg",
       ];
-
-      /**
-       * Creates a default user profile, selects a RANDOM IMAGE ONCE,
-       * and saves the entire profile (including the image path) to local storage.
-       */
       function initializeUserProfile() {
-        // Pick one random image from the list.
         const randomIconPath =
           RANDOM_DEFAULT_ICONS[
             Math.floor(Math.random() * RANDOM_DEFAULT_ICONS.length)
           ];
-
         const newProfile = {
-          fullName: "Punchmadedomo", // Default name from your Activity/Home page script
-          profilePic: null, // This will be null until they upload a real photo
-          defaultProfileIcon: randomIconPath, // The randomly chosen image path is saved
+          fullName: "Punchmadedomo",
+          profilePic: null,
+          defaultProfileIcon: randomIconPath,
         };
-
         localStorage.setItem(userProfileKey, JSON.stringify(newProfile));
         return newProfile;
       }
-
-      /**
-       * Generates the HTML for the profile icon.
-       * It uses the real, user-uploaded profile picture if it exists.
-       * Otherwise, it uses the SAVED random default image.
-       */
       function generateProfileIcon(profile) {
-        // If a REAL profile picture has been uploaded and saved from the main profile page, use it.
         if (profile && profile.profilePic) {
           return `<img src="${profile.profilePic}" alt="Profile" class="profile-icon">`;
         }
-
-        // Otherwise, use the persistent, saved default image from the list.
         const imageToUse =
-          profile.defaultProfileIcon || RANDOM_DEFAULT_ICONS[0]; // Fallback to the first image
-
+          profile.defaultProfileIcon || RANDOM_DEFAULT_ICONS[0];
         return `<img src="${imageToUse}" alt="Profile" class="profile-icon">`;
       }
-      // ========================================================================
-      // --- END: RANDOM PROFILE IMAGE GENERATOR ---
-      // ========================================================================
-
       (contactStorageKey = "cashAppContacts"),
         (transactionsKey = "cashAppTransactions");
-
       const defaultContacts = [
         {
           id: 1,
@@ -708,19 +752,18 @@
         },
       ];
       const initialTransactions = [];
-
       const formatCurrency = (amount, sign = false) =>
         `${sign ? "+ " : ""}$${Math.abs(amount).toLocaleString("en-US", {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         })}`;
-
       const formatSimpleCurrency = (amount) =>
         `$${Math.abs(amount).toLocaleString("en-US")}`;
-
       const generateTransactionNumber = () =>
         `#D-454B${Math.floor(1000 + Math.random() * 9000)}`;
-
+      const createThemeableIcon = (iconName, colorClass = "") => {
+        return `<div class="themeable-icon ${colorClass}" style="--icon-url: url('tansicon/${iconName}');"></div>`;
+      };
       function getSmartDateGroup(dateStr) {
         const date = new Date(dateStr);
         const now = new Date();
@@ -731,10 +774,8 @@
         );
         const yesterday = new Date(today);
         yesterday.setDate(yesterday.getDate() - 1);
-
         if (date >= today) return "Today";
         if (date >= yesterday) return "Yesterday";
-
         const startOfWeek = new Date(today);
         startOfWeek.setDate(
           startOfWeek.getDate() -
@@ -742,25 +783,20 @@
             (today.getDay() === 0 ? -6 : 1)
         );
         if (date >= startOfWeek) return "This Week";
-
         const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
         if (date >= startOfMonth) return "This Month";
-
         const startOfLastMonth = new Date(
           now.getFullYear(),
           now.getMonth() - 1,
           1
         );
         if (date >= startOfLastMonth) return "Last Month";
-
         return date.toLocaleDateString("en-US", { month: "long" });
       }
-
       function renderActivity(query = "") {
         let transactions =
           JSON.parse(localStorage.getItem(transactionsKey)) ||
           initialTransactions;
-
         let wasModified = false;
         transactions.forEach((t) => {
           if (!t.id) {
@@ -771,7 +807,6 @@
         if (wasModified) {
           localStorage.setItem(transactionsKey, JSON.stringify(transactions));
         }
-
         if (transactions.length === 0) {
           transactions.push({
             id: `tx-pending-${Date.now()}`,
@@ -809,11 +844,9 @@
           localStorage.setItem(transactionsKey, JSON.stringify(transactions));
         }
         transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-
         const contacts =
           JSON.parse(localStorage.getItem(contactStorageKey)) ||
           defaultContacts;
-
         const paymentTransactions = transactions.filter(
           (t) => t.type === "payment" || t.type === "received"
         );
@@ -831,8 +864,14 @@
             }
           }
         }
-
-        let quickActionsHtml = `<div class="quick-action"><div class="quick-action-icon green"><i class="fa-solid fa-plus"></i></div><span class="quick-action-label">Get $5</span></div>`;
+        let quickActionsHtml = `<div class="quick-action">
+      <div class="quick-action-icon green">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32px" height="32px" viewBox="0 0 100 100" aria-hidden="true" role="img">
+          <path d="M 15 50 L 85 50 M 50 15 L 50 85" fill="none" stroke-width="12" stroke-linecap="butt"/>
+        </svg>
+      </div>
+      <span class="quick-action-label">Get $5</span>
+    </div>`;
         recentRecipients.forEach((contact) => {
           let iconHtml;
           if (contact.avatar) {
@@ -840,18 +879,14 @@
           } else {
             iconHtml = `${contact.name.charAt(0)}`;
           }
-          quickActionsHtml += `
-            <div class="quick-action">
+          quickActionsHtml += `<div class="quick-action">
                 <div class="quick-action-icon" style="background-color:${
                   contact.avatar ? "transparent" : contact.color || "#6c757d"
-                };">
-                    ${iconHtml}
-                </div>
+                };">${iconHtml}</div>
                 <span class="quick-action-label">${contact.name}</span>
             </div>`;
         });
         quickActionsContainer.innerHTML = quickActionsHtml;
-
         const filteredTransactions = transactions.filter((t) => {
           const searchTerm = query.toLowerCase();
           if (!searchTerm) return true;
@@ -867,7 +902,6 @@
           }
           return false;
         });
-
         if (filteredTransactions.length === 0 && !query) {
           activityListContainer.innerHTML = `<div class="empty-state"><h2>Nothing Here!</h2><p>Your future activity will be organized here</p></div>`;
           return;
@@ -875,14 +909,12 @@
           activityListContainer.innerHTML = `<div class="empty-state"><h2>No results found</h2><p>Try a different search term.</p></div>`;
           return;
         }
-
         const groupedTransactions = filteredTransactions.reduce((groups, t) => {
           const groupName = getSmartDateGroup(t.date);
           if (!groups[groupName]) groups[groupName] = [];
           groups[groupName].push(t);
           return groups;
         }, {});
-
         let html = "";
         for (const dateGroup in groupedTransactions) {
           html += `<div class="date-group-header">${dateGroup}</div><ul class="transaction-list">`;
@@ -893,7 +925,6 @@
               timeText,
               amount,
               amountClass = "";
-
             const groupName = getSmartDateGroup(t.date);
             const timeDisplay = new Date(t.date).toLocaleTimeString("en-US", {
               hour: "numeric",
@@ -908,7 +939,6 @@
               groupName === "Today" || groupName === "Yesterday"
                 ? timeDisplay
                 : dateDisplay;
-
             switch (t.type) {
               case "payment":
               case "received":
@@ -956,13 +986,11 @@
         }
         activityListContainer.innerHTML = html;
       }
-
       function renderTransactionDetails(transactionId) {
         const transactions =
           JSON.parse(localStorage.getItem(transactionsKey)) || [];
         const transaction = transactions.find((t) => t.id == transactionId);
         if (!transaction) return;
-
         switch (transaction.type) {
           case "payment":
           case "received":
@@ -976,7 +1004,6 @@
             break;
         }
       }
-
       function renderPaymentDetails(transaction) {
         const userProfile =
           JSON.parse(localStorage.getItem(userProfileKey)) || defaultProfile;
@@ -984,13 +1011,11 @@
           name: "Unknown",
           color: "#6c757d",
         };
-
         let avatarHtml = recipient.avatar
           ? `<img src="${recipient.avatar}" class="td-avatar" alt="${recipient.name}">`
           : `<div class="td-avatar" style="background-color:${
               recipient.color || "#6c757d"
             };">${recipient.name.charAt(0)}</div>`;
-
         const time = new Date(transaction.date).toLocaleTimeString("en-US", {
           hour: "numeric",
           minute: "2-digit",
@@ -998,15 +1023,13 @@
         });
         const noteHtml =
           transaction.status === "pending"
-            ? `<p class="td-note">For pending payment request $100 to completed</p>`
+            ? `<p class="td-note">For pending payment request $50 to completed</p>`
             : transaction.note
             ? `<p class="td-note">${transaction.note}</p>`
             : "";
-        const closeIconSVG = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z" fill="#0F1729"/></svg>`;
-
-        let detailsHtml = `
-            <div class="details-inner-container">
-                <header class="details-header"><button class="details-close-btn" id="details-close-btn">${closeIconSVG}</button></header>
+        const closeIcon = createThemeableIcon("close.png");
+        let detailsHtml = `<div class="details-inner-container">
+                <header class="details-header"><button class="details-close-btn" id="details-close-btn">${closeIcon}</button></header>
                 <main class="details-content">
                     <section class="td-recipient-info">
                         ${avatarHtml}
@@ -1017,27 +1040,24 @@
                     <section class="td-amount-section"><p class="td-amount">${formatCurrency(
                       transaction.amount,
                       false
-                    )}</p></section>
-                    `;
-
-        const docIcon = `<svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"></path></svg>`;
-        const reportIcon = `<svg viewBox="0 0 24 24"><path d="M11 15h2v2h-2v-2zm0-8h2v6h-2V7zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"></path></svg>`;
-        const chatIcon = `<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"></path></svg>`;
+                    )}</p></section>`;
+        const docIcon = createThemeableIcon("doc.png");
+        const reportIcon = createThemeableIcon("report.png");
+        const chatIcon = createThemeableIcon("chat.png");
         const chevronIcon = `<svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"></path></svg>`;
-
         if (transaction.status === "pending") {
-          const cancelIconSVG = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"></path></svg>`;
-          const cancelIconWhiteSVG = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"></path></svg>`;
-          detailsHtml += `
-          <hr class="td-divider">
+          const cancelIcon = createThemeableIcon("block.png");
+          const cancelIconWhite = createThemeableIcon("cancel.png", "black");
+          const pendingIcon = createThemeableIcon("pending.png");
+          detailsHtml += `<hr class="td-divider">
                 <section class="td-list-section">
                     <h2 class="td-list-header">Transaction details</h2>
-                    <div class="td-detail-item"><div class="td-icon" style="letter-spacing: -2px;">...</div><div class="td-text-content"><p class="td-title">Pending</p><p class="td-subtitle">Payment has not settled yet</p></div></div>
+                    <div class="td-detail-item"><div class="td-icon">${pendingIcon}</div><div class="td-text-content"><p class="td-title">Pending</p><p class="td-subtitle">Payment has not settled yet</p></div></div>
                 </section>
                 <hr class="td-divider">
                 <section class="td-actions-section">
                     <h2 class="td-actions-header">What you can do</h2>
-                    <div class="td-action-item"><div class="td-action-icon">${cancelIconSVG}</div><div class="td-action-label">Cancel payment</div><div class="td-action-chevron">${chevronIcon}</div></div>
+                    <div class="td-action-item"><div class="td-action-icon">${cancelIcon}</div><div class="td-action-label">Cancel payment</div><div class="td-action-chevron">${chevronIcon}</div></div>
                     <div class="td-action-item"><div class="td-action-icon">${docIcon}</div><div class="td-action-label">View all ${
             recipient.name.split(" ")[0]
           } transactions</div><div class="td-action-chevron">${chevronIcon}</div></div>
@@ -1050,28 +1070,28 @@
                 </footer>
                 <footer class="td-footer-button-wrapper"><button class="td-cancel-button" data-id="${
                   transaction.id
-                }" id="td-cancel-btn">${cancelIconWhiteSVG} Cancel Payment</button></footer>`;
+                }" id="td-cancel-btn">${cancelIconWhite} Cancel Payment</button></footer>`;
         } else {
-          const personIcon = `<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path></svg>`;
-          const copyIcon = `<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"></path></svg>`;
-          const feesIcon = `<svg viewBox="0 0 24 24"><path d="M3 15h18v-2H3v2zm0 4h18v-2H3v2zm0-8h18V9H3v2zm0-6v2h18V5H3z"></path></svg>`;
-          const feesInfoIcon = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"></path></svg>`;
+          const personIcon = createThemeableIcon("person.png");
+          const copyIcon = createThemeableIcon("copy.png");
+          const feesIcon = createThemeableIcon("fees.png");
+          const infoIcon = createThemeableIcon("info.png");
+          const completeIcon = createThemeableIcon("check24_Normal_Normal.png");
           const completeSubtitle =
             transaction.type === "received"
               ? "Payment received successfully"
               : "Payment sent successfully";
-          detailsHtml += `
-          <hr class="td-divider">
+          detailsHtml += `<hr class="td-divider">
               <section class="td-list-section">
                 <h2 class="td-list-header">Transaction details</h2>
-                <div class="td-detail-item"><div class="td-icon check">&#10003;</div><div class="td-text-content"><p class="td-title">Complete</p><p class="td-subtitle">${completeSubtitle}</p></div></div>
+                <div class="td-detail-item"><div class="td-icon">${completeIcon}</div><div class="td-text-content"><p class="td-title">Complete</p><p class="td-subtitle">${completeSubtitle}</p></div></div>
                 <div class="td-detail-item"><div class="td-icon">${personIcon}</div><div class="td-text-content"><p class="td-title">Payment between</p><p class="td-subtitle">To: ${
             recipient.name
           }</p><p class="td-subtitle">From: ${
             userProfile.fullName
           }</p></div></div>
                 <div class="td-detail-item"><div class="td-icon">$</div><div class="td-text-content"><p class="td-title">Payment Source</p><p class="td-subtitle">Cash balance</p></div></div>
-                <div class="td-detail-item"><div class="td-icon">${feesIcon}</div><div class="td-text-content"><p class="td-title">Fees</p><p class="td-subtitle">None applied</p></div><div class="td-icon-right">${feesInfoIcon}</div></div>
+                <div class="td-detail-item"><div class="td-icon">${feesIcon}</div><div class="td-text-content"><p class="td-title">Fees</p><p class="td-subtitle">None applied</p></div><div class="td-icon-right">${infoIcon}</div></div>
                 <div class="td-detail-item"><div class="td-icon">#</div><div class="td-text-content"><p class="td-title">Transaction number</p><p class="td-subtitle">${generateTransactionNumber()}</p></div><div class="td-icon-right">${copyIcon}</div></div>
               </section>
               <hr class="td-divider">
@@ -1101,19 +1121,18 @@
             );
         }
       }
-
       function renderAddMoneyDetails(transaction) {
         const time = new Date(transaction.date).toLocaleTimeString("en-US", {
           hour: "numeric",
           minute: "2-digit",
           hour12: true,
         });
-        const closeIconSVG = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z" fill="#0F1729"/></svg>`;
-        const chatIcon = `<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"></path></svg>`;
-        const transferIcon = `<svg viewBox="0 0 24 24"><path d="M16.01 11H4v2h12.01v3L20 12l-3.99-4v3z"></path></svg>`;
-        detailsOverlay.innerHTML = `
-            <div class="details-inner-container">
-                <header class="details-header"><button class="details-close-btn" id="details-close-btn">${closeIconSVG}</button></header>
+        const closeIcon = createThemeableIcon("close.png");
+        const chatIcon = createThemeableIcon("chat.png");
+        const completeIcon = createThemeableIcon("check24_Normal_Normal.png");
+        const transferOutIcon = createThemeableIcon("transfer-out.png");
+        detailsOverlay.innerHTML = `<div class="details-inner-container">
+                <header class="details-header"><button class="details-close-btn" id="details-close-btn">${closeIcon}</button></header>
                 <main class="details-content">
                     <section class="td-recipient-info">
                         <div class="td-avatar" style="background-color: var(--accent-green);">$</div>
@@ -1127,9 +1146,9 @@
                     <hr class="td-divider">
                     <section class="td-list-section">
                         <h2 class="td-list-header">Transaction details</h2>
-                        <div class="td-detail-item"><div class="td-icon check">&#10003;</div><div class="td-text-content"><p class="td-title">Complete</p><p class="td-subtitle">Transfer from Visa Debit 8885</p></div></div>
+                        <div class="td-detail-item"><div class="td-icon">${completeIcon}</div><div class="td-text-content"><p class="td-title">Complete</p><p class="td-subtitle">Transfer from Visa Debit 8885</p></div></div>
                         <div class="td-detail-item"><div class="td-icon">$</div><div class="td-text-content"><p class="td-title">Transferred from</p><p class="td-subtitle">Visa Debit 8885</p></div></div>
-                        <div class="td-detail-item"><div class="td-icon">${transferIcon}</div><div class="td-text-content"><p class="td-title">Transferred to</p><p class="td-subtitle">Cash balance</p></div></div>
+                        <div class="td-detail-item"><div class="td-icon">${transferOutIcon}</div><div class="td-text-content"><p class="td-title">Transferred to</p><p class="td-subtitle">Cash balance</p></div></div>
                     </section>
                     <hr class="td-divider">
                     <section class="td-actions-section">
@@ -1146,20 +1165,19 @@
             detailsOverlay.classList.remove("show")
           );
       }
-
       function renderWithdrawalDetails(transaction) {
         const time = new Date(transaction.date).toLocaleTimeString("en-US", {
           hour: "numeric",
           minute: "2-digit",
           hour12: true,
         });
-        const closeIconSVG = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z" fill="#0F1729"/></svg>`;
-        const lightningIcon = `<svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"></path></svg>`;
-        const transferOutIcon = `<svg viewBox="0 0 24 24"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"></path></svg>`;
-        const chatIcon = `<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"></path></svg>`;
-        detailsOverlay.innerHTML = `
-             <div class="details-inner-container">
-                <header class="details-header"><button class="details-close-btn" id="details-close-btn">${closeIconSVG}</button></header>
+        const closeIcon = createThemeableIcon("close.png");
+        const lightningIcon = createThemeableIcon("lightning.png");
+        const transferOutIcon = createThemeableIcon("transfer-out.png");
+        const feeIcon = createThemeableIcon("percent.png");
+        const chatIcon = createThemeableIcon("chat.png");
+        detailsOverlay.innerHTML = `<div class="details-inner-container">
+                <header class="details-header"><button class="details-close-btn" id="details-close-btn">${closeIcon}</button></header>
                 <main class="details-content">
                     <section class="td-recipient-info">
                         <div class="td-avatar" style="background-color: var(--accent-green);">$</div>
@@ -1174,10 +1192,10 @@
                     <section class="td-list-section">
                         <h2 class="td-list-header">Transaction details</h2>
                         <div class="td-detail-item"><div class="td-icon">${lightningIcon}</div><div class="td-text-content"><p class="td-title">Instantly transferred</p><p class="td-subtitle">Funds transferred to your external bank</p></div></div>
-                        <div class="td-detail-item"><div class="td-icon" style="font-weight: 400;">%</div><div class="td-text-content"><p class="td-title">Instant transfer fee</p><p class="td-subtitle">${formatCurrency(
-                          transaction.fee,
-                          false
-                        )}</p></div></div>
+                        <div class="td-detail-item"><div class="td-icon">${feeIcon}</div><div class="td-text-content"><p class="td-title">Instant transfer fee</p><p class="td-subtitle">${formatCurrency(
+          transaction.fee,
+          false
+        )}</p></div></div>
                         <div class="td-detail-item"><div class="td-icon">$</div><div class="td-text-content"><p class="td-title">Amount transferred</p><p class="td-subtitle">${formatCurrency(
                           transaction.amount,
                           false
@@ -1200,7 +1218,6 @@
             detailsOverlay.classList.remove("show")
           );
       }
-
       function cancelPayment(id) {
         if (!id) return;
         let transactions =
@@ -1210,23 +1227,16 @@
         detailsOverlay.classList.remove("show");
         renderActivity(searchInput.value);
       }
-
-      // NEW FINAL CODE
       document.addEventListener("DOMContentLoaded", () => {
-        // This new logic handles everything: loading, initializing, and rendering the icon.
         const savedProfileJSON = localStorage.getItem(userProfileKey);
         const userProfile = savedProfileJSON
           ? JSON.parse(savedProfileJSON)
           : initializeUserProfile();
         profileIconLink.innerHTML = generateProfileIcon(userProfile);
-
-        // The rest of your code remains the same
         renderActivity();
-
         searchInput.addEventListener("input", () =>
           renderActivity(searchInput.value)
         );
-
         activityListContainer.addEventListener("click", (e) => {
           const item = e.target.closest(".transaction-item");
           if (item && item.dataset.id) {
@@ -1236,5 +1246,6 @@
       });
     </script>
     <script src="footer.display.js"></script>
+    <script src="theme-switcher.js"></script>
   </body>
 </html>
