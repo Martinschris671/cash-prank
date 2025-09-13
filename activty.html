@@ -316,8 +316,11 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        width: 24px;
+        height: 24px;
+        color: var(--text-primary);
       }
-      .details-close-btn img {
+      .details-close-btn svg {
         width: 24px;
         height: 24px;
       }
@@ -403,9 +406,12 @@
         font-size: 22px;
         font-weight: 500;
       }
-      .td-icon img {
+      .td-icon svg {
         width: 100%;
         height: 100%;
+      }
+      .icon-rotated-180 svg {
+        transform: rotate(180deg);
       }
       .td-text-content {
         flex-grow: 1;
@@ -431,7 +437,7 @@
         align-items: center;
         justify-content: center;
       }
-      .td-icon-right img {
+      .td-icon-right svg {
         width: 100%;
         height: 100%;
       }
@@ -458,7 +464,7 @@
         height: 24px;
         margin-right: 18px;
       }
-      .td-action-icon img {
+      .td-action-icon svg {
         width: 100%;
         height: 100%;
       }
@@ -511,7 +517,7 @@
         gap: 8px;
         font-family: var(--font-family);
       }
-      .td-cancel-button img {
+      .td-cancel-button svg {
         width: 24px;
         height: 24px;
       }
@@ -666,6 +672,45 @@
         "profile/IMG-20250817-WA0005.jpg",
         "profile/IMG-20250817-WA0006.jpg",
       ];
+
+      const svgIcons = {
+        "close_white.svg": `<svg id="vector" xmlns="http://www.w3.org/2000/svg" width="32.0d" height="32.0d" viewBox="0 0 32.0 32.0"><path fill="none" d="M10 10l12 12m0-12L10 22" stroke-linecap="round" stroke="currentColor" stroke-width="3.0" id="path_0"/></svg>`,
+        "icon_hash_24.svg": `<svg id="vector" xmlns="http://www.w3.org/2000/svg" width="24.0d" height="24.0d" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M16.994 3.11L16.451 8H21.5v2h-5.271l-0.445 4H20.5v2h-4.938l-0.568 5.11-1.988-0.22 0.543-4.89H9.562l-0.568 5.11-1.988-0.22L7.549 16H2.5v-2h5.271l0.445-4H3.5V8h4.938l0.568-5.11 1.988 0.22L10.451 8h3.987l0.568-5.11 1.988 0.22zM9.784 14h3.987l0.445-4h-3.987l-0.445 4z" id="path_0"/></svg>`,
+        "icon_currency_usd_24.svg": `<svg id="vector" xmlns="http://www.w3.org/2000/svg" width="24.0d" height="24.0d" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M13 3.262c2.511 0.327 4.31 1.864 5.172 3.576l-0.892 0.45-0.894 0.45C15.832 6.637 14.678 5.592 13 5.288v5.689c1.047 0.232 2.162 0.532 3.068 1.062 0.588 0.345 1.127 0.806 1.515 1.44 0.39 0.638 0.589 1.391 0.589 2.257a4.72 4.72 0 0 1-1.758 3.706c-0.896 0.736-2.066 1.2-3.414 1.352V22.5h-2v-1.698c-2.988-0.286-4.944-1.859-6.02-3.934l1.776-0.92c0.742 1.432 2.05 2.578 4.244 2.843v-6.195c-1.024-0.222-2.111-0.5-2.993-0.98-0.585-0.318-1.13-0.75-1.526-1.356-0.4-0.614-0.605-1.342-0.605-2.18 0-1.385 0.587-2.643 1.691-3.534C8.45 3.834 9.618 3.388 11 3.246V1.5h2v1.762zm0 15.515c0.918-0.137 1.636-0.462 2.144-0.88a2.72 2.72 0 0 0 1.028-2.16c0-0.55-0.123-0.932-0.296-1.216-0.176-0.287-0.441-0.536-0.818-0.756-0.547-0.321-1.245-0.54-2.058-0.735v5.747zM11 5.261c-0.97 0.13-1.688 0.447-2.177 0.842A2.459 2.459 0 0 0 7.876 8.08c0 0.5 0.117 0.838 0.28 1.087 0.168 0.257 0.427 0.485 0.808 0.692 0.545 0.298 1.233 0.5 2.036 0.686V5.26z" id="path_0"/></svg>`,
+        "icon_deposit_24.svg": `<svg id="vector" xmlns="http://www.w3.org/2000/svg" width="24.0d" height="24.0d" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M16.75 3a5.75 5.75 0 0 1 5.75 5.75v7.75a4 4 0 0 1-4 4h-13a4 4 0 0 1-4-4V9a4 4 0 0 1 4-4H8v2H5.5a2 2 0 0 0-2 2v7.5a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2V8.75a3.75 3.75 0 1 0-7.5 0v4.336l2.793-2.793 1.414 1.414-4.5 4.5a1 1 0 0 1-1.414 0l-4.5-4.5 1.414-1.414L11 13.086V8.75A5.75 5.75 0 0 1 16.75 3z" id="path_0"/></svg>`,
+        "icon_comm_chat_24.svg": `<svg id="vector" xmlns="http://www.w3.org/2000/svg" width="24.0d" height="24.0d" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M17.5 3.5a5 5 0 0 1 5 5v5a5 5 0 0 1-5 5H15v-2h2.5a3 3 0 0 0 3-3v-5a3 3 0 0 0-3-3h-11a3 3 0 0 0-3 3v5a3 3 0 0 0 3 3h3.12a2 2 0 0 1 1.328 0.505l4.216 3.747L14.5 21.5l-0.664 0.747L9.62 18.5H6.5a5 5 0 0 1-5-5v-5a5 5 0 0 1 5-5h11zm-10 6.25a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm4.5 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm4.5 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" id="path_0"/></svg>`,
+        "icon_pending_24.svg": `<svg id="vector" xmlns="http://www.w3.org/2000/svg" width="24.0d" height="24.0d" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M5 14a2 2 0 1 1 0.001-4.001A2 2 0 0 1 5 14zm7 0a2 2 0 1 1 0.001-4.001A2 2 0 0 1 12 14zm5-2a2 2 0 1 0 4.001-0.001A2 2 0 0 0 17 12z" fill-rule="evenodd" id="path_0"/></svg>`,
+        "icon_block_24.svg": `<svg id="vector" xmlns="http://www.w3.org/2000/svg" width="24.0d" height="24.0d" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M4.929 4.929c3.905-3.906 10.237-3.906 14.142 0 3.905 3.905 3.905 10.237 0 14.142-3.905 3.905-10.237 3.905-14.142 0-3.906-3.905-3.906-10.237 0-14.142zm2.167 13.388a8 8 0 0 0 10.561-0.66 8 8 0 0 0 0.66-10.561L7.096 18.317zm9.807-12.635a8 8 0 0 0-10.56 0.66 8 8 0 0 0-0.661 10.561L16.903 5.682z" id="path_0"/></svg>`,
+        "icon_avatar_24.svg": `<svg id="vector" xmlns="http://www.w3.org/2000/svg" width="24.0d" height="24.0d" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M12 12c5.274 0 10 3.362 10 8a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1c0-4.638 4.726-8 10-8zm0 2c-4.159 0-7.256 2.308-7.882 5h15.764c-0.626-2.692-3.723-5-7.882-5zm0-11.5a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" id="path_0"/></svg>`,
+        "icon_information_outline_24.svg": `<svg id="vector" xmlns="http://www.w3.org/2000/svg" width="24.0d" height="24.0d" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M4.929 4.929c3.905-3.906 10.237-3.906 14.142 0 3.905 3.905 3.905 10.237 0 14.142-3.905 3.905-10.237 3.905-14.142 0-3.906-3.905-3.906-10.237 0-14.142zm12.728 1.414A8 8 0 1 0 6.343 17.658 8 8 0 0 0 17.657 6.343zM13 17h-2v-5.5h2V17zM12 6.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" id="path_0"/></svg>`,
+        "icon_discount_percentage_24.svg": `<svg id="vector" xmlns="http://www.w3.org/2000/svg" width="24.0d" height="24.0d" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M17.5 14.5a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm2.707-9.293l-15 15-1.414-1.414 15-15 1.414 1.414zM17.5 16.5a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-11-13a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm0 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" id="path_0"/></svg>`,
+        "ic_checkmark (2).svg": `<svg id="vector" xmlns="http://www.w3.org/2000/svg" width="48.0d" height="48.0d" viewBox="0 0 48.0 48.0"><path fill="none" d="M11 25l8 8 18-18" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" stroke-width="5.0" id="path_0"/></svg>`,
+        "icon_bitcoin_lightning_24.svg": `<svg id="vector" xmlns="http://www.w3.org/2000/svg" width="24.0d" height="24.0d" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M14.848 2.151c0.38-0.365 1.018-0.014 0.884 0.487L13.757 9.97h5.187c0.939 0 1.409 1.093 0.745 1.733L9.152 21.848c-0.38 0.366-1.018 0.015-0.883-0.485l1.973-7.333H5.057c-0.94 0-1.41-1.093-0.746-1.732L14.848 2.15z" id="path_0"/></svg>`,
+        "fees.svg": `<svg id="vector" xmlns="http://www.w3.org/2000/svg" width="24.0d" height="24.0d" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M22.332 17.945l-1.664 1.11-6-9 1.664-1.11 6 9zM13.5 19h-11v-2h11v2zm1-4h-11v-2h11v2zm-2-4h-11V9h11v2zm3-4h-11V5h11v2z" id="path_0"/></svg>`,
+        "cancel.svg": `<svg width="24px" height="24px" viewBox="0 0 16.00 16.00" id="meteor-icon-kit__regular-minus-circle-s" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_iconCarrier"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8C16 12.4183 12.4183 16 8 16zM8 14C11.3137 14 14 11.3137 14 8C14 4.68629 11.3137 2 8 2C4.68629 2 2 4.68629 2 8C2 11.3137 4.68629 14 8 14zM5 9C4.44772 9 4 8.5523 4 8C4 7.4477 4.44772 7 5 7H11C11.5523 7 12 7.4477 12 8C12 8.5523 11.5523 9 11 9H5z" fill="currentColor"></path></g></svg>`,
+        "report.svg": `<svg id="vector" xmlns="http://www.w3.org/2000/svg" width="24.0d" height="24.0d" viewBox="0 0 960.0 960.0"><path fill="currentColor" d="M440,680h80L520,440L440,440v240ZM480,360q17,0 28.5,-11.5T520,320t-11.5,-28.5T480,280t-28.5,11.5T440,320t11.5,28.5T480,360ZM480,880q-83,0 -156,-31.5T197,763T111.5,636T80,480t31.5,-156T197,197t127,-85.5T480,80t156,31.5T763,197t85.5,127T880,480T848.5,636T763,763T636,848.5T480,880ZM480,800q134,0 227,-93t93,-227T707,253T480,160T253,253T160,480t93,227t227,93ZM480,480Z" id="path_0"/></svg>`,
+        "icon_document_24.svg": `<svg id="vector" xmlns="http://www.w3.org/2000/svg" width="24.0d" height="24.0d" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M19 2.5a1.002 1.002 0 0 1 0.956 1.294c-0.927 3.011-0.59 5.313-0.157 7.85 0.436 2.556 0.974 5.357 0.18 9.066-0.1 0.46-0.508 0.79-0.979 0.79H5a1 1 0 0 1-0.977-1.21c0.704-3.29 0.243-5.74-0.196-8.31-0.441-2.586-0.855-5.286 0.218-8.774l0.06-0.151A1 1 0 0 1 5 2.5h14zm-13.24 2C5.086 7.174 5.4 9.308 5.799 11.645c0.387 2.27 0.853 4.733 0.395 7.855h11.977c0.48-2.901 0.06-5.16-0.344-7.52-0.385-2.258-0.75-4.6-0.122-7.48H5.761zM15 10H8V8h7v2z" id="path_0"/></svg>`,
+        "icon_copy_24.svg": `<svg id="vector" xmlns="http://www.w3.org/2000/svg" width="24.0d" height="24.0d" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M20.099 7.005A1 1 0 0 1 21 8v13a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V8l0.005-0.103A1 1 0 0 1 9 7h11l0.099 0.005zM10 20h9V9h-9v11zm6-16H5v13H3V3l0.005-0.099A1 1 0 0 1 4 2h12v2z" id="path_0"/></svg>`,
+      };
+
+      const iconMap = {
+        "close.png": "close_white.svg",
+        "doc.png": "icon_document_24.svg",
+        "report.png": "report.svg",
+        "chat.png": "icon_comm_chat_24.svg",
+        "block.png": "icon_block_24.svg",
+        "cancel.png": "cancel.svg",
+        "pending.png": "icon_pending_24.svg",
+        "person.png": "icon_avatar_24.svg",
+        "copy.png": "icon_copy_24.svg",
+        "fees.png": "fees.svg",
+        "info.png": "icon_information_outline_24.svg",
+        "check24_Normal_Normal.png": "ic_checkmark (2).svg",
+        "transfer-out.png": "icon_deposit_24.svg",
+        "lightning.png": "icon_bitcoin_lightning_24.svg",
+        "percent.png": "icon_discount_percentage_24.svg",
+      };
+
       function initializeUserProfile() {
         const randomIconPath =
           RANDOM_DEFAULT_ICONS[
@@ -725,29 +770,20 @@
         `#D-454B${Math.floor(1000 + Math.random() * 9000)}`;
 
       /**
-       * Creates an HTML image tag for a themeable icon using the pre-processed cache.
-       * @param {string} iconName - The filename of the icon (e.g., 'chat.png').
-       * @param {string | null} specialColor - Optional. Forces a specific color ('white' or 'black').
-       * @returns {string} - The complete HTML <img> tag.
+       * Returns an SVG string for a given icon name.
+       * @param {string} iconName - The original filename of the icon (e.g., 'chat.png') or a symbol ('$', '#').
+       * @returns {string} - The complete SVG string.
        */
-      function createThemeableIcon(iconName, specialColor = null) {
-        const currentTheme =
-          document.documentElement.getAttribute("data-theme") || "light";
-        const themeColor = currentTheme === "dark" ? "white" : "black";
+      function getIconSvg(iconName) {
+        if (iconName === "$") return svgIcons["icon_currency_usd_24.svg"];
+        if (iconName === "#") return svgIcons["icon_hash_24.svg"];
 
-        const colorToUse = specialColor || themeColor;
-
-        const src =
-          iconCache[iconName] && iconCache[iconName][colorToUse]
-            ? iconCache[iconName][colorToUse]
-            : `tansicon/${iconName}`;
-
-        let attributes = `src="${src}" data-icon-name="${iconName}"`;
-        if (specialColor) {
-          attributes += ` data-special-color="${specialColor}"`;
+        const svgFileName = iconMap[iconName];
+        if (svgFileName && svgIcons[svgFileName]) {
+          return svgIcons[svgFileName];
         }
-
-        return `<img ${attributes}>`;
+        console.warn(`SVG for icon "${iconName}" not found.`);
+        return `<!-- Icon ${iconName} not found -->`;
       }
 
       function getSmartDateGroup(dateStr) {
@@ -1013,7 +1049,7 @@
             : transaction.note
             ? `<p class="td-note">${transaction.note}</p>`
             : "";
-        const closeIcon = createThemeableIcon("close.png");
+        const closeIcon = getIconSvg("close.png");
         let detailsHtml = `<div class="details-inner-container">
                 <header class="details-header"><button class="details-close-btn" id="details-close-btn">${closeIcon}</button></header>
                 <main class="details-content">
@@ -1027,25 +1063,14 @@
                       transaction.amount,
                       false
                     )}</p></section>`;
-        const docIcon = createThemeableIcon("doc.png");
-        const reportIcon = createThemeableIcon("report.png");
-        const chatIcon = createThemeableIcon("chat.png");
+        const docIcon = getIconSvg("doc.png");
+        const reportIcon = getIconSvg("report.png");
+        const chatIcon = getIconSvg("chat.png");
         const chevronIcon = `<svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"></path></svg>`;
         if (transaction.status === "pending") {
-          // --- FIX #1: block.png now follows the default theme (black on light, white on dark) ---
-          const cancelIcon = createThemeableIcon("block.png");
-
-          // --- FIX #2: cancel.png on the button is now white on light, black on dark ---
-          const currentTheme =
-            document.documentElement.getAttribute("data-theme") || "light";
-          const colorForCancelButton =
-            currentTheme === "dark" ? "black" : "white";
-          const cancelButtonIcon = createThemeableIcon(
-            "cancel.png",
-            colorForCancelButton
-          );
-
-          const pendingIcon = createThemeableIcon("pending.png");
+          const cancelIcon = getIconSvg("block.png");
+          const cancelButtonIcon = getIconSvg("cancel.png");
+          const pendingIcon = getIconSvg("pending.png");
 
           detailsHtml += `<hr class="td-divider">
                 <section class="td-list-section">
@@ -1059,7 +1084,7 @@
                     <div class="td-action-item"><div class="td-action-icon">${docIcon}</div><div class="td-action-label">View all ${
             recipient.name.split(" ")[0]
           } transactions</div><div class="td-action-chevron">${chevronIcon}</div></div>
-                    <div class="td-action-item"><div class="td-action-icon">${reportIcon}</div><div class="td-action-label">Report a missing offer</div><div class="td-action-chevron">${chevronIcon}</div></div>
+                    <div class="td-action-item"><div class="td-action-icon icon-rotated-180">${reportIcon}</div><div class="td-action-label">Report a missing offer</div><div class="td-action-chevron">${chevronIcon}</div></div>
                     <div class="td-action-item"><div class="td-action-icon">${chatIcon}</div><div class="td-action-label">Contact Support</div><div class="td-action-chevron">${chevronIcon}</div></div>
                 </section>
                  <footer class="td-footer-info">
@@ -1070,11 +1095,11 @@
                   transaction.id
                 }" id="td-cancel-btn">${cancelButtonIcon} Cancel Payment</button></footer>`;
         } else {
-          const personIcon = createThemeableIcon("person.png");
-          const copyIcon = createThemeableIcon("copy.png");
-          const feesIcon = createThemeableIcon("fees.png");
-          const infoIcon = createThemeableIcon("info.png");
-          const completeIcon = createThemeableIcon("check24_Normal_Normal.png");
+          const personIcon = getIconSvg("person.png");
+          const copyIcon = getIconSvg("copy.png");
+          const feesIcon = getIconSvg("fees.png");
+          const infoIcon = getIconSvg("info.png");
+          const completeIcon = getIconSvg("check24_Normal_Normal.png");
           const completeSubtitle =
             transaction.type === "received"
               ? "Payment received successfully"
@@ -1088,9 +1113,13 @@
           }</p><p class="td-subtitle">From: ${
             userProfile.fullName
           }</p></div></div>
-                <div class="td-detail-item"><div class="td-icon">$</div><div class="td-text-content"><p class="td-title">Payment Source</p><p class="td-subtitle">Cash balance</p></div></div>
+                <div class="td-detail-item"><div class="td-icon">${getIconSvg(
+                  "$"
+                )}</div><div class="td-text-content"><p class="td-title">Payment Source</p><p class="td-subtitle">Cash balance</p></div></div>
                 <div class="td-detail-item"><div class="td-icon">${feesIcon}</div><div class="td-text-content"><p class="td-title">Fees</p><p class="td-subtitle">None applied</p></div><div class="td-icon-right">${infoIcon}</div></div>
-                <div class="td-detail-item"><div class="td-icon">#</div><div class="td-text-content"><p class="td-title">Transaction number</p><p class="td-subtitle">${generateTransactionNumber()}</p></div><div class="td-icon-right">${copyIcon}</div></div>
+                <div class="td-detail-item"><div class="td-icon">${getIconSvg(
+                  "#"
+                )}</div><div class="td-text-content"><p class="td-title">Transaction number</p><p class="td-subtitle">${generateTransactionNumber()}</p></div><div class="td-icon-right">${copyIcon}</div></div>
               </section>
               <hr class="td-divider">
               <section class="td-actions-section">
@@ -1098,7 +1127,7 @@
                 <div class="td-action-item"><div class="td-action-icon">${docIcon}</div><div class="td-action-label">View all ${
             recipient.name.split(" ")[0]
           }<br>transactions</div><div class="td-action-chevron">${chevronIcon}</div></div>
-                <div class="td-action-item"><div class="td-action-icon">${reportIcon}</div><div class="td-action-label">Report a missing offer</div><div class="td-action-chevron">${chevronIcon}</div></div>
+                <div class="td-action-item"><div class="td-action-icon icon-rotated-180">${reportIcon}</div><div class="td-action-label">Report a missing offer</div><div class="td-action-chevron">${chevronIcon}</div></div>
                 <div class="td-action-item"><div class="td-action-icon">${chatIcon}</div><div class="td-action-label">Contact Support</div><div class="td-action-chevron">${chevronIcon}</div></div>
               </section>
               <footer class="td-footer-info"><p><strong>Block, Inc.</strong></p><p>1955 Broadway, Suite 500</p><p>Oakland, CA 94612</p><p>(800) 969-1940</p><p>NMLS #: 986264</p></footer>`;
@@ -1125,10 +1154,10 @@
           minute: "2-digit",
           hour12: true,
         });
-        const closeIcon = createThemeableIcon("close.png");
-        const chatIcon = createThemeableIcon("chat.png");
-        const completeIcon = createThemeableIcon("check24_Normal_Normal.png");
-        const transferOutIcon = createThemeableIcon("transfer-out.png");
+        const closeIcon = getIconSvg("close.png");
+        const chatIcon = getIconSvg("chat.png");
+        const completeIcon = getIconSvg("check24_Normal_Normal.png");
+        const transferOutIcon = getIconSvg("transfer-out.png");
         detailsOverlay.innerHTML = `<div class="details-inner-container">
                 <header class="details-header"><button class="details-close-btn" id="details-close-btn">${closeIcon}</button></header>
                 <main class="details-content">
@@ -1145,7 +1174,9 @@
                     <section class="td-list-section">
                         <h2 class="td-list-header">Transaction details</h2>
                         <div class="td-detail-item"><div class="td-icon">${completeIcon}</div><div class="td-text-content"><p class="td-title">Complete</p><p class="td-subtitle">Transfer from Visa Debit 8885</p></div></div>
-                        <div class="td-detail-item"><div class="td-icon">$</div><div class="td-text-content"><p class="td-title">Transferred from</p><p class="td-subtitle">Visa Debit 8885</p></div></div>
+                        <div class="td-detail-item"><div class="td-icon">${getIconSvg(
+                          "$"
+                        )}</div><div class="td-text-content"><p class="td-title">Transferred from</p><p class="td-subtitle">Visa Debit 8885</p></div></div>
                         <div class="td-detail-item"><div class="td-icon">${transferOutIcon}</div><div class="td-text-content"><p class="td-title">Transferred to</p><p class="td-subtitle">Cash balance</p></div></div>
                     </section>
                     <hr class="td-divider">
@@ -1169,11 +1200,11 @@
           minute: "2-digit",
           hour12: true,
         });
-        const closeIcon = createThemeableIcon("close.png");
-        const lightningIcon = createThemeableIcon("lightning.png");
-        const transferOutIcon = createThemeableIcon("transfer-out.png");
-        const feeIcon = createThemeableIcon("percent.png");
-        const chatIcon = createThemeableIcon("chat.png");
+        const closeIcon = getIconSvg("close.png");
+        const lightningIcon = getIconSvg("lightning.png");
+        const transferOutIcon = getIconSvg("transfer-out.png");
+        const feeIcon = getIconSvg("percent.png");
+        const chatIcon = getIconSvg("chat.png");
         detailsOverlay.innerHTML = `<div class="details-inner-container">
                 <header class="details-header"><button class="details-close-btn" id="details-close-btn">${closeIcon}</button></header>
                 <main class="details-content">
@@ -1194,11 +1225,15 @@
           transaction.fee,
           false
         )}</p></div></div>
-                        <div class="td-detail-item"><div class="td-icon">$</div><div class="td-text-content"><p class="td-title">Amount transferred</p><p class="td-subtitle">${formatCurrency(
-                          transaction.amount,
-                          false
-                        )}</p></div></div>
-                        <div class="td-detail-item"><div class="td-icon">$</div><div class="td-text-content"><p class="td-title">Transferred from</p><p class="td-subtitle">Cash Balance</p></div></div>
+                        <div class="td-detail-item"><div class="td-icon">${getIconSvg(
+                          "$"
+                        )}</div><div class="td-text-content"><p class="td-title">Amount transferred</p><p class="td-subtitle">${formatCurrency(
+          transaction.amount,
+          false
+        )}</p></div></div>
+                        <div class="td-detail-item"><div class="td-icon">${getIconSvg(
+                          "$"
+                        )}</div><div class="td-text-content"><p class="td-title">Transferred from</p><p class="td-subtitle">Cash Balance</p></div></div>
                         <div class="td-detail-item"><div class="td-icon">${transferOutIcon}</div><div class="td-text-content"><p class="td-title">Transferred to</p><p class="td-subtitle">PRIVATE LABEL Debit 9389</p></div></div>
                     </section>
                     <hr class="td-divider">
@@ -1228,39 +1263,27 @@
 
       // --- MAIN APP INITIALIZATION ---
       document.addEventListener("DOMContentLoaded", () => {
-        initializeIconCache()
-          .then(() => {
-            console.log("Icon cache successfully initialized.");
+        const savedProfileJSON = localStorage.getItem(userProfileKey);
+        const userProfile = savedProfileJSON
+          ? JSON.parse(savedProfileJSON)
+          : initializeUserProfile();
+        profileIconLink.innerHTML = generateProfileIcon(userProfile);
 
-            const savedProfileJSON = localStorage.getItem(userProfileKey);
-            const userProfile = savedProfileJSON
-              ? JSON.parse(savedProfileJSON)
-              : initializeUserProfile();
-            profileIconLink.innerHTML = generateProfileIcon(userProfile);
+        renderActivity();
 
-            renderActivity();
+        searchInput.addEventListener("input", () =>
+          renderActivity(searchInput.value)
+        );
 
-            searchInput.addEventListener("input", () =>
-              renderActivity(searchInput.value)
-            );
-
-            activityListContainer.addEventListener("click", (e) => {
-              const item = e.target.closest(".transaction-item");
-              if (item && item.dataset.id) {
-                renderTransactionDetails(item.dataset.id);
-              }
-            });
-          })
-          .catch((error) => {
-            console.error(
-              "Critical error: Could not initialize icon cache.",
-              error
-            );
-          });
+        activityListContainer.addEventListener("click", (e) => {
+          const item = e.target.closest(".transaction-item");
+          if (item && item.dataset.id) {
+            renderTransactionDetails(item.dataset.id);
+          }
+        });
       });
     </script>
     <script src="footer.display.js"></script>
-    <script src="icon-processor.js"></script>
     <script src="theme-switcher.js"></script>
   </body>
 </html>
