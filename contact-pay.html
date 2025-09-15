@@ -50,9 +50,6 @@
         --checkbox-border: #555555;
         --modal-handle-bg: #d1d1d6;
         --modal-border: #e5e5ea;
-        --star-icon-url: url("icon/stars_Normal.png");
-        /* --- 1. ADDED: Path for the light mode X icon --- */
-        --x-icon-url: url("icon/new_close_Normal_monochrome-black\ \(2\).png");
       }
 
       [data-theme="dark"] {
@@ -72,9 +69,6 @@
         --checkbox-border: #8e8e93;
         --modal-handle-bg: #5a5a5c;
         --modal-border: #3a3a3c;
-        --star-icon-url: url("icon/stars_Normal_monochrome-white.png");
-        /* --- 2. ADDED: Path for the dark mode X icon --- */
-        --x-icon-url: url("icon/new_close_Normal_monochrome-white.png");
       }
       /* --- END OF THEME DEFINITIONS --- */
 
@@ -133,19 +127,21 @@
         transition: background-color 0.3s;
       }
 
-      /* --- 3. MODIFIED: The .close-btn is now styled to show the icon --- */
       .close-btn {
         background: none;
         border: none;
         cursor: pointer;
         padding: 0;
-        /* New styles to display the icon */
         width: 24px;
         height: 24px;
-        background-image: var(--x-icon-url);
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-primary);
+      }
+      .close-btn svg {
+        width: 20px;
+        height: 20px;
       }
 
       .amount {
@@ -195,20 +191,23 @@
       .input-field::placeholder {
         color: var(--text-placeholder);
       }
-      .note-icon img {
-        display: none;
-      }
+
       .note-icon {
         width: 30px;
         height: 30px;
         background-color: var(--note-icon-bg);
         border-radius: 50%;
-        background-image: var(--star-icon-url);
-        background-size: 15px 15px;
-        background-repeat: no-repeat;
-        background-position: center;
         transition: background-color 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-primary);
       }
+      .note-icon svg {
+        width: 16px;
+        height: 16px;
+      }
+
       .payment-method {
         display: flex;
         align-items: center;
@@ -630,35 +629,31 @@
         transform: scale(0.28);
       }
     </style>
-    <!-- 👇 PASTE THIS SCRIPT BLOCK HERE 👇 -->
     <script>
-      // This script runs instantly to prevent a theme flicker.
       (function () {
-        // Get the saved theme from localStorage, defaulting to 'system'.
         let theme =
           window.localStorage.getItem("app-theme-preference") || "system";
-
-        // If the theme is 'system', determine the actual theme from the user's OS settings.
         if (theme === "system") {
           theme = window.matchMedia("(prefers-color-scheme: dark)").matches
             ? "dark"
             : "light";
         }
-
-        // Apply the determined theme to the <html> element.
         document.documentElement.setAttribute("data-theme", theme);
       })();
     </script>
-    <!-- 👆 END OF ANTI-FLICKER SCRIPT 👆 -->
   </head>
   <body>
     <div class="container">
       <div class="sticky-header-wrapper">
         <header class="header">
-          <!-- ✅ REPLACE IT WITH THIS CORRECTED HTML ✅ -->
           <a href="pay.html">
             <button class="close-btn">
-              <!-- The SVG has been removed. The button is now empty. -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path
+                  fill="currentColor"
+                  d="M19.823 2.055a0.25 0.25 0 0 1 0.354 0l1.767 1.768a0.25 0.25 0 0 1 0 0.354L14.121 12l7.823 7.823a0.25 0.25 0 0 1 0 0.354l-1.767 1.767a0.25 0.25 0 0 1-0.354 0L12 14.121l-7.823 7.823a0.25 0.25 0 0 1-0.354 0l-1.768-1.767a0.25 0.25 0 0 1 0-0.354L9.88 12 2.055 4.177a0.25 0.25 0 0 1 0-0.354l1.768-1.768a0.25 0.25 0 0 1 0.354 0L12 9.88l7.823-7.824z"
+                />
+              </svg>
             </button>
           </a>
           <div class="amount" id="amount">$547</div>
@@ -683,7 +678,12 @@
               placeholder="Note (required)"
             />
             <div class="note-icon">
-              <img src="icon/stars_Normal.png" alt="Note" />
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path
+                  fill="currentColor"
+                  d="M15.135 12.254a0.39 0.39 0 0 1 0.73 0l1.256 3.395a0.39 0.39 0 0 0 0.23 0.23l3.395 1.256a0.39 0.39 0 0 1 0 0.73l-3.394 1.256a0.39 0.39 0 0 0-0.23 0.23l-1.257 3.395a0.39 0.39 0 0 1-0.73 0l-1.256-3.394a0.39 0.39 0 0 0-0.23-0.23l-3.395-1.257a0.39 0.39 0 0 1 0-0.73l3.395-1.256a0.39 0.39 0 0 0 0.23-0.23l1.256-3.395zm-9.4-6.57a0.283 0.283 0 0 1 0.53 0l0.914 2.47c0.028 0.077 0.09 0.139 0.168 0.167l2.468 0.913a0.283 0.283 0 0 1 0 0.532l-2.468 0.913a0.285 0.285 0 0 0-0.168 0.168l-0.913 2.469a0.283 0.283 0 0 1-0.532 0l-0.913-2.47a0.285 0.285 0 0 0-0.168-0.167L2.185 9.766a0.283 0.283 0 0 1 0-0.532l2.468-0.913a0.285 0.285 0 0 0 0.168-0.168l0.913-2.468zm9.987-4.49a0.297 0.297 0 0 1 0.556 0l0.636 1.717c0.03 0.081 0.094 0.145 0.175 0.175l1.718 0.636a0.297 0.297 0 0 1 0 0.556l-1.718 0.636a0.296 0.296 0 0 0-0.175 0.175l-0.636 1.718a0.297 0.297 0 0 1-0.556 0l-0.636-1.718a0.296 0.296 0 0 0-0.175-0.175l-1.718-0.636a0.297 0.297 0 0 1 0-0.556l1.718-0.636a0.296 0.296 0 0 0 0.175-0.175l0.636-1.718z"
+                />
+              </svg>
             </div>
           </div>
           <div class="input-group">
