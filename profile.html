@@ -9,7 +9,20 @@
     <title>Profile - Cash App</title>
     <script src="guard.js"></script>
 
-    <!-- Final Polished Styles -->
+    <!-- Dark Mode Script -->
+    <script>
+      (function () {
+        let theme =
+          window.localStorage.getItem("app-theme-preference") || "system";
+        if (theme === "system") {
+          theme = window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+        }
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
+
     <style>
       :root {
         --primary-text: #000000;
@@ -21,6 +34,16 @@
         --green-accent: #00d54b;
         --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
           sans-serif;
+      }
+
+      /* Dark Mode Variables */
+      [data-theme="dark"] {
+        --primary-text: #ffffff;
+        --secondary-text: #a3a3a3;
+        --background-main: #000000;
+        --background-alt: #1c1c1e;
+        --divider-color: #2c2c2e;
+        --chevron-color: #8e8e93;
       }
 
       *,
@@ -88,6 +111,7 @@
         align-items: center;
         justify-content: center;
         transition: background-color 0.2s ease-in-out;
+        color: var(--primary-text);
       }
 
       .page-content {
@@ -99,7 +123,7 @@
       }
 
       .profile-info {
-        padding: 10px 20px 40px;
+        padding: 10px 20px 20px;
       }
       .profile-picture-container {
         position: relative;
@@ -121,11 +145,12 @@
         right: 0;
         width: 28px;
         height: 28px;
-        background-color: #efefef;
+        background-color: var(--background-alt);
         border-radius: 50%;
         display: flex;
         justify-content: center;
         align-items: center;
+        color: var(--primary-text); /* Camera icon should be black */
       }
       .profile-name {
         font-size: 24px;
@@ -168,10 +193,16 @@
       }
       .list-item-icon-bg.gray {
         background-color: var(--background-alt);
+        color: var(--primary-text);
       }
       .list-item-icon-bg.green {
         background-color: var(--green-accent);
+        color: #ffffff;
       }
+      [data-theme="dark"] .list-item-icon-bg.green {
+        color: #000000;
+      }
+
       .list-item-text-container {
         flex-grow: 1;
       }
@@ -203,6 +234,9 @@
         font-size: 16px;
         font-weight: 600;
       }
+      .setting-item-icon {
+        color: var(--primary-text);
+      }
 
       .personal-edit-overlay {
         position: fixed;
@@ -210,7 +244,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: white;
+        background-color: var(--background-main);
         z-index: 4000;
         transform: translateX(100%);
         transition: transform 0.35s ease-in-out;
@@ -246,6 +280,7 @@
       }
       .edit-back-btn {
         font-size: 20px;
+        color: var(--primary-text);
       }
       .edit-title {
         font-size: 18px;
@@ -306,6 +341,8 @@
         font-size: 16px;
         font-family: inherit;
         transition: border-color 0.2s, box-shadow 0.2s;
+        background-color: var(--background-main);
+        color: var(--primary-text);
       }
       .input-group input:focus {
         border-color: var(--green-accent);
@@ -313,26 +350,34 @@
         box-shadow: 0 0 0 3px rgba(0, 213, 75, 0.2);
       }
 
-      .icon-img {
-        display: block;
+      .icon-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
-      .icon-img-lg {
+      .icon-container svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      .icon-lg {
         width: 20px;
         height: 20px;
       }
-      .icon-img-md {
+      .icon-md {
         width: 22px;
         height: 22px;
       }
-      .icon-img-sm {
+      .icon-sm {
         width: 24px;
         height: 24px;
       }
-      .icon-img-xs {
+      .icon-xs {
         width: 25px;
         height: 25px;
       }
-      .icon-camera-img {
+      .icon-camera {
         width: 16px;
         height: 16px;
       }
@@ -342,21 +387,19 @@
         stroke: var(--chevron-color);
       }
 
-      /* New Footer Styles */
       .page-footer {
         text-align: center;
         padding: 24px 28px 0;
+        color: var(--secondary-text);
       }
       .footer-shield-icon {
         width: 32px;
         height: 32px;
         margin: 0 auto 16px;
-        display: block;
       }
       .footer-text {
         font-size: 13px;
         line-height: 1.5;
-        color: var(--secondary-text);
         margin: 0 0 24px;
       }
       .footer-text a {
@@ -372,36 +415,24 @@
       .footer-social-icon {
         width: 24px;
         height: 24px;
+        color: var(--secondary-text);
       }
       .footer-version {
         font-size: 13px;
-        color: var(--secondary-text);
       }
     </style>
   </head>
   <body>
     <header class="header">
       <a href="home.html" class="header-icon-button" aria-label="Close">
-        <img
-          src="icon/new_close_Normal_monochrome-black (1).png"
-          alt="Close"
-          class="icon-img-lg"
-        />
+        <span id="header-close-icon" class="icon-container icon-lg"></span>
       </a>
       <div class="header-icons">
         <button class="header-icon-button" aria-label="QR Code">
-          <img
-            src="icon/navigationScanQr_Normal_Normal@2x_1_monochrome-black (1).png"
-            alt="QR Code"
-            class="icon-img-md"
-          />
+          <span id="header-qr-icon" class="icon-container icon-md"></span>
         </button>
         <button class="header-icon-button" aria-label="Upload">
-          <img
-            src="icon/navigationShareIos_Normal_Normal@2x_monochrome-black (1).png"
-            alt="Upload"
-            class="icon-img-md"
-          />
+          <span id="header-share-icon" class="icon-container icon-md"></span>
         </button>
       </div>
     </header>
@@ -419,11 +450,10 @@
             id="main-profile-pic"
           />
           <div class="camera-icon">
-            <img
-              src="icon/cameraFill24_Normal_Normal@3x_monochrome-black.png"
-              alt="Change Photo"
-              class="icon-camera-img"
-            />
+            <span
+              id="profile-camera-icon"
+              class="icon-container icon-camera"
+            ></span>
           </div>
         </div>
         <h1 class="profile-name" id="main-profile-name"></h1>
@@ -449,11 +479,7 @@
       <!-- ACTION LINKS -->
       <a href="#" class="list-item" id="personal-btn">
         <div class="list-item-icon-bg gray">
-          <img
-            src="icon/edit24_Normal_Normal@3x_custom-tint.png"
-            alt=""
-            class="icon-img-xs"
-          />
+          <span id="action-edit-icon" class="icon-container icon-xs"></span>
         </div>
         <div class="list-item-text-container">
           <div class="list-item-title">Edit profile</div>
@@ -474,12 +500,7 @@
       </a>
       <a href="#" class="list-item">
         <div class="list-item-icon-bg green">
-          <img
-            src="icon/add32_Normal_Normal@3x_monochrome-black.png"
-            alt=""
-            class="icon-img-xs"
-            style="filter: brightness(0) invert(1)"
-          />
+          <span id="action-add-icon" class="icon-container icon-xs"></span>
         </div>
         <div class="list-item-text-container">
           <div class="list-item-title">Invite friends</div>
@@ -505,7 +526,10 @@
         <h2 class="settings-title">Account & settings</h2>
         <nav>
           <a href="#" class="list-item">
-            <img src="icon/person_Normal.png" alt="" class="icon-img-sm" />
+            <span
+              id="setting-personal-icon"
+              class="icon-container icon-sm setting-item-icon"
+            ></span>
             <span class="settings-item-text">Personal</span>
             <svg
               class="chevron"
@@ -521,7 +545,10 @@
             </svg>
           </a>
           <a href="#" class="list-item">
-            <img src="icon/bank_Normal.png" alt="" class="icon-img-sm" />
+            <span
+              id="setting-linked-banks-icon"
+              class="icon-container icon-sm setting-item-icon"
+            ></span>
             <span class="settings-item-text">Linked banks</span>
             <svg
               class="chevron"
@@ -537,7 +564,10 @@
             </svg>
           </a>
           <a href="#" class="list-item">
-            <img src="icon/link_Normal.png" alt="" class="icon-img-sm" />
+            <span
+              id="setting-linked-apps-icon"
+              class="icon-container icon-sm setting-item-icon"
+            ></span>
             <span class="settings-item-text">Linked apps & businesses</span>
             <svg
               class="chevron"
@@ -553,7 +583,10 @@
             </svg>
           </a>
           <a href="#" class="list-item">
-            <img src="icon/shield_Normal.png" alt="" class="icon-img-sm" />
+            <span
+              id="setting-security-icon"
+              class="icon-container icon-sm setting-item-icon"
+            ></span>
             <span class="settings-item-text">Security & privacy</span>
             <svg
               class="chevron"
@@ -569,7 +602,10 @@
             </svg>
           </a>
           <a href="#" class="list-item">
-            <img src="icon/star_Normal.png" alt="" class="icon-img-sm" />
+            <span
+              id="setting-favorites-icon"
+              class="icon-container icon-sm setting-item-icon"
+            ></span>
             <span class="settings-item-text">Favorites</span>
             <svg
               class="chevron"
@@ -585,7 +621,10 @@
             </svg>
           </a>
           <a href="#" class="list-item">
-            <img src="icon/limit_Normal.png" alt="" class="icon-img-sm" />
+            <span
+              id="setting-limits-icon"
+              class="icon-container icon-sm setting-item-icon"
+            ></span>
             <span class="settings-item-text">Limits</span>
             <svg
               class="chevron"
@@ -601,11 +640,10 @@
             </svg>
           </a>
           <a href="#" class="list-item">
-            <img
-              src="icon/notification_Normal.png"
-              alt=""
-              class="icon-img-sm"
-            />
+            <span
+              id="setting-notifications-icon"
+              class="icon-container icon-sm setting-item-icon"
+            ></span>
             <span class="settings-item-text">Notifications</span>
             <svg
               class="chevron"
@@ -620,9 +658,11 @@
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
           </a>
-          <!-- START OF NEW CONTENT -->
           <a href="dark-mode.html" class="list-item">
-            <img src="icon/theme_Normal.png" alt="" class="icon-img-sm" />
+            <span
+              id="setting-themes-icon"
+              class="icon-container icon-sm setting-item-icon"
+            ></span>
             <span class="settings-item-text">Themes</span>
             <svg
               class="chevron"
@@ -638,11 +678,10 @@
             </svg>
           </a>
           <a href="#" class="list-item">
-            <img
-              src="icon/document24_Normal_Normal@3x_monochrome-black.png"
-              alt=""
-              class="icon-img-sm"
-            />
+            <span
+              id="setting-documents-icon"
+              class="icon-container icon-sm setting-item-icon"
+            ></span>
             <span class="settings-item-text">Documents</span>
             <svg
               class="chevron"
@@ -658,7 +697,10 @@
             </svg>
           </a>
           <a href="support.html" class="list-item">
-            <img src="icon/help_Normal.png" alt="" class="icon-img-sm" />
+            <span
+              id="setting-support-icon"
+              class="icon-container icon-sm setting-item-icon"
+            ></span>
             <span class="settings-item-text">Support</span>
             <svg
               class="chevron"
@@ -673,17 +715,14 @@
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
           </a>
-          <!-- END OF NEW CONTENT -->
         </nav>
       </main>
 
-      <!-- START OF NEW FOOTER -->
       <footer class="page-footer">
-        <img
-          src="icon/fdic32_Normal_Normal@3x_1_custom-tint.png"
-          alt="Security Shield"
-          class="footer-shield-icon"
-        />
+        <div
+          id="footer-fdic-icon"
+          class="footer-shield-icon icon-container"
+        ></div>
         <p class="footer-text">
           Your balance is eligible for FDIC pass-through insurance through our
           Program Banks Wells Fargo Bank, N.A. and/or Sutton Bank, Members FDIC
@@ -692,8 +731,7 @@
           if certain conditions are met.
         </p>
         <p class="footer-text">
-          Cash App is a financial services platform, and not an FDIC-insured
-          bank. Prepaid debit cards issued by Sutton Bank, Member FDIC.
+          Cash App is a financial services platform...
           <a href="#">See terms and conditions.</a>
         </p>
         <p class="footer-text">
@@ -703,19 +741,20 @@
         </p>
         <div class="footer-social-links">
           <a href="#">
-            <img
-              src="icon/instagram-2_Normal.png"
-              alt="Instagram"
-              class="footer-social-icon"
-            />
+            <span
+              id="footer-instagram-icon"
+              class="footer-social-icon icon-container"
+            ></span>
           </a>
           <a href="#">
-            <img src="icon/x_Normal.png" alt="X" class="footer-social-icon" />
+            <span
+              id="footer-x-icon"
+              class="footer-social-icon icon-container"
+            ></span>
           </a>
         </div>
         <p class="footer-version">Version 2.86 (2860041)</p>
       </footer>
-      <!-- END OF NEW FOOTER -->
     </div>
 
     <div class="personal-edit-overlay" id="personal-edit-overlay">
@@ -725,11 +764,7 @@
           id="edit-back-btn"
           aria-label="Back"
         >
-          <img
-            src="icon/backArrow_Normal_monochrome-black.png"
-            alt="Back"
-            class="icon-img-md"
-          />
+          <span id="edit-back-arrow-icon" class="icon-container icon-md"></span>
         </button>
         <h2 class="edit-title">Personal</h2>
         <button
@@ -768,15 +803,69 @@
       </main>
     </div>
 
-    <!-- SCRIPTS -->
     <script>
-      // FINAL, CORRECTED AND RESTORED SCRIPT
-      const profilePageKey = "cashAppProfilePageData"; // Dedicated key for this page's complete state
-      const globalProfileKey = "cashAppUserProfile"; // For sharing data with ALL other pages
+      // --- SVG Data and Icon Implementation ---
+      const svgIcons = {
+        close: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M19.823 2.055a0.25 0.25 0 0 1 0.354 0l1.767 1.768a0.25 0.25 0 0 1 0 0.354L14.121 12l7.823 7.823a0.25 0.25 0 0 1 0 0.354l-1.767 1.767a0.25 0.25 0 0 1-0.354 0L12 14.121l-7.823 7.823a0.25 0.25 0 0 1-0.354 0l-1.768-1.767a0.25 0.25 0 0 1 0-0.354L9.88 12 2.055 4.177a0.25 0.25 0 0 1 0-0.354l1.768-1.768a0.25 0.25 0 0 1 0.354 0L12 9.88l7.823-7.824z"/></svg>`,
+        qr: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M11 11.5a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5H2A1.5 1.5 0 0 1 0.5 22v-9A1.5 1.5 0 0 1 2 11.5h9zm12.25 4a0.25 0.25 0 0 1 0.25 0.25V22a1.5 1.5 0 0 1-1.5 1.5h-6.25a0.25 0.25 0 0 1-0.25-0.25v-2.5a0.25 0.25 0 0 1 0.25-0.25h4.75v-4.75a0.25 0.25 0 0 1 0.25-0.25h2.5zm-19.75 5h6v-6h-6v6zM17 12a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm5-11.5A1.5 1.5 0 0 1 23.5 2v6A1.5 1.5 0 0 1 22 9.5h-6A1.5 1.5 0 0 1 14.5 8V2A1.5 1.5 0 0 1 16 0.5h6zM10 5a2 2 0 1 1 0 4 2 2 0 0 1 0-4zM8.25 0.5A0.25 0.25 0 0 1 8.5 0.75v2.5A0.25 0.25 0 0 1 8.25 3.5H3.5v4.75A0.25 0.25 0 0 1 3.25 8.5h-2.5A0.25 0.25 0 0 1 0.5 8.25V2A1.5 1.5 0 0 1 2 0.5h6.25zm9.25 6h3v-3h-3v3z"/></svg>`,
+        share: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18 0a4 4 0 1 1-2.372 7.22l-6.685 4.114a4.024 4.024 0 0 1 0 1.331l6.685 4.114a4 4 0 1 1-1.572 2.555L7.37 15.22a4 4 0 1 1 0-6.44l6.685-4.115A4 4 0 0 1 18 0zm0 18.75a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5zm-13-8a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5zm13-8a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5z"/></svg>`,
+        camera: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V9a3 3 0 0 1 3-3h14zm-7 2.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0 1.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zm0-8c1.173 0 2.075 0.294 2.697 0.605 0.31 0.155 0.548 0.313 0.715 0.439a3.444 3.444 0 0 1 0.26 0.215l0.02 0.02 0.01 0.008 0.002 0.003 0.002 0.001v0.001l-1.412 1.416 0.01 0.01-0.01-0.008a1.357 1.357 0 0 0-0.081-0.066 2.711 2.711 0 0 0-0.41-0.25C13.425 4.207 12.827 4 12 4s-1.425 0.206-1.803 0.395c-0.19 0.095-0.327 0.187-0.41 0.249A1.36 1.36 0 0 0 9.705 4.71l-0.01 0.009 0.011-0.011-1.412-1.416V3.291L8.296 3.29l0.003-0.003 0.009-0.008 0.02-0.02 0.06-0.055a3.46 3.46 0 0 1 0.2-0.16C8.755 2.918 8.993 2.76 9.303 2.605 9.925 2.295 10.827 2 12 2z"/></svg>`,
+        edit: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M16.438 3a1 1 0 0 1 0.708 0.294l3.562 3.575a1 1 0 0 1 0 1.411l-10.33 10.367a1.004 1.004 0 0 1-0.265 0.19l-0.101 0.044-5.67 2.06a1.001 1.001 0 0 1-1.28-1.29l2.093-5.617 0.042-0.099c0.048-0.095 0.111-0.182 0.187-0.258L15.729 3.294l0.074-0.066C15.981 3.081 16.206 3 16.438 3zM6.953 14.935l-1.26 3.385 3.426-1.244 9.469-9.502-2.15-2.158-9.485 9.519z"/></svg>`,
+        add: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M13 11h9v2h-9v9h-2v-9H2v-2h9V2h2v9z"/></svg>`,
+        personal: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 12c5.274 0 10 3.362 10 8a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1c0-4.638 4.726-8 10-8zm0 2c-4.159 0-7.256 2.308-7.882 5h15.764c-0.626-2.692-3.723-5-7.882-5zm0-11.5a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg>`,
+        linked_banks: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12.225 2.695l0.222 0.038 0.137 0.038c0.314 0.102 0.588 0.287 0.805 0.423l8.645 5.46A1.001 1.001 0 0 1 21.5 10.5H20V19h2v2H2v-2h2v-8.5H2.5a1 1 0 0 1-0.534-1.846l8.645-5.46 0.2-0.126c0.212-0.131 0.463-0.27 0.742-0.335l0.222-0.038a2 2 0 0 1 0.45 0zM6 10.5V19h5v-8.5H6zm7 0V19h5v-8.5h-5zm-1.006-5.808L11.68 4.885 5.956 8.5h12.088L12.32 4.885a6.736 6.736 0 0 0-0.314-0.193c-0.002 0-0.004-0.003-0.006-0.004l-0.006 0.004z"/></svg>`,
+        linked_apps: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12.25 3.5a5.749 5.749 0 0 1 5.743 5.505 5.75 5.75 0 0 1 5.5 5.45L23.5 14.75a5.75 5.75 0 0 1-5.75 5.75h-6a5.75 5.75 0 0 1-5.744-5.507H5.954A5.75 5.75 0 0 1 6.25 3.5h6zm5.477 7.5c-0.74 2.32-2.912 4-5.477 4H8.009a3.75 3.75 0 0 0 3.741 3.5h6a3.75 3.75 0 0 0 3.75-3.75l-0.005-0.193A3.75 3.75 0 0 0 17.75 11h-0.023zm-6.17 0.005A3.75 3.75 0 0 0 8.433 13h3.817c1.439 0 2.688-0.81 3.316-2H11.75l-0.193 0.005zM6.25 5.5a3.75 3.75 0 0 0-0.193 7.495L6.25 13h0.022a5.752 5.752 0 0 1 5.182-3.992L11.75 9h4.241a3.75 3.75 0 0 0-3.741-3.5h-6z"/></svg>`,
+        security: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M11.712 2.042a1 1 0 0 1 0.669 0.033l8.493 3.5 0.13 0.066a1 1 0 0 1 0.488 0.82v0.023l0.002 0.056 0.004 0.204a27.836 27.836 0 0 1-0.162 3.212c-0.2 1.81-0.645 4.124-1.67 5.996l-0.213 0.37c-1.11 1.819-2.911 3.218-4.358 4.14-1.44 0.917-2.726 1.475-2.627 1.422a1 1 0 0 1-0.751 0.075l-0.106-0.038h-0.002l-0.005-0.002-0.012-0.006-0.046-0.02a18.087 18.087 0 0 1-0.747-0.355 21.739 21.739 0 0 1-1.892-1.074c-1.358-0.865-3.026-2.15-4.145-3.806l-0.215-0.337c-1.178-1.93-1.67-4.434-1.883-6.365a27.85 27.85 0 0 1-0.162-3.212c0-0.087 0.002-0.156 0.004-0.204V6.484l0.002-0.016V6.461l0.016-0.144a1 1 0 0 1 0.602-0.742l8.493-3.5 0.093-0.033zm-7.21 5.13c0.001 0.083 0 0.175 0.003 0.273 0.011 0.577 0.047 1.384 0.147 2.293 0.204 1.85 0.658 3.995 1.602 5.542l0.17 0.265c0.89 1.316 2.288 2.422 3.558 3.232 0.667 0.424 1.275 0.753 1.715 0.975 0.112 0.056 0.214 0.103 0.302 0.145a18.787 18.787 0 0 0 2.02-1.121c1.355-0.864 2.853-2.064 3.727-3.496l0.17-0.297c0.829-1.517 1.24-3.511 1.431-5.245 0.1-0.91 0.137-1.716 0.148-2.293 0.002-0.098 0-0.19 0-0.274L12 4.081l-7.497 3.09zM12 9a2 2 0 0 1 1 3.73V15h-2v-2.27A1.997 1.997 0 0 1 12 9z"/></svg>`,
+        favorites: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M10.988 1.892c0.372-0.89 1.652-0.89 2.024 0l0.034 0.091 2.15 6.618h6.958c1.065 0 1.508 1.364 0.647 1.99l-5.63 4.089 2.15 6.618 0.027 0.094c0.224 0.939-0.813 1.692-1.637 1.19l-0.082-0.055-5.63-4.09-5.628 4.09c-0.862 0.626-2.021-0.216-1.692-1.23l2.149-6.617-5.629-4.09C0.338 9.965 0.781 8.601 1.846 8.6h6.958l2.15-6.617 0.034-0.091zm-0.484 7.949a1.1 1.1 0 0 1-1.046 0.76H4.616l3.917 2.845 0.134 0.116a1.1 1.1 0 0 1 0.306 0.943l-0.04 0.172-1.498 4.604 3.918-2.845 0.15-0.092a1.1 1.1 0 0 1 0.993 0l0.15 0.092 3.917 2.845-1.496-4.604c-0.147-0.453 0.014-0.95 0.4-1.23l3.917-2.846h-4.842a1.1 1.1 0 0 1-0.979-0.597l-0.067-0.163L12 5.234l-1.496 4.607z"/></svg>`,
+        limits: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 7.5a1 1 0 0 1 0.809 0.412l8 11A1 1 0 0 1 20 20.5H4a1 1 0 0 1-0.809-1.588l8-11 0.076-0.092A1 1 0 0 1 12 7.5zm-6.036 11h12.072L12 10.2l-6.036 8.3zM21 5.5H3v-2h18v2z"/></svg>`,
+        notifications: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M15.707 21.207c-0.98 0.98-2.384 1.418-3.707 1.418s-2.727-0.438-3.707-1.418l1.414-1.414c0.52 0.52 1.366 0.832 2.293 0.832s1.773-0.312 2.293-0.832l1.414 1.414zM12 2a6.42 6.42 0 0 1 6.274 5.066l2.203 10.223 0.018 0.111a1 1 0 0 1-0.995 1.1h-15a1.001 1.001 0 0 1-0.978-1.21L5.726 7.065A6.419 6.419 0 0 1 12 2zm0 2a4.419 4.419 0 0 0-4.32 3.487L5.739 16.5h12.524L16.32 7.487A4.419 4.419 0 0 0 12 4z"/></svg>`,
+        themes: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2c5.523 0 10 4.477 10 10 0 0.033-0.002 0.066-0.005 0.1-0.143 1.428-0.637 2.468-1.49 3.125-0.818 0.63-1.802 0.775-2.624 0.802-0.42 0.014-0.839 0-1.213-0.016-0.388-0.016-0.72-0.032-1.025-0.027-0.504 0.01-0.73 0.078-0.833 0.134l-0.065 0.049c-0.199 0.222-0.307 0.535-0.332 1.02-0.026 0.52 0.045 1.026 0.092 1.683 0.038 0.544 0.076 1.342-0.278 2.002C13.79 21.69 12.96 22 12 22 6.477 22 2 17.523 2 12S6.477 2 12 2zm0 2a8 8 0 1 0 0 16c0.281 0 0.408-0.044 0.45-0.064 0.022-0.01 0.014-0.008 0.015-0.01 0.044-0.083 0.087-0.314 0.045-0.915-0.035-0.488-0.13-1.243-0.095-1.925 0.036-0.72 0.215-1.555 0.84-2.253l0.128-0.132c0.659-0.623 1.57-0.705 2.223-0.717 0.38-0.006 0.782 0.013 1.145 0.028 0.377 0.015 0.727 0.028 1.063 0.016 0.686-0.023 1.154-0.143 1.471-0.387 0.28-0.216 0.601-0.656 0.713-1.694A7.998 7.998 0 0 0 12 4zm-4.25 8.75a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5zm0-4.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5zM15.5 7.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5zM11.25 6a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z"/></svg>`,
+        documents: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M19 2.5a1.002 1.002 0 0 1 0.956 1.294c-0.927 3.011-0.59 5.313-0.157 7.85 0.436 2.556 0.974 5.357 0.18 9.066-0.1 0.46-0.508 0.79-0.979 0.79H5a1 1 0 0 1-0.977-1.21c0.704-3.29 0.243-5.74-0.196-8.31-0.441-2.586-0.855-5.286 0.218-8.774l0.06-0.151A1 1 0 0 1 5 2.5h14zm-13.24 2C5.086 7.174 5.4 9.308 5.799 11.645c0.387 2.27 0.853 4.733 0.395 7.855h11.977c0.48-2.901 0.06-5.16-0.344-7.52-0.385-2.258-0.75-4.6-0.122-7.48H5.761zM15 10H8V8h7v2z"/></svg>`,
+        support: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 18a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm0-16c3.45 0 6 2.613 6 5.92 0 1.67-0.68 3.047-1.798 4.014-0.876 0.758-1.991 1.238-3.202 1.452V16h-2v-4.44l0.938-0.058 0.227-0.019c1.127-0.109 2.07-0.493 2.729-1.062C15.577 9.83 16 9.004 16 7.92 16 5.72 14.35 4 12 4 9.605 4 7.93 5.77 7.483 8.108L6.5 7.921 5.518 7.732C6.096 4.705 8.409 2 12 2z"/></svg>`,
+        fdic: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M11.712 2.042c0.219-0.066 0.455-0.054 0.669 0.033l8.493 3.5 0.13 0.066a1 1 0 0 1 0.488 0.82v0.007l0.001 0.016 0.001 0.056 0.004 0.204a27.869 27.869 0 0 1-0.162 3.212c-0.2 1.81-0.645 4.124-1.67 5.996l-0.213 0.37c-1.11 1.819-2.911 3.218-4.358 4.14-1.44 0.917-2.726 1.475-2.626 1.422a1 1 0 0 1-0.752 0.075l-0.106-0.038h-0.002l-0.005-0.002-0.012-0.006-0.046-0.02a18.074 18.074 0 0 1-0.747-0.355 21.74 21.74 0 0 1-1.892-1.074c-1.358-0.865-3.026-2.15-4.144-3.806l-0.216-0.337c-1.178-1.93-1.67-4.434-1.883-6.365a27.85 27.85 0 0 1-0.162-3.212c0-0.087 0.002-0.156 0.004-0.204V6.484l0.002-0.016V6.461l0.016-0.144a1 1 0 0 1 0.602-0.742l8.493-3.5 0.093-0.033zm-7.21 5.13c0.001 0.083 0 0.175 0.003 0.273 0.011 0.577 0.047 1.384 0.147 2.293 0.204 1.85 0.658 3.995 1.602 5.542l0.17 0.265c0.89 1.316 2.288 2.422 3.558 3.232 0.667 0.424 1.275 0.753 1.715 0.975 0.112 0.056 0.214 0.103 0.302 0.145a18.787 18.787 0 0 0 2.02-1.121c1.355-0.864 2.853-2.064 3.727-3.496l0.17-0.297c0.829-1.517 1.24-3.511 1.431-5.245 0.1-0.91 0.137-1.716 0.148-2.293 0.002-0.098 0-0.19 0-0.274L12 4.081l-7.497 3.09zM12 6.381c0-0.18 0.184-0.302 0.35-0.23l5.24 2.279a0.25 0.25 0 0 1 0.15 0.244c-0.259 4.265-1.241 6.715-5.37 9.114A0.246 0.246 0 0 1 12 17.574V6.381z"/></svg>`,
+        instagram: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M7.03,0.084C5.753,0.144 4.881,0.348 4.119,0.647C3.33,0.955 2.662,1.367 1.996,2.035C1.331,2.703 0.921,3.372 0.616,4.162C0.321,4.926 0.12,5.799 0.064,7.076C0.008,8.354 -0.005,8.764 0.001,12.023C0.008,15.282 0.022,15.69 0.084,16.97C0.145,18.247 0.348,19.119 0.648,19.881C0.955,20.67 1.368,21.338 2.035,22.004C2.703,22.669 3.372,23.078 4.164,23.384C4.927,23.679 5.8,23.88 7.077,23.936C8.355,23.992 8.766,24.005 12.024,23.999C15.281,23.992 15.691,23.978 16.971,23.917C18.251,23.856 19.118,23.652 19.881,23.354C20.67,23.045 21.339,22.634 22.004,21.966C22.669,21.298 23.078,20.628 23.383,19.837C23.679,19.074 23.88,18.201 23.935,16.925C23.991,15.644 24.005,15.235 23.998,11.977C23.992,8.719 23.978,8.31 23.917,7.03C23.856,5.751 23.653,4.882 23.354,4.119C23.045,3.33 22.633,2.662 21.966,1.996C21.298,1.33 20.628,0.921 19.838,0.616C19.074,0.321 18.202,0.12 16.924,0.064C15.647,0.009 15.236,-0.005 11.977,0.001C8.718,0.008 8.31,0.022 7.03,0.084ZM7.17,21.777C6,21.726 5.365,21.532 4.942,21.369C4.381,21.153 3.982,20.892 3.56,20.474C3.138,20.056 2.879,19.655 2.66,19.096C2.495,18.673 2.297,18.038 2.243,16.868C2.183,15.604 2.171,15.224 2.164,12.02C2.157,8.816 2.169,8.437 2.224,7.172C2.274,6.003 2.47,5.367 2.632,4.944C2.848,4.383 3.109,3.984 3.527,3.562C3.946,3.141 4.346,2.881 4.906,2.662C5.328,2.497 5.963,2.301 7.133,2.245C8.398,2.185 8.777,2.173 11.981,2.166C15.184,2.159 15.564,2.171 16.83,2.227C17.999,2.278 18.635,2.471 19.058,2.635C19.619,2.851 20.018,3.11 20.44,3.53C20.861,3.949 21.121,4.347 21.34,4.908C21.506,5.33 21.702,5.964 21.757,7.135C21.817,8.4 21.831,8.78 21.837,11.983C21.842,15.186 21.831,15.566 21.776,16.831C21.725,18.001 21.531,18.636 21.368,19.06C21.152,19.62 20.891,20.02 20.472,20.441C20.053,20.863 19.654,21.123 19.094,21.341C18.671,21.506 18.036,21.703 16.868,21.759C15.602,21.818 15.223,21.831 12.019,21.838C8.814,21.845 8.436,21.832 7.17,21.777M16.953,5.586C16.953,5.871 17.038,6.15 17.197,6.386C17.356,6.623 17.581,6.807 17.844,6.915C18.108,7.024 18.397,7.052 18.676,6.996C18.956,6.94 19.212,6.802 19.413,6.6C19.614,6.399 19.751,6.142 19.806,5.862C19.861,5.583 19.832,5.293 19.722,5.03C19.613,4.767 19.428,4.543 19.191,4.385C18.953,4.227 18.675,4.143 18.39,4.144C18.008,4.145 17.642,4.297 17.373,4.568C17.103,4.838 16.952,5.205 16.953,5.586ZM5.839,12.012C5.845,15.415 8.609,18.168 12.012,18.161C15.414,18.155 18.169,15.391 18.162,11.988C18.156,8.585 15.391,5.831 11.988,5.838C8.585,5.845 5.832,8.609 5.839,12.012ZM8,12.008C7.998,11.217 8.231,10.443 8.67,9.784C9.108,9.125 9.732,8.611 10.462,8.307C11.192,8.003 11.996,7.922 12.773,8.075C13.549,8.228 14.262,8.607 14.823,9.166C15.383,9.724 15.766,10.436 15.922,11.212C16.078,11.987 16,12.792 15.699,13.523C15.397,14.255 14.886,14.88 14.229,15.321C13.572,15.762 12.799,15.998 12.008,16C11.483,16.001 10.962,15.899 10.476,15.698C9.991,15.498 9.549,15.205 9.177,14.834C8.805,14.463 8.509,14.023 8.307,13.538C8.105,13.053 8.001,12.533 8,12.008Z"/></svg>`,
+        x: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M13.969,10.157L22.707,0H20.636L13.049,8.819L6.989,0H0L9.164,13.336L0,23.988H2.071L10.083,14.674L16.483,23.988H23.472L13.969,10.157H13.969ZM11.133,13.454L10.205,12.126L2.817,1.559H5.997L11.959,10.087L12.888,11.415L20.637,22.5H17.457L11.133,13.454V13.454Z"/></svg>`,
+        back_arrow: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M21 12H4" stroke-linejoin="round" stroke="currentColor" stroke-width="2.5"/><path fill="none" d="M10 6l-6 6l6 6" stroke-miterlimit="10.0" stroke="currentColor" stroke-width="2.5"/></svg>`,
+      };
 
-      let userProfile = {}; // This object holds the complete state for this page
+      const iconPlacements = {
+        "header-close-icon": "close",
+        "header-qr-icon": "qr",
+        "header-share-icon": "share",
+        "profile-camera-icon": "camera",
+        "action-edit-icon": "edit",
+        "action-add-icon": "add",
+        "setting-personal-icon": "personal",
+        "setting-linked-banks-icon": "linked_banks",
+        "setting-linked-apps-icon": "linked_apps", // Re-using as per analysis
+        "setting-security-icon": "security",
+        "setting-favorites-icon": "favorites",
+        "setting-limits-icon": "limits",
+        "setting-notifications-icon": "notifications",
+        "setting-themes-icon": "themes",
+        "setting-documents-icon": "documents",
+        "setting-support-icon": "support",
+        "footer-fdic-icon": "fdic",
+        "footer-instagram-icon": "instagram",
+        "footer-x-icon": "x",
+        "edit-back-arrow-icon": "back_arrow",
+      };
 
-      // DOM Elements
+      function populateIcons() {
+        for (const id in iconPlacements) {
+          const element = document.getElementById(id);
+          const iconKey = iconPlacements[id];
+          if (element && svgIcons[iconKey]) {
+            element.innerHTML = svgIcons[iconKey];
+          }
+        }
+      }
+
+      // --- Existing Profile Logic ---
+      const profilePageKey = "cashAppProfilePageData";
+      const globalProfileKey = "cashAppUserProfile";
+      let userProfile = {};
+
       const mainProfilePic = document.getElementById("main-profile-pic");
       const mainProfileName = document.getElementById("main-profile-name");
       const mainCashtag = document.getElementById("main-cashtag");
@@ -800,7 +889,6 @@
         "main-cashtag-container"
       );
 
-      // --- GENERATE PERFECTLY ALIGNED INITIALS AVATAR ---
       function generateInitialAvatar(name) {
         const canvas = document.createElement("canvas");
         const context = canvas.getContext("2d");
@@ -834,7 +922,6 @@
         return canvas.toDataURL();
       }
 
-      // --- FETCH RANDOM USER FROM API ---
       async function createDefaultProfile() {
         let fullName = "Alex Morgan";
         let cashtag = "alexmorgan";
@@ -856,23 +943,17 @@
           cashtag: cashtag,
           accountNumber: "••••" + Math.floor(1000 + Math.random() * 9000),
           routingNumber: "••••" + Math.floor(1000 + Math.random() * 9000),
-          profilePic: initialAvatar, // The initial is stored here for the profile page
+          profilePic: initialAvatar,
           hasUploadedPhoto: false,
         };
       }
 
-      // --- CORE LOGIC (FIXED AND RESTORED) ---
       function saveProfile() {
-        // Step 1: Always save the complete data for THIS page.
         localStorage.setItem(profilePageKey, JSON.stringify(userProfile));
-
-        // Step 2: Create and save the shared data for OTHER pages.
         const globalProfileData = {
           fullName: userProfile.fullName,
-          accountNumber: userProfile.accountNumber, // Restored
-          routingNumber: userProfile.routingNumber, // Restored
-          // CRITICAL: Only share the photo if it's a real uploaded one.
-          // Otherwise, share 'null' so other pages show their default icon.
+          accountNumber: userProfile.accountNumber,
+          routingNumber: userProfile.routingNumber,
           profilePic: userProfile.hasUploadedPhoto
             ? userProfile.profilePic
             : null,
@@ -889,7 +970,7 @@
           userProfile = JSON.parse(savedProfile);
         } else {
           userProfile = await createDefaultProfile();
-          saveProfile(); // Save both the page and global profiles for the first time
+          saveProfile();
         }
         updateMainUI();
       }
@@ -918,24 +999,18 @@
       }
 
       function handleSaveChanges() {
-        // Update the state object with the new values from the form
         userProfile.fullName = editFullName.value;
         userProfile.cashtag = editCashtag.value;
         userProfile.accountNumber = editAccountNumber.value;
         userProfile.routingNumber = editRoutingNumber.value;
-
-        // If the name changed but they still don't have a real photo,
-        // we must regenerate the initial to match the new name.
         if (!userProfile.hasUploadedPhoto) {
           userProfile.profilePic = generateInitialAvatar(userProfile.fullName);
         }
-
-        saveProfile(); // Save the updated data to both local storage keys
-        updateMainUI(); // Refresh the main UI to show the changes
+        saveProfile();
+        updateMainUI();
         closeEditOverlay();
       }
 
-      // --- EVENT LISTENERS ---
       personalBtn.addEventListener("click", (e) => {
         e.preventDefault();
         openEditOverlay();
@@ -958,7 +1033,6 @@
           })
       );
 
-      // Real-time initial update when editing the name
       editFullName.addEventListener("input", () => {
         if (!userProfile.hasUploadedPhoto) {
           const newInitial = generateInitialAvatar(editFullName.value);
@@ -968,24 +1042,24 @@
 
       changePhotoLink.addEventListener("click", () => editPicInput.click());
 
-      // Handle file upload
       editPicInput.addEventListener("change", (event) => {
         const file = event.target.files[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onload = (e) => {
           const newPicSrc = e.target.result;
-          userProfile.profilePic = newPicSrc; // This is now a real photo URL
-          userProfile.hasUploadedPhoto = true; // Set the flag to true!
+          userProfile.profilePic = newPicSrc;
+          userProfile.hasUploadedPhoto = true;
           editProfilePic.src = newPicSrc;
           editDoneBtn.disabled = false;
         };
         reader.readAsDataURL(file);
       });
 
-      // Initialize the profile when the page loads
-      document.addEventListener("DOMContentLoaded", loadProfile);
+      document.addEventListener("DOMContentLoaded", () => {
+        populateIcons();
+        loadProfile();
+      });
     </script>
   </body>
 </html>
