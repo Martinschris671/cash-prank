@@ -361,6 +361,10 @@ html[data-theme="dark"] #theme-toggle-btn .sun-icon {
   z-index: 1;
   color: var(--text-primary);
 }
+/* --- Make ONLY the Savings Progress Ring Thinner --- */
+#savings-card-link .progress-ring-circle {
+  stroke-width: 0; /* <-- Thinner value (was 10) */
+}
 
 .savings-list-card .progress-ring-svg {
   position: absolute;
