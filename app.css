@@ -306,6 +306,7 @@ html[data-theme="dark"] #theme-toggle-btn .sun-icon {
   height: 12px;
   flex-shrink: 0;
 }
+
 .savings-list-card {
   background-color: var(--card-bg-color);
   border-radius: var(--border-radius-card);
@@ -456,7 +457,7 @@ html[data-theme="dark"] .section-divider {
   right: 16px;
 }
 .progress-ring-circle {
-  stroke-width: 7;
+  stroke-width: 6;
 }
 .more-ways-list .icon-container svg {
   width: 24px;
