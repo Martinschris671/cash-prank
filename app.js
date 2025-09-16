@@ -240,13 +240,27 @@ function saveWithdrawalTransaction(amount, fee, totalDeduction) {
   );
 }
 
+// Find this function
 function handleAddTransaction(amount) {
   if (isAnimating || isNaN(amount) || amount <= 0) return;
   const startBalance = currentBalance;
   hideAllModals();
+
+  // --- START: ADD THESE 3 LINES ---
+  const spinnerText = document.getElementById("spinner-text");
+  spinnerText.innerHTML =
+    "Adding money<span>.</span><span>.</span><span>.</span>";
+  spinnerOverlay.classList.add("is-adding-money");
+  // --- END: ADD THESE 3 LINES ---
+
   spinnerOverlay.classList.add("show");
   loadingSpinnerAnimation.play();
   setTimeout(() => {
+    // --- START: ADD THESE 2 LINES (for cleanup) ---
+    spinnerOverlay.classList.remove("is-adding-money");
+    spinnerText.innerHTML = "";
+    // --- END: ADD THESE 2 LINES ---
+
     spinnerOverlay.classList.remove("show");
     loadingSpinnerAnimation.stop();
     showSuccessOverlay("add", amount);
@@ -259,7 +273,6 @@ function handleAddTransaction(amount) {
     }, 1500);
   }, 5000);
 }
-
 function handleWithdrawal(totalDeduction) {
   if (isAnimating || isNaN(totalDeduction) || totalDeduction <= 0) return;
   if (totalDeduction > currentBalance) return;

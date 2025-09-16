@@ -825,6 +825,7 @@ html[data-theme="dark"] input[type="range"]::-webkit-slider-thumb {
 }
 
 #spinner-overlay {
+  font-family: var(--font-family);
   position: fixed;
   top: 0;
   left: 0;
@@ -834,6 +835,7 @@ html[data-theme="dark"] input[type="range"]::-webkit-slider-thumb {
   display: none;
   justify-content: center;
   align-items: center;
+  flex-direction: column; /* <-- ADD THIS LINE */
   z-index: 9999;
   transition: background-color 0.3s;
 }
@@ -1031,9 +1033,6 @@ html[data-theme="dark"] .action-button:hover {
   -webkit-tap-highlight-color: transparent;
   font-family: inherit;
 }
-html[data-theme="dark"] #add-money-perfected-modal .perfected-preset-btn {
-  border: 2px solid #555;
-}
 
 #add-money-perfected-modal .perfected-preset-btn:active {
   transform: scale(0.96);
@@ -1190,3 +1189,46 @@ html[data-theme="dark"] #add-money-perfected-modal .perfected-add-btn:disabled {
   text-decoration: underline;
 }
 /* --- END: NEW AND MODIFIED STYLES --- */
+/* --- START: Spinner Text and Bouncing Dots Animation --- */
+
+/* 1. Style the text container */
+.spinner-text {
+  display: none; /* Hidden by default */
+  margin-top: 16px;
+  font-size: 16px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* 2. Show the text ONLY when the 'is-adding-money' class is present */
+#spinner-overlay.is-adding-money .spinner-text {
+  display: block;
+}
+
+/* 3. Define the bouncing keyframe animation */
+@keyframes bounce {
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-6px);
+  }
+}
+
+/* 4. Style the bouncing dots (the spans) */
+.spinner-text span {
+  display: inline-block;
+  animation: bounce 1.4s infinite;
+}
+
+/* 5. Add a delay to create the wave effect */
+.spinner-text span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.spinner-text span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* --- END: Spinner Text and Bouncing Dots Animation --- */
