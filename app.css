@@ -882,8 +882,8 @@ html[data-theme="dark"] input[type="range"]::-webkit-slider-thumb {
   color: var(--text-primary);
 }
 #success-close-btn svg {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
 }
 .success-content {
   text-align: left;
