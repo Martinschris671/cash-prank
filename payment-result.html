@@ -41,14 +41,14 @@
         --app-bg-color: #ffffff;
         --text-primary: #000000;
         --text-secondary: #6c757d;
-        --accent-green: #47b349;
+        --accent-green: #00d54b; /* Brighter Green */
         --accent-red: #ff3b30;
         --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
           sans-serif;
-        --menu-bg: #ffffff;
-        --menu-border: #e6e6e6;
-        --menu-hover: #f8f8f8;
-        --menu-divider: #f0f1f2;
+        --action-sheet-bg: #f0f0f0;
+        --action-sheet-item-bg: #ffffff;
+        --action-sheet-divider: #dcdcdc;
+        --action-sheet-text: #000000; /* CHANGED TO BLACK */
         --status-icon: #ffffff;
       }
 
@@ -57,10 +57,10 @@
         --app-bg-color: #000000;
         --text-primary: #ffffff;
         --text-secondary: #8e8e93;
-        --menu-bg: #1c1c1e;
-        --menu-border: #3a3a3c;
-        --menu-hover: #2c2c2e;
-        --menu-divider: #3a3a3c;
+        --action-sheet-bg: #000000;
+        --action-sheet-item-bg: #1c1c1e;
+        --action-sheet-divider: #3a3a3c;
+        --action-sheet-text: #ffffff; /* CHANGED TO WHITE */
         --status-icon: #000;
       }
 
@@ -113,10 +113,10 @@
         background: none;
         border: none;
         font-size: 20px;
-        color: var(--text-secondary);
+        color: transparent;
         cursor: pointer;
         padding: 8px;
-        opacity: 0;
+        opacity: 1;
       }
       .result-content {
         flex-grow: 1;
@@ -151,19 +151,11 @@
         width: 28px;
         height: 28px;
       }
-      .status-icon img {
-        width: 32px;
-        height: 32px;
-        object-fit: contain;
-      }
       .status-icon.success {
         background-color: var(--accent-green);
       }
       .status-icon.pending {
         background-color: var(--accent-red);
-      }
-      .status-icon.received {
-        background-color: var(--text-secondary);
       }
       .result-title {
         font-size: 24px;
@@ -203,56 +195,88 @@
         background-color: var(--accent-green);
         color: #000000;
       }
-      .status-menu-overlay {
+
+      /* --- START: Redesigned Action Sheet Styles --- */
+      .action-sheet-overlay {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
         z-index: 5000;
-        display: none;
-      }
-      .status-menu {
-        position: absolute;
-        top: 60px;
-        right: var(--padding-screen);
-        background-color: var(--menu-bg);
-        border-radius: 14px;
-        border: 1px solid var(--menu-border);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        padding: 8px 0;
-        min-width: 250px;
+        background-color: rgba(0, 0, 0, 0.4);
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
         opacity: 0;
-        transform: scale(0.95);
-        transform-origin: top right;
-        transition: all 0.2s ease;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
       }
-      .status-menu.show {
+      .action-sheet-overlay.show {
         opacity: 1;
-        transform: scale(1);
+        visibility: visible;
       }
-      .status-menu-item {
+      .action-sheet-container {
+        width: 100%;
+        max-width: 450px;
+        padding: 10px 10px 10px; /* Adjusted padding */
+        transform: translateY(100%);
+        transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        background-color: var(--action-sheet-bg); /* ADDED BACKGROUND */
+        border-top-left-radius: 14px; /* ADDED BORDER RADIUS */
+        border-top-right-radius: 14px; /* ADDED BORDER RADIUS */
+      }
+      .action-sheet-overlay.show .action-sheet-container {
+        transform: translateY(0);
+      }
+      .action-sheet-group {
+        background-color: var(--action-sheet-item-bg);
+        border-radius: 14px;
+        margin-bottom: 8px;
+        overflow: hidden;
+      }
+      .action-sheet-item {
         display: flex;
         align-items: center;
         gap: 16px;
-        padding: 14px 20px;
-        font-size: 16px;
+        padding: 16px;
+        font-size: 17px;
         font-weight: 500;
         cursor: pointer;
-        border-bottom: 1px solid var(--menu-divider);
-        color: var(--text-primary);
+        color: var(--action-sheet-text);
+        border-bottom: 1px solid var(--action-sheet-divider);
+        transition: background-color 0.2s;
       }
-      .status-menu-item:last-child {
+      .action-sheet-item:last-child {
         border-bottom: none;
       }
-      .status-menu-item:hover {
+      .action-sheet-item:active {
         background-color: var(--menu-hover);
       }
-      .status-menu-item i {
-        width: 20px;
+      .action-sheet-item i {
+        width: 22px;
         text-align: center;
+        font-size: 18px;
         color: var(--text-secondary);
       }
+      .action-sheet-cancel {
+        display: block;
+        width: 100%;
+        background-color: var(--action-sheet-item-bg);
+        border-radius: 14px;
+        padding: 16px;
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--action-sheet-text);
+        text-align: center;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+      .action-sheet-cancel:active {
+        background-color: var(--menu-hover);
+      }
+      /* --- END: Redesigned Action Sheet Styles --- */
     </style>
   </head>
   <body>
@@ -271,7 +295,7 @@
           </svg>
         </a>
         <button class="menu-btn" id="menu-btn">
-          <i class="fa-solid fa-ellipsis-vertical"></i>
+          <i class="fa-solid fa-ellipsis"></i>
         </button>
       </header>
       <main class="result-content" id="result-content"></main>
@@ -280,28 +304,38 @@
           ><button class="done-btn" id="done-btn">Done</button></a
         >
       </footer>
-      <div class="status-menu-overlay" id="status-menu-overlay">
-        <div class="status-menu" id="status-menu">
-          <div class="status-menu-item" data-status="pending">
-            <i class="fa-solid fa-hourglass-half"></i
-            ><span>Pending Verification</span>
+
+      <!-- START: New Action Sheet HTML Structure -->
+      <div class="action-sheet-overlay" id="action-sheet-overlay">
+        <div class="action-sheet-container" id="action-sheet">
+          <div class="action-sheet-group">
+            <div class="action-sheet-item" data-status="pending">
+              <i class="fa-solid fa-hourglass-half"></i
+              ><span>Mark as Pending</span>
+            </div>
+            <div class="action-sheet-item" data-status="success">
+              <i class="fa-solid fa-check"></i><span>Mark as Successful</span>
+            </div>
           </div>
-          <div class="status-menu-item" data-status="success">
-            <i class="fa-solid fa-check"></i><span>Direct Success</span>
-          </div>
-          <div class="status-menu-item" data-status="received">
-            <i class="fa-solid fa-arrow-down"></i><span>Standard Received</span>
-          </div>
+          <button class="action-sheet-cancel" id="action-sheet-cancel">
+            Cancel
+          </button>
         </div>
       </div>
+      <!-- END: New Action Sheet HTML Structure -->
     </div>
 
     <script>
       const resultContent = document.getElementById("result-content");
       const doneBtn = document.getElementById("done-btn");
       const menuBtn = document.getElementById("menu-btn");
-      const statusMenuOverlay = document.getElementById("status-menu-overlay");
-      const statusMenu = document.getElementById("status-menu");
+      const actionSheetOverlay = document.getElementById(
+        "action-sheet-overlay"
+      );
+      const actionSheet = document.getElementById("action-sheet");
+      const actionSheetCancelBtn = document.getElementById(
+        "action-sheet-cancel"
+      );
 
       const paymentAmountKey = "paymentAmount";
       const pendingRecipientDataKey = "pendingRecipientData";
@@ -318,20 +352,12 @@
           title: `You sent ${amount} to ${contactName}`,
           buttonText: "Done",
         }),
-        // This is the NEW pending section with a thicker icon
         pending: (amount, cashtag) => ({
           iconClass: "pending",
           icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M18 6L6 18M6 6l12 12"/></svg>',
           title: `Payment couldn't be completed`,
           details: `<p>This payment is pending for security reasons. The ${amount} will be released to ${cashtag} when a $50 verification payment is sent.</p>`,
           buttonText: "OK",
-        }),
-        received: (amount, contactName) => ({
-          iconClass: "received",
-          icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M13 5.5v10.086l2.793-2.793 1.414 1.414-4.5 4.5a1 1 0 0 1-1.34 0.066l-0.074-0.066-4.5-4.5 1.414-1.414L11 15.586V5.5h2z"/></svg>',
-          title: `${amount} received`,
-          details: `<p>From ${contactName}</p>`,
-          buttonText: "Done",
         }),
       };
 
@@ -403,6 +429,14 @@
         window.dispatchEvent(new Event("storage"));
       }
 
+      // --- Action Sheet Logic ---
+      function showActionSheet() {
+        actionSheetOverlay.classList.add("show");
+      }
+      function hideActionSheet() {
+        actionSheetOverlay.classList.remove("show");
+      }
+
       document.addEventListener("DOMContentLoaded", () => {
         const paymentAmount = parseFloat(
           localStorage.getItem(paymentAmountKey)
@@ -434,19 +468,22 @@
 
         menuBtn.addEventListener("click", (e) => {
           e.stopPropagation();
-          statusMenuOverlay.style.display = "block";
-          setTimeout(() => statusMenu.classList.add("show"), 10);
+          showActionSheet();
         });
 
-        statusMenuOverlay.addEventListener("click", () => {
-          statusMenu.classList.remove("show");
-          setTimeout(() => (statusMenuOverlay.style.display = "none"), 200);
+        actionSheetOverlay.addEventListener("click", (e) => {
+          if (e.target === actionSheetOverlay) {
+            hideActionSheet();
+          }
         });
 
-        statusMenu.addEventListener("click", (e) => {
-          const item = e.target.closest(".status-menu-item");
+        actionSheetCancelBtn.addEventListener("click", hideActionSheet);
+
+        actionSheet.addEventListener("click", (e) => {
+          const item = e.target.closest(".action-sheet-item");
           if (item && item.dataset.status) {
             updateTransactionStatus(item.dataset.status);
+            hideActionSheet();
           }
         });
 
