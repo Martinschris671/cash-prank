@@ -25,8 +25,8 @@
   --border-radius-card: 12px;
   --border-radius-button: 24px;
   --accent-green: #55b956;
-  --accent-purple: #9377fe;
-  --accent-blue: #3598fd;
+  --accent-purple: #8e7af7;
+  --accent-blue: #5296f7;
   --font-family: "CashMarket", -apple-system, BlinkMacSystemFont, sans-serif;
   --header-height: 65px;
   --loader-size: 56px;
@@ -343,9 +343,9 @@ html[data-theme="dark"] #theme-toggle-btn .sun-icon {
   height: 12px;
 }
 .savings-list-card .icon-container {
-  left: -5px;
-  width: 62px; /* <-- Increased from 52px */
-  height: 62px; /* <-- Increased from 52px */
+  left: -3px;
+  width: 60px; /* <-- Increased from 52px */
+  height: 60px; /* <-- Increased from 52px */
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -355,17 +355,30 @@ html[data-theme="dark"] #theme-toggle-btn .sun-icon {
   border: 1px solid var(--border-color-light);
 }
 .savings-list-card .icon-container .icon {
-  width: 28px; /* <-- Increased from 24px */
-  height: 28px; /* <-- Increased from 28px */
+  width: 26px; /* <-- Increased from 24px */
+  height: 26px; /* <-- Increased from 28px */
   object-fit: contain;
   z-index: 1;
   color: var(--text-primary);
 }
-/* --- Make ONLY the Savings Progress Ring Thinner --- */
-#savings-card-link .progress-ring-circle {
-  stroke-width: 0; /* <-- Thinner value (was 10) */
+/* --- Style for the Section Divider Line --- */
+.section-divider {
+  border: none;
+  height: 1px;
+  /* Use a more visible gray color specifically for light mode */
+  background-color: #e0e0e0;
+  margin-top: 24px;
 }
 
+/* This ensures the divider uses the correct dark color in dark mode */
+html[data-theme="dark"] .section-divider {
+  background-color: var(--border-color-light);
+}
+/* --- Make ONLY the Savings Progress Ring Thinner --- 
+ #savings-card-link .progress-ring-circle {
+  stroke-width: 0; 
+} 
+ <-- Thinner value (was 10) */
 .savings-list-card .progress-ring-svg {
   position: absolute;
   top: -1px;
