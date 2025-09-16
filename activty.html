@@ -23,6 +23,7 @@
         font-display: swap;
       }
       :root {
+        --dollar-color: #ffffff;
         --header-height: 65px;
         --padding-screen: 18px;
         --app-bg-color: #ffffff;
@@ -39,6 +40,7 @@
           sans-serif;
       }
       [data-theme="dark"] {
+        --dollar-color: #000;
         --app-bg-color: #000000;
         --app-bg-secondary: #1c1c1e;
         --text-primary: #ffffff;
@@ -316,13 +318,13 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 24px;
-        height: 24px;
+        width: 20px;
+        height: 20px;
         color: var(--text-primary);
       }
       .details-close-btn svg {
-        width: 24px;
-        height: 24px;
+        width: 20px;
+        height: 20px;
       }
       .details-content {
         flex-grow: 1;
@@ -565,6 +567,28 @@
       .td-cancel-button .themeable-icon {
         background-color: currentColor;
       }
+      /* Styles your new SVG icon */
+      .transaction-avatar.currency-avatar svg {
+        color: var(--dollar-color); /* Sets icon color to black */
+        width: 24px;
+        height: 24px;
+      }
+      .transaction-avatar.currency-avatar {
+        background-color: var(
+          --accent-green
+        ); /* White background for visibility */
+      }
+      /* Styles your new SVG icon */
+      .td-avatar.currency-avatar svg {
+        color: var(--dollar-color); /* Sets icon color to black */
+        width: 30px;
+        height: 30px;
+      }
+      .td-avatar.currency-avatar {
+        background-color: var(
+          --accent-green
+        ); /* White background for visibility */
+      }
     </style>
     <script>
       (function () {
@@ -674,7 +698,9 @@
       ];
 
       const svgIcons = {
-        "close_white.svg": `<svg id="vector" xmlns="http://www.w3.org/2000/svg" width="32.0d" height="32.0d" viewBox="0 0 32.0 32.0"><path fill="none" d="M10 10l12 12m0-12L10 22" stroke-linecap="round" stroke="currentColor" stroke-width="3.0" id="path_0"/></svg>`,
+        "close_white.svg": `<svg id="vector" xmlns="http://www.w3.org/2000/svg" width="24.0d" height="24.0d" viewBox="0 0 24.0 24.0">
+    <path fill="currentColor" d="M19.823 2.055a0.25 0.25 0 0 1 0.354 0l1.767 1.768a0.25 0.25 0 0 1 0 0.354L14.121 12l7.823 7.823a0.25 0.25 0 0 1 0 0.354l-1.767 1.767a0.25 0.25 0 0 1-0.354 0L12 14.121l-7.823 7.823a0.25 0.25 0 0 1-0.354 0l-1.768-1.767a0.25 0.25 0 0 1 0-0.354L9.88 12 2.055 4.177a0.25 0.25 0 0 1 0-0.354l1.768-1.768a0.25 0.25 0 0 1 0.354 0L12 9.88l7.823-7.824z" id="path_0"/>
+</svg>`,
         "icon_hash_24.svg": `<svg id="vector" xmlns="http://www.w3.org/2000/svg" width="24.0d" height="24.0d" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M16.994 3.11L16.451 8H21.5v2h-5.271l-0.445 4H20.5v2h-4.938l-0.568 5.11-1.988-0.22 0.543-4.89H9.562l-0.568 5.11-1.988-0.22L7.549 16H2.5v-2h5.271l0.445-4H3.5V8h4.938l0.568-5.11 1.988 0.22L10.451 8h3.987l0.568-5.11 1.988 0.22zM9.784 14h3.987l0.445-4h-3.987l-0.445 4z" id="path_0"/></svg>`,
         "icon_currency_usd_24.svg": `<svg id="vector" xmlns="http://www.w3.org/2000/svg" width="24.0d" height="24.0d" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M13 3.262c2.511 0.327 4.31 1.864 5.172 3.576l-0.892 0.45-0.894 0.45C15.832 6.637 14.678 5.592 13 5.288v5.689c1.047 0.232 2.162 0.532 3.068 1.062 0.588 0.345 1.127 0.806 1.515 1.44 0.39 0.638 0.589 1.391 0.589 2.257a4.72 4.72 0 0 1-1.758 3.706c-0.896 0.736-2.066 1.2-3.414 1.352V22.5h-2v-1.698c-2.988-0.286-4.944-1.859-6.02-3.934l1.776-0.92c0.742 1.432 2.05 2.578 4.244 2.843v-6.195c-1.024-0.222-2.111-0.5-2.993-0.98-0.585-0.318-1.13-0.75-1.526-1.356-0.4-0.614-0.605-1.342-0.605-2.18 0-1.385 0.587-2.643 1.691-3.534C8.45 3.834 9.618 3.388 11 3.246V1.5h2v1.762zm0 15.515c0.918-0.137 1.636-0.462 2.144-0.88a2.72 2.72 0 0 0 1.028-2.16c0-0.55-0.123-0.932-0.296-1.216-0.176-0.287-0.441-0.536-0.818-0.756-0.547-0.321-1.245-0.54-2.058-0.735v5.747zM11 5.261c-0.97 0.13-1.688 0.447-2.177 0.842A2.459 2.459 0 0 0 7.876 8.08c0 0.5 0.117 0.838 0.28 1.087 0.168 0.257 0.427 0.485 0.808 0.692 0.545 0.298 1.233 0.5 2.036 0.686V5.26z" id="path_0"/></svg>`,
         "icon_deposit_24.svg": `<svg id="vector" xmlns="http://www.w3.org/2000/svg" width="24.0d" height="24.0d" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M16.75 3a5.75 5.75 0 0 1 5.75 5.75v7.75a4 4 0 0 1-4 4h-13a4 4 0 0 1-4-4V9a4 4 0 0 1 4-4H8v2H5.5a2 2 0 0 0-2 2v7.5a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2V8.75a3.75 3.75 0 1 0-7.5 0v4.336l2.793-2.793 1.414 1.414-4.5 4.5a1 1 0 0 1-1.414 0l-4.5-4.5 1.414-1.414L11 13.086V8.75A5.75 5.75 0 0 1 16.75 3z" id="path_0"/></svg>`,
@@ -989,14 +1015,15 @@
                 if (t.type === "received") amountClass = "positive";
                 break;
               case "add":
-                avatar = `<div class="transaction-avatar" style="background-color: var(--accent-green);">$</div>`;
+                // This is the NEW code for "add"
+                avatar = `<div class="transaction-avatar currency-avatar"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M13 3.262c2.511 0.327 4.31 1.864 5.172 3.576l-0.892 0.45-0.894 0.45C15.832 6.637 14.678 5.592 13 5.288v5.689c1.047 0.232 2.162 0.532 3.068 1.062 0.588 0.345 1.127 0.806 1.515 1.44 0.39 0.638 0.589 1.391 0.589 2.257a4.72 4.72 0 0 1-1.758 3.706c-0.896 0.736-2.066 1.2-3.414 1.352V22.5h-2v-1.698c-2.988-0.286-4.944-1.859-6.02-3.934l1.776-0.92c0.742 1.432 2.05 2.578 4.244 2.843v-6.195c-1.024-0.222-2.111-0.5-2.993-0.98-0.585-0.318-1.13-0.75-1.526-1.356-0.4-0.614-0.605-1.342-0.605-2.18 0-1.385 0.587-2.643 1.691-3.534C8.45 3.834 9.618 3.388 11 3.246V1.5h2v1.762zm0 15.515c0.918-0.137 1.636-0.462 2.144-0.88a2.72 2.72 0 0 0 1.028-2.16c0-0.55-0.123-0.932-0.296-1.216-0.176-0.287-0.441-0.536-0.818-0.756-0.547-0.321-1.245-0.54-2.058-0.735v5.747zM11 5.261c-0.97 0.13-1.688 0.447-2.177 0.842A2.459 2.459 0 0 0 7.876 8.08c0 0.5 0.117 0.838 0.28 1.087 0.168 0.257 0.427 0.485 0.808 0.692 0.545 0.298 1.233 0.5 2.036 0.686V5.26z"/></svg></div>`;
                 name = "Add money";
                 statusText = `from Chase`;
                 amount = formatCurrency(t.amount, true);
                 amountClass = "positive";
                 break;
               case "withdraw":
-                avatar = `<div class="transaction-avatar" style="background-color: var(--accent-green);">$</div>`;
+                avatar = `<div class="transaction-avatar currency-avatar"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M13 3.262c2.511 0.327 4.31 1.864 5.172 3.576l-0.892 0.45-0.894 0.45C15.832 6.637 14.678 5.592 13 5.288v5.689c1.047 0.232 2.162 0.532 3.068 1.062 0.588 0.345 1.127 0.806 1.515 1.44 0.39 0.638 0.589 1.391 0.589 2.257a4.72 4.72 0 0 1-1.758 3.706c-0.896 0.736-2.066 1.2-3.414 1.352V22.5h-2v-1.698c-2.988-0.286-4.944-1.859-6.02-3.934l1.776-0.92c0.742 1.432 2.05 2.578 4.244 2.843v-6.195c-1.024-0.222-2.111-0.5-2.993-0.98-0.585-0.318-1.13-0.75-1.526-1.356-0.4-0.614-0.605-1.342-0.605-2.18 0-1.385 0.587-2.643 1.691-3.534C8.45 3.834 9.618 3.388 11 3.246V1.5h2v1.762zm0 15.515c0.918-0.137 1.636-0.462 2.144-0.88a2.72 2.72 0 0 0 1.028-2.16c0-0.55-0.123-0.932-0.296-1.216-0.176-0.287-0.441-0.536-0.818-0.756-0.547-0.321-1.245-0.54-2.058-0.735v5.747zM11 5.261c-0.97 0.13-1.688 0.447-2.177 0.842A2.459 2.459 0 0 0 7.876 8.08c0 0.5 0.117 0.838 0.28 1.087 0.168 0.257 0.427 0.485 0.808 0.692 0.545 0.298 1.233 0.5 2.036 0.686V5.26z"/></svg></div>`;
                 name = "Withdrawal";
                 statusText = `Direct Deposit`;
                 amount = formatSimpleCurrency(t.totalDeducted);
@@ -1162,8 +1189,8 @@
                 <header class="details-header"><button class="details-close-btn" id="details-close-btn">${closeIcon}</button></header>
                 <main class="details-content">
                     <section class="td-recipient-info">
-                        <div class="td-avatar" style="background-color: var(--accent-green);">$</div>
-                        <h1 class="td-recipient-name">Add money</h1>
+                               <div class="td-avatar currency-avatar"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M13 3.262c2.511 0.327 4.31 1.864 5.172 3.576l-0.892 0.45-0.894 0.45C15.832 6.637 14.678 5.592 13 5.288v5.689c1.047 0.232 2.162 0.532 3.068 1.062 0.588 0.345 1.127 0.806 1.515 1.44 0.39 0.638 0.589 1.391 0.589 2.257a4.72 4.72 0 0 1-1.758 3.706c-0.896 0.736-2.066 1.2-3.414 1.352V22.5h-2v-1.698c-2.988-0.286-4.944-1.859-6.02-3.934l1.776-0.92c0.742 1.432 2.05 2.578 4.244 2.843v-6.195c-1.024-0.222-2.111-0.5-2.993-0.98-0.585-0.318-1.13-0.75-1.526-1.356-0.4-0.614-0.605-1.342-0.605-2.18 0-1.385 0.587-2.643 1.691-3.534C8.45 3.834 9.618 3.388 11 3.246V1.5h2v1.762zm0 15.515c0.918-0.137 1.636-0.462 2.144-0.88a2.72 2.72 0 0 0 1.028-2.16c0-0.55-0.123-0.932-0.296-1.216-0.176-0.287-0.441-0.536-0.818-0.756-0.547-0.321-1.245-0.54-2.058-0.735v5.747zM11 5.261c-0.97 0.13-1.688 0.447-2.177 0.842A2.459 2.459 0 0 0 7.876 8.08c0 0.5 0.117 0.838 0.28 1.087 0.168 0.257 0.427 0.485 0.808 0.692 0.545 0.298 1.233 0.5 2.036 0.686V5.26z"/></svg></div>
+                <h1 class="td-recipient-name">Add money</h1>
                         <p class="td-timestamp">Today at ${time}</p>
                     </section>
                     <section class="td-amount-section"><p class="td-amount">+ ${formatCurrency(
@@ -1209,8 +1236,8 @@
                 <header class="details-header"><button class="details-close-btn" id="details-close-btn">${closeIcon}</button></header>
                 <main class="details-content">
                     <section class="td-recipient-info">
-                        <div class="td-avatar" style="background-color: var(--accent-green);">$</div>
-                        <h1 class="td-recipient-name">Withdrawal</h1>
+                       <div class="td-avatar currency-avatar"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M13 3.262c2.511 0.327 4.31 1.864 5.172 3.576l-0.892 0.45-0.894 0.45C15.832 6.637 14.678 5.592 13 5.288v5.689c1.047 0.232 2.162 0.532 3.068 1.062 0.588 0.345 1.127 0.806 1.515 1.44 0.39 0.638 0.589 1.391 0.589 2.257a4.72 4.72 0 0 1-1.758 3.706c-0.896 0.736-2.066 1.2-3.414 1.352V22.5h-2v-1.698c-2.988-0.286-4.944-1.859-6.02-3.934l1.776-0.92c0.742 1.432 2.05 2.578 4.244 2.843v-6.195c-1.024-0.222-2.111-0.5-2.993-0.98-0.585-0.318-1.13-0.75-1.526-1.356-0.4-0.614-0.605-1.342-0.605-2.18 0-1.385 0.587-2.643 1.691-3.534C8.45 3.834 9.618 3.388 11 3.246V1.5h2v1.762zm0 15.515c0.918-0.137 1.636-0.462 2.144-0.88a2.72 2.72 0 0 0 1.028-2.16c0-0.55-0.123-0.932-0.296-1.216-0.176-0.287-0.441-0.536-0.818-0.756-0.547-0.321-1.245-0.54-2.058-0.735v5.747zM11 5.261c-0.97 0.13-1.688 0.447-2.177 0.842A2.459 2.459 0 0 0 7.876 8.08c0 0.5 0.117 0.838 0.28 1.087 0.168 0.257 0.427 0.485 0.808 0.692 0.545 0.298 1.233 0.5 2.036 0.686V5.26z"/></svg></div>
+                <h1 class="td-recipient-name">Withdrawal</h1>
                         <p class="td-timestamp">Today at ${time}</p>
                     </section>
                     <section class="td-amount-section"><p class="td-amount">${formatCurrency(
