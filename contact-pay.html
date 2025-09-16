@@ -35,6 +35,7 @@
       /* --- THEME COLOR DEFINITIONS --- */
       :root {
         /* Light Mode Colors (Your Original Theme) */
+        --card-bg-color: #ffffff;
         --page-bg: #ffffff;
         --page-bg-secondary: #f9f9f9;
         --text-primary: #000000;
@@ -53,6 +54,7 @@
       }
 
       [data-theme="dark"] {
+        --card-bg-color: #1c1c1e;
         /* Dark Mode Colors (From Image & Your Request) */
         --page-bg: #020001;
         --page-bg-secondary: #1c1c1e;
@@ -614,7 +616,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: var(--page-bg);
+        background-color: var(--card-bg-color);
         display: none;
         justify-content: center;
         align-items: center;
