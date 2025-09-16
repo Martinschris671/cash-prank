@@ -343,6 +343,7 @@ html[data-theme="dark"] #theme-toggle-btn .sun-icon {
   height: 12px;
 }
 .savings-list-card .icon-container {
+  left: -5px;
   width: 62px; /* <-- Increased from 52px */
   height: 62px; /* <-- Increased from 52px */
   border-radius: 50%;
