@@ -387,6 +387,9 @@ html[data-theme="dark"] .section-divider {
   height: calc(100% + 2px);
   transform: rotate(-90deg);
 }
+.progress-ring-circle {
+  stroke-width: 5;
+}
 .savings-list-card .progress-ring-circle {
   transition: stroke-dashoffset 0.5s ease;
   stroke-linecap: round;
