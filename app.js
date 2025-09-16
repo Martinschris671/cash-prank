@@ -26,13 +26,25 @@ const lottieSpinnerContainer = document.getElementById(
 );
 let loadingSpinnerAnimation;
 
-loadingSpinnerAnimation = bodymovin.loadAnimation({
-  container: lottieSpinnerContainer,
-  renderer: "svg",
-  loop: true,
-  autoplay: false,
-  path: "loader_lm.json",
-});
+// Function to load or reload the Lottie spinner animation based on the current theme
+function setupLottieSpinner() {
+  if (loadingSpinnerAnimation) {
+    loadingSpinnerAnimation.destroy();
+  }
+  const currentTheme =
+    document.documentElement.getAttribute("data-theme") || "light";
+  const spinnerPath =
+    currentTheme === "dark" ? "loader_dm.json" : "loader_lm.json";
+
+  loadingSpinnerAnimation = bodymovin.loadAnimation({
+    container: lottieSpinnerContainer,
+    renderer: "svg",
+    loop: true,
+    autoplay: false,
+    path: spinnerPath,
+  });
+}
+
 // ========================================================================
 // --- START: CORRECTED RANDOM PROFILE IMAGE GENERATOR (USE THIS CODE) ---
 // ========================================================================
@@ -312,7 +324,7 @@ function showSuccessOverlay(type, amount) {
 
   if (type === "add" || type === "standard") {
     iconHTML =
-      '<img src="icon/check32_Normal_Normal@3x_monochrome-white.png" alt="Success" />';
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M22.757 5.65l-12 14a1 1 0 0 1-1.517 0l-6-7 1.517-1.3L10 17.462 21.239 4.35l1.518 1.3z"/></svg>';
 
     if (type === "add") {
       message = `You added ${formatCurrency(amount)} to your Cash App`;
@@ -322,8 +334,10 @@ function showSuccessOverlay(type, amount) {
         amount
       )} will be available in your external bank account ${arrivalDay}`;
     }
+    // This is the NEW code block with your requested SVG
   } else if (type === "instant") {
-    iconHTML = '<i class="fa-solid fa-bolt"></i>';
+    iconHTML =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="24.0d" height="24.0d" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M14.848 2.151c0.38-0.365 1.018-0.014 0.884 0.487L13.757 9.97h5.187c0.939 0 1.409 1.093 0.745 1.733L9.152 21.848c-0.38 0.366-1.018 0.015-0.883-0.485l1.973-7.333H5.057c-0.94 0-1.41-1.093-0.746-1.732L14.848 2.15z" /></svg>';
     message = `${formatCurrency(
       amount
     )} was transferred instantly to your bank account`;
@@ -344,6 +358,7 @@ function showFeatureNotImplementedModal() {
 
 document.addEventListener("DOMContentLoaded", () => {
   loadState();
+  setupLottieSpinner(); // Initial setup of the spinner
 
   const mainContent = document.querySelector(".main-content");
   const PULL_TO_REFRESH_THRESHOLD = 80;
