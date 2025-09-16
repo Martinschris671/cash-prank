@@ -343,8 +343,8 @@ html[data-theme="dark"] #theme-toggle-btn .sun-icon {
   height: 12px;
 }
 .savings-list-card .icon-container {
-  width: 52px;
-  height: 52px;
+  width: 62px; /* <-- Increased from 52px */
+  height: 62px; /* <-- Increased from 52px */
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -354,8 +354,8 @@ html[data-theme="dark"] #theme-toggle-btn .sun-icon {
   border: 1px solid var(--border-color-light);
 }
 .savings-list-card .icon-container .icon {
-  width: 24px;
-  height: 24px;
+  width: 28px; /* <-- Increased from 24px */
+  height: 28px; /* <-- Increased from 28px */
   object-fit: contain;
   z-index: 1;
   color: var(--text-primary);
