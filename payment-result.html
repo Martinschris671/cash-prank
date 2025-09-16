@@ -15,6 +15,19 @@
       referrerpolicy="no-referrer"
     />
     <script src="guard.js"></script>
+    <!-- Anti-Flicker Dark Mode Script -->
+    <script>
+      (function () {
+        let theme =
+          window.localStorage.getItem("app-theme-preference") || "system";
+        if (theme === "system") {
+          theme = window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+        }
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
     <style>
       @font-face {
         font-family: "CashMarket";
@@ -22,6 +35,7 @@
         src: url(font/CashSans-Regular.otf);
         font-display: swap;
       }
+      /* --- LIGHT MODE THEME (DEFAULT) --- */
       :root {
         --padding-screen: 24px;
         --app-bg-color: #ffffff;
@@ -31,7 +45,25 @@
         --accent-red: #ff3b30;
         --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
           sans-serif;
+        --menu-bg: #ffffff;
+        --menu-border: #e6e6e6;
+        --menu-hover: #f8f8f8;
+        --menu-divider: #f0f1f2;
+        --status-icon: #ffffff;
       }
+
+      /* --- DARK MODE THEME --- */
+      [data-theme="dark"] {
+        --app-bg-color: #000000;
+        --text-primary: #ffffff;
+        --text-secondary: #8e8e93;
+        --menu-bg: #1c1c1e;
+        --menu-border: #3a3a3c;
+        --menu-hover: #2c2c2e;
+        --menu-divider: #3a3a3c;
+        --status-icon: #000;
+      }
+
       * {
         margin: 0;
         padding: 0;
@@ -49,6 +81,7 @@
         display: flex;
         flex-direction: column;
         overflow: hidden;
+        transition: background-color 0.3s, color 0.3s;
       }
       a {
         text-decoration: none;
@@ -71,9 +104,10 @@
         height: 65px;
       }
       .close-btn {
-        width: 28px;
-        height: 28px;
+        width: 20px;
+        height: 20px;
         cursor: pointer;
+        color: var(--text-primary);
       }
       .menu-btn {
         background: none;
@@ -111,9 +145,11 @@
           opacity: 1;
         }
       }
-      .status-icon i {
-        color: white;
-        font-size: 28px;
+      .status-icon i,
+      .status-icon svg {
+        color: var(--status-icon);
+        width: 28px;
+        height: 28px;
       }
       .status-icon img {
         width: 32px;
@@ -163,6 +199,10 @@
         transform: translateY(20px);
         font-family: var(--font-family);
       }
+      [data-theme="dark"] .done-btn {
+        background-color: var(--accent-green);
+        color: #000000;
+      }
       .status-menu-overlay {
         position: fixed;
         top: 0;
@@ -172,17 +212,16 @@
         z-index: 5000;
         display: none;
       }
-      /* MODIFIED: Refined status menu styles */
       .status-menu {
         position: absolute;
         top: 60px;
         right: var(--padding-screen);
-        background-color: white;
-        border-radius: 14px; /* Slightly larger radius */
-        border: 1px solid #e6e6e6; /* Added a subtle border */
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Softened shadow */
+        background-color: var(--menu-bg);
+        border-radius: 14px;
+        border: 1px solid var(--menu-border);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         padding: 8px 0;
-        min-width: 250px; /* Increased width */
+        min-width: 250px;
         opacity: 0;
         transform: scale(0.95);
         transform-origin: top right;
@@ -192,24 +231,22 @@
         opacity: 1;
         transform: scale(1);
       }
-      /* MODIFIED: Refined menu item styles */
       .status-menu-item {
         display: flex;
         align-items: center;
-        gap: 16px; /* Increased gap */
-        padding: 14px 20px; /* Increased padding */
+        gap: 16px;
+        padding: 14px 20px;
         font-size: 16px;
         font-weight: 500;
         cursor: pointer;
-        /* Added a border bottom for separation */
-        border-bottom: 1px solid #f0f1f2;
+        border-bottom: 1px solid var(--menu-divider);
+        color: var(--text-primary);
       }
-      /* Added to remove the border from the last item */
       .status-menu-item:last-child {
         border-bottom: none;
       }
       .status-menu-item:hover {
-        background-color: #f8f8f8; /* Lighter hover color */
+        background-color: var(--menu-hover);
       }
       .status-menu-item i {
         width: 20px;
@@ -224,17 +261,15 @@
         <a href="pay.html">
           <svg
             class="close-btn"
-            viewBox="0 0 24 24"
-            fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24.0 24.0"
           >
             <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z"
-              fill="#0F1729"
-            /></svg
-        ></a>
+              fill="currentColor"
+              d="M19.823 2.055a0.25 0.25 0 0 1 0.354 0l1.767 1.768a0.25 0.25 0 0 1 0 0.354L14.121 12l7.823 7.823a0.25 0.25 0 0 1 0 0.354l-1.767 1.767a0.25 0.25 0 0 1-0.354 0L12 14.121l-7.823 7.823a0.25 0.25 0 0 1-0.354 0l-1.768-1.767a0.25 0.25 0 0 1 0-0.354L9.88 12 2.055 4.177a0.25 0.25 0 0 1 0-0.354l1.768-1.768a0.25 0.25 0 0 1 0.354 0L12 9.88l7.823-7.824z"
+            />
+          </svg>
+        </a>
         <button class="menu-btn" id="menu-btn">
           <i class="fa-solid fa-ellipsis-vertical"></i>
         </button>
@@ -279,21 +314,21 @@
       const statusTemplates = {
         success: (amount, contactName, note) => ({
           iconClass: "success",
-          icon: '<img src="icon/check32_Normal_Normal@3x_monochrome-white.png" alt="Success">',
-          /* MODIFIED: Removed the <br> to make the title one line */
+          icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M22.757 5.65l-12 14a1 1 0 0 1-1.517 0l-6-7 1.517-1.3L10 17.462 21.239 4.35l1.518 1.3z"/></svg>',
           title: `You sent ${amount} to ${contactName}`,
           buttonText: "Done",
         }),
+        // This is the NEW pending section with a thicker icon
         pending: (amount, cashtag) => ({
           iconClass: "pending",
-          icon: '<i class="fa-solid fa-hourglass-half"></i>',
+          icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M18 6L6 18M6 6l12 12"/></svg>',
           title: `Payment couldn't be completed`,
           details: `<p>This payment is pending for security reasons. The ${amount} will be released to ${cashtag} when a $50 verification payment is sent.</p>`,
           buttonText: "OK",
         }),
         received: (amount, contactName) => ({
           iconClass: "received",
-          icon: '<i class="fa-solid fa-arrow-down"></i>',
+          icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24.0 24.0"><path fill="currentColor" d="M13 5.5v10.086l2.793-2.793 1.414 1.414-4.5 4.5a1 1 0 0 1-1.34 0.066l-0.074-0.066-4.5-4.5 1.414-1.414L11 15.586V5.5h2z"/></svg>',
           title: `${amount} received`,
           details: `<p>From ${contactName}</p>`,
           buttonText: "Done",
@@ -302,7 +337,7 @@
 
       function formatCurrency(amount) {
         return `$${Number(amount).toLocaleString("en-US", {
-          minimumFractionDigits: 0, // Changed to 0 to match image ($2,200 instead of $2,200.00)
+          minimumFractionDigits: 0,
           maximumFractionDigits: 0,
         })}`;
       }
